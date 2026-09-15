@@ -15,6 +15,8 @@
     }
   },
   "require-dev": {
-    "symfony/var-dumper": "^7.4"
+    "symfony/var-dumper": "^7.4",
+    "phpunit/phpunit": "^11.5",
+    "guzzlehttp/guzzle": "^8.2"
   }
 }
