@@ -25,21 +25,25 @@ final class Sale extends Model
   #[Override]
   protected $fillable = ['client_id'];
 
+  /** @return BelongsTo<Business, $this> */
   public function business(): BelongsTo
   {
     return $this->belongsTo(Business::class);
   }
 
+  /** @return BelongsTo<Client, $this> */
   public function client(): BelongsTo
   {
     return $this->belongsTo(Client::class);
   }
 
+  /** @return HasMany<Item, $this> */
   public function items(): HasMany
   {
     return $this->hasMany(Item::class);
   }
 
+  /** @return HasMany<Payment, $this> */
   public function payments(): HasMany
   {
     return $this->hasMany(Payment::class);

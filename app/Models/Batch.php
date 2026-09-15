@@ -19,8 +19,9 @@ final class Batch extends Model
   public $timestamps = false;
 
   #[Override]
-  protected $fillable = ['business_id', 'stock'];
+  protected $fillable = ['business_id', 'product_id', 'stock'];
 
+  /** @return BelongsTo<Business, $this> */
   public function business(): BelongsTo
   {
     return $this->belongsTo(Business::class);

@@ -22,6 +22,7 @@ final class Business extends Model
   #[Override]
   protected $fillable = ['name'];
 
+  /** @return HasMany<Sale, $this> */
   public function sales(): HasMany
   {
     return $this->hasMany(Sale::class);

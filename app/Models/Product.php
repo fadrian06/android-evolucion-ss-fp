@@ -23,6 +23,7 @@ final class Product extends Model
   #[Override]
   protected $fillable = ['name', 'price'];
 
+  /** @return HasMany<Batch, $this> */
   public function batches(): HasMany
   {
     return $this->hasMany(Batch::class);

@@ -22,6 +22,7 @@ final class Item extends Model
   #[Override]
   protected $fillable = ['product_id', 'price', 'quantity'];
 
+  /** @return BelongsTo<Product, $this> */
   public function product(): BelongsTo
   {
     return $this->belongsTo(Product::class);
