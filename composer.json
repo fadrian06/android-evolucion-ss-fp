@@ -6,7 +6,8 @@
     "symfony/polyfill-php84": "^1.38",
     "leafs/auth": "^5.1",
     "illuminate/database": "^12.69",
-    "leafs/lingo": "^5.0"
+    "leafs/lingo": "^5.0",
+    "symfony/dotenv": "^7.4"
   },
   "autoload": {
     "psr-4": {

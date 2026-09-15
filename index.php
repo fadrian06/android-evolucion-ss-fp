@@ -13,13 +13,13 @@ use Leaf\Db;
 use Leaf\Form;
 use Leaf\Http\Session;
 use Leaf\Lingo;
+use Symfony\Component\Dotenv\Dotenv;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-$_ENV['DB_CONNECTION'] = 'sqlite';
-$_ENV['DB_DATABASE'] = __DIR__ . '/database/database.sqlite';
+(new Dotenv())->load(__DIR__ . '/.env');
 
-if (!file_exists($_ENV['DB_DATABASE'])) {
+if ($_ENV['DB_CONNECTION'] === 'sqlite' && !file_exists($_ENV['DB_DATABASE'])) {
   touch($_ENV['DB_DATABASE']);
 }
 
