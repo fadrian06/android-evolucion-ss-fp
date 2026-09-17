@@ -9,6 +9,7 @@ use App\Models\Business;
 use App\Models\Product;
 use App\Models\Sale;
 use App\Models\User;
+use App\Services\DailyExchangeRate;
 use Flight;
 use Illuminate\Database\Capsule\Manager;
 use Leaf\Flash;
@@ -20,6 +21,7 @@ final readonly class SaleController implements ResourceController
   public function __construct(
     private User $user,
     private Business $business,
+    private DailyExchangeRate $dailyExchangeRate,
     private Form $form,
   ) {
     //
@@ -68,6 +70,16 @@ final readonly class SaleController implements ResourceController
 
       goto redirect;
     }
+
+    $customRate = $this->dailyExchangeRate->customRateFor($this->user);
+
+    if (!$customRate) {
+      Flash::set(['Debes establecer una cotización personalizada antes de facturar'], 'errors');
+
+      goto redirect;
+    }
+
+    $exchangeRate = (float) $customRate->rate;
 
     $phoneItems = [];
     $accessoryItems = [];
@@ -125,6 +137,7 @@ final readonly class SaleController implements ResourceController
       $item = [
         'product_id' => $product->id,
         'price' => $product->price,
+        'price_ves' => round($product->price * $exchangeRate, 2),
         'quantity' => $quantity,
       ];
 

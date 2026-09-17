@@ -13,6 +13,7 @@ if (!Manager::schema()->hasTable('items')) {
     $blueprint->foreignIdFor(Sale::class)->constrained();
     $blueprint->foreignIdFor(Product::class)->constrained();
     $blueprint->integer('price');
+    $blueprint->decimal('price_ves', 14, 2);
     $blueprint->integer('quantity');
     $blueprint->string('imei1')->nullable();
     $blueprint->string('imei2')->nullable();

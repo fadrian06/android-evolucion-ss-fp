@@ -39,10 +39,12 @@ use App\Models\Sale;
         <thead>
           <tr>
             <th>Producto</th>
-            <th>Precio</th>
+            <th>Precio USD</th>
+            <th>Precio Bs.</th>
             <th>Cantidad</th>
             <th>Identificador</th>
-            <th>Subtotal</th>
+            <th>Subtotal USD</th>
+            <th>Subtotal Bs.</th>
           </tr>
         </thead>
         <tbody>
@@ -50,6 +52,7 @@ use App\Models\Sale;
             <tr>
               <td><?= $item->product->name ?></td>
               <td>$<?= $item->price ?></td>
+              <td>Bs. <?= number_format((float) $item->price_ves, 2, ',', '.') ?></td>
               <td><?= $item->quantity ?></td>
               <td>
                 <?php if ($item->imei1): ?>
@@ -60,13 +63,15 @@ use App\Models\Sale;
                 <?php endif ?>
               </td>
               <td>$<?= $item->getTotal() ?></td>
+              <td>Bs. <?= number_format($item->getTotalVes(), 2, ',', '.') ?></td>
             </tr>
           <?php endforeach ?>
         </tbody>
         <tfoot>
           <tr>
-            <th colspan="4" class="text-end">Total</th>
+            <th colspan="5" class="text-end">Total</th>
             <td>$<?= $invoice->getTotal() ?></td>
+            <td>Bs. <?= number_format($invoice->getTotalVes(), 2, ',', '.') ?></td>
           </tr>
         </tfoot>
       </table>

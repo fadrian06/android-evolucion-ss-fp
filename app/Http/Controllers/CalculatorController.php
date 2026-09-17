@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Services\BcvExchangeRate;
 use App\Models\User;
-use DateTimeImmutable;
-use DateTimeZone;
+use App\Services\DailyExchangeRate;
 use Flight;
 use Leaf\Flash;
 use Leaf\Form;
@@ -17,7 +15,7 @@ final readonly class CalculatorController
 {
   public function __construct(
     private User $user,
-    private BcvExchangeRate $bcvExchangeRate,
+    private DailyExchangeRate $dailyExchangeRate,
     private Form $form,
   ) {
     //
@@ -27,18 +25,13 @@ final readonly class CalculatorController
   {
     $rate = null;
     $source = null;
-    $customRate = $this->user->exchangeRates()->where('date', $this->today())->first();
+    $customRate = $this->dailyExchangeRate->customRateFor($this->user);
 
-    if ($customRate) {
-      $rate = (float) $customRate->rate;
-      $source = 'personalizada';
-    } else {
-      try {
-        $rate = $this->bcvExchangeRate->rate();
-        $source = 'BCV';
-      } catch (\RuntimeException $exception) {
-        Flash::set([$exception->getMessage()], 'errors');
-      }
+    try {
+      $rate = $this->dailyExchangeRate->rateFor($this->user);
+      $source = $customRate ? 'personalizada' : 'BCV';
+    } catch (\RuntimeException $exception) {
+      Flash::set([$exception->getMessage()], 'errors');
     }
 
     Flight::render('calculator', [
@@ -66,15 +59,10 @@ final readonly class CalculatorController
     }
 
     $this->user->exchangeRates()->updateOrCreate(
-      ['date' => $this->today()],
+      ['date' => $this->dailyExchangeRate->today()],
       ['rate' => $validated['rate']],
     );
     Flash::set(['Cotización personalizada guardada'], 'successes');
     Flight::redirect('/calculadora');
-  }
-
-  private function today(): string
-  {
-    return (new DateTimeImmutable('today', new DateTimeZone('America/Caracas')))->format('Y-m-d');
   }
 }

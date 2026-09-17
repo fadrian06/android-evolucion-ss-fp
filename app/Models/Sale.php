@@ -65,6 +65,17 @@ final class Sale extends Model
     return $total;
   }
 
+  public function getTotalVes(): float
+  {
+    $total = 0;
+
+    foreach ($this->items as $item) {
+      $total += $item->getTotalVes();
+    }
+
+    return $total;
+  }
+
   public function getTotalPaid(): int
   {
     $total = 0;
