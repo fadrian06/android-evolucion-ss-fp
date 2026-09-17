@@ -19,7 +19,9 @@ use Illuminate\Database\Eloquent\Collection;
 ?>
 
 <?php if ($invoiceId): ?>
-  <script>open('./ventas/<?= $invoiceId ?>', '_blank');</script>
+  <?php foreach (explode(',', $invoiceId) as $id): ?>
+    <script>open('./ventas/<?= $id ?>', '_blank');</script>
+  <?php endforeach ?>
 <?php endif ?>
 
 <form method="post" id="sell"></form>
@@ -177,10 +179,27 @@ use Illuminate\Database\Eloquent\Collection;
                     form="sell"
                     name="product_id[]"
                     required
-                    class="form-select">
+                    class="form-select"
+                    onchange="
+                      var row = this.closest('tr');
+                      var category = this.selectedOptions[0].dataset.category;
+                      row.querySelectorAll('.phone-identifier').forEach(input => {
+                        input.required = category === 'phone';
+                      });
+                      row.querySelectorAll('.accessory-code').forEach(input => {
+                        input.required = category === 'accessory';
+                      });
+                      row.querySelector('.phone-identifiers').classList.toggle('d-none', category !== 'phone');
+                      row.querySelector('.accessory-code-wrapper').classList.toggle('d-none', category !== 'accessory');
+                      var hasPhone = document.querySelectorAll('option[data-category=phone]:checked').length > 0;
+                      var initialPayments = document.getElementById('initial-payments');
+                      initialPayments.classList.toggle('d-none', hasPhone);
+                      initialPayments.querySelectorAll('input, select').forEach(input => input.disabled = hasPhone);
+                      document.getElementById('add-payment').disabled = hasPhone;
+                    ">
                     <option value="" selected disabled>Producto</option>
                     <?php foreach ($products as $product): ?>
-                      <option value="<?= $product->id ?>">
+                      <option value="<?= $product->id ?>" data-category="<?= $product->category ?>">
                         <?= $product->name ?>
                       </option>
                     <?php endforeach ?>
@@ -208,11 +227,35 @@ use Illuminate\Database\Eloquent\Collection;
                     'placeholder' => 'Cantidad',
                   ]) ?>
                 </td>
+                <td>
+                  <div class="phone-identifiers d-none">
+                    <input
+                      form="sell"
+                      type="text"
+                      name="imei1[]"
+                      class="form-control phone-identifier mb-2"
+                      placeholder="IMEI 1">
+                    <input
+                      form="sell"
+                      type="text"
+                      name="imei2[]"
+                      class="form-control phone-identifier"
+                      placeholder="IMEI 2">
+                  </div>
+                  <div class="accessory-code-wrapper d-none">
+                    <input
+                      form="sell"
+                      type="text"
+                      name="code[]"
+                      class="form-control accessory-code"
+                      placeholder="Código">
+                  </div>
+                </td>
               </tr>
             </tbody>
             <tfoot>
               <tr>
-                <td colspan="3">
+                <td colspan="4">
                   <button
                     class="btn btn-secondary w-100"
                     onclick="
@@ -220,6 +263,10 @@ use Illuminate\Database\Eloquent\Collection;
                       var row = table.firstElementChild.lastElementChild;
                       var newRow = row.cloneNode(true);
                       newRow.querySelectorAll('input, select').forEach(input => input.value = '');
+                      newRow.querySelectorAll('.phone-identifier, .accessory-code').forEach(input => input.required = false);
+                      newRow.querySelectorAll('.phone-identifiers, .accessory-code-wrapper').forEach(element => {
+                        element.classList.add('d-none');
+                      });
                       row.after(newRow);
                     ">
                     <span class="bi bi-plus-lg"></span>
@@ -229,7 +276,7 @@ use Illuminate\Database\Eloquent\Collection;
             </tfoot>
           </table>
         </td>
-        <td>
+        <td id="initial-payments">
           <table class="table table-hover table-borderless m-0">
             <tbody>
               <tr>
@@ -260,6 +307,7 @@ use Illuminate\Database\Eloquent\Collection;
               <tr>
                 <td colspan="2">
                   <button
+                    id="add-payment"
                     class="btn btn-secondary w-100"
                     onclick="
                       var table = this.closest('table');

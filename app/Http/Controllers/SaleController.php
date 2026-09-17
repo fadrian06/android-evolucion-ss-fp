@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\Sale;
 use App\Models\User;
 use Flight;
+use Illuminate\Database\Capsule\Manager;
 use Leaf\Flash;
 use Leaf\Form;
 use Override;
@@ -54,13 +55,12 @@ final readonly class SaleController implements ResourceController
   #[Override]
   public function store(): void
   {
-    $validated = $this->form->validate(Flight::request()->data->getData(), [
+    $data = Flight::request()->data->getData();
+    $validated = $this->form->validate($data, [
       'client_id' => "number",
       'product_id' => "array<number>",
       'business_id' => "array<number>",
       'quantity' => 'array<number>',
-      'amount' => 'array<number>',
-      'method' => 'array<string>',
     ]);
 
     if (!$validated) {
@@ -69,19 +69,29 @@ final readonly class SaleController implements ResourceController
       goto redirect;
     }
 
-    $items = [];
-    $payments = [];
+    $phoneItems = [];
+    $accessoryItems = [];
+    $stockChanges = [];
+    $hasPhone = false;
 
     foreach ($validated['product_id'] as $index => $productId) {
-      $businessId = $validated['business_id'][$index];
-      $quantity = $validated['quantity'][$index];
+      $businessId = $validated['business_id'][$index] ?? null;
+      $quantity = $validated['quantity'][$index] ?? null;
+
+      if ($businessId === null || $quantity === null) {
+        Flash::set(['Los datos de los productos no coinciden'], 'errors');
+
+        goto redirect;
+      }
 
       $product = $this->user->products->find($productId);
       $business = $this->user->businesses->find($businessId);
 
-      $batch = $product
-        ->batches
-        ->first(static fn(Batch $batch): bool => $batch->business->id == $businessId);
+      if (!$product) {
+        Flash::set(['Producto no encontrado'], 'errors');
+
+        goto redirect;
+      }
 
       if (!$business) {
         Flash::set(['Negocio no encontrado'], 'errors');
@@ -89,11 +99,9 @@ final readonly class SaleController implements ResourceController
         goto redirect;
       }
 
-      if (!$product) {
-        Flash::set(['Producto no encontrado'], 'errors');
-
-        goto redirect;
-      }
+      $batch = $product
+        ->batches
+        ->first(static fn(Batch $batch): bool => $batch->business->id == $businessId);
 
       if (!$batch) {
         Flash::set(['Lote no encontrado'], 'errors');
@@ -114,41 +122,109 @@ final readonly class SaleController implements ResourceController
         goto redirect;
       }
 
-      $items[] = [
+      $item = [
         'product_id' => $product->id,
         'price' => $product->price,
         'quantity' => $quantity,
       ];
 
-      $batch->stock -= $quantity;
-      $batch->save();
-    }
+      if ($product->category === 'phone') {
+        $imei1 = $data['imei1'][$index] ?? null;
+        $imei2 = $data['imei2'][$index] ?? null;
 
-    foreach ($validated['amount'] as $index => $amount) {
-      $method = $validated['method'][$index];
+        if (
+          (int) $quantity !== 1
+          || !is_string($imei1)
+          || trim($imei1) === ''
+          || !is_string($imei2)
+          || trim($imei2) === ''
+        ) {
+          Flash::set(['Cada teléfono debe tener cantidad 1, IMEI 1 e IMEI 2'], 'errors');
 
-      $payments[] = [
-        'amount' => $amount,
-        'method' => $method,
-      ];
-    }
+          goto redirect;
+        }
 
-    $sale = $this->business->sales()->create(['client_id' => $validated['client_id']]);
+        $hasPhone = true;
+        $phoneItems[] = [...$item, 'imei1' => trim($imei1), 'imei2' => trim($imei2)];
+      } else {
+        $code = $data['code'][$index] ?? null;
 
-    if ($sale instanceof Sale) {
-      $sale->items()->createMany($items);
-      $sale->payments()->createMany($payments);
-      Flash::save((string) $sale->id);
+        if (!is_string($code) || trim($code) === '') {
+          Flash::set(['Cada accesorio debe tener un código'], 'errors');
 
-      if ($sale->getRemainingAmount() > 0) {
-        Flash::set(['El pago no cubre el total de la venta'], 'warning');
+          goto redirect;
+        }
+
+        $accessoryItems[] = [...$item, 'code' => trim($code)];
       }
 
-      if ($sale->getTotalPaid() > $sale->getTotal()) {
-        Flash::set(['El pago excede el total de la venta'], 'notes');
+      $stockChanges[] = ['batch' => $batch, 'quantity' => $quantity];
+    }
+
+    $payments = [];
+
+    if ($hasPhone && (isset($data['amount']) || isset($data['method']))) {
+      Flash::set(['Las ventas con teléfonos no aceptan pagos iniciales'], 'errors');
+
+      goto redirect;
+    }
+
+    if (!$hasPhone) {
+      $paymentValidation = $this->form->validate($data, [
+        'amount' => 'array<number>',
+        'method' => 'array<string>',
+      ]);
+
+      if (!$paymentValidation) {
+        Flash::set($this->form->errors(), 'errors');
+
+        goto redirect;
+      }
+
+      foreach ($paymentValidation['amount'] as $index => $amount) {
+        $method = $paymentValidation['method'][$index] ?? null;
+
+        if (!is_string($method)) {
+          Flash::set(['Los datos de los pagos no coinciden'], 'errors');
+
+          goto redirect;
+        }
+
+        $payments[] = ['amount' => $amount, 'method' => $method];
       }
     }
 
+    $invoiceIds = Manager::connection()->transaction(function () use (
+      $validated,
+      $stockChanges,
+      $phoneItems,
+      $accessoryItems,
+      $payments,
+    ): array {
+      foreach ($stockChanges as ['batch' => $batch, 'quantity' => $quantity]) {
+        $batch->stock -= $quantity;
+        $batch->save();
+      }
+
+      $invoiceIds = [];
+
+      foreach ($phoneItems as $item) {
+        $sale = $this->business->sales()->create(['client_id' => $validated['client_id']]);
+        $sale->items()->create($item);
+        $invoiceIds[] = $sale->id;
+      }
+
+      if ($accessoryItems) {
+        $sale = $this->business->sales()->create(['client_id' => $validated['client_id']]);
+        $sale->items()->createMany($accessoryItems);
+        $sale->payments()->createMany($payments);
+        $invoiceIds[] = $sale->id;
+      }
+
+      return $invoiceIds;
+    });
+
+    Flash::save(implode(',', $invoiceIds));
     Flash::set(['Venta registrada'], 'successes');
 
     redirect:

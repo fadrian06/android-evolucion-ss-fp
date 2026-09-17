@@ -29,6 +29,7 @@ use App\Models\Sale;
             <th>Producto</th>
             <th>Precio</th>
             <th>Cantidad</th>
+            <th>Identificador</th>
             <th>Subtotal</th>
           </tr>
         </thead>
@@ -38,13 +39,21 @@ use App\Models\Sale;
               <td><?= $item->product->name ?></td>
               <td>$<?= $item->price ?></td>
               <td><?= $item->quantity ?></td>
+              <td>
+                <?php if ($item->imei1): ?>
+                  IMEI 1: <?= $item->imei1 ?><br>
+                  IMEI 2: <?= $item->imei2 ?>
+                <?php else: ?>
+                  <?= $item->code ?>
+                <?php endif ?>
+              </td>
               <td>$<?= $item->getTotal() ?></td>
             </tr>
           <?php endforeach ?>
         </tbody>
         <tfoot>
           <tr>
-            <th colspan="3" class="text-end">Total</th>
+            <th colspan="4" class="text-end">Total</th>
             <td>$<?= $invoice->getTotal() ?></td>
           </tr>
         </tfoot>

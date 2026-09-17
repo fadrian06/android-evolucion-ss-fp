@@ -12,6 +12,9 @@ use Override;
  * @property-read int $id
  * @property-read int $price
  * @property-read int $quantity
+ * @property-read null|string $imei1
+ * @property-read null|string $imei2
+ * @property-read null|string $code
  * @property-read Product $product
  */
 final class Item extends Model
@@ -20,7 +23,7 @@ final class Item extends Model
   public $timestamps = false;
 
   #[Override]
-  protected $fillable = ['product_id', 'price', 'quantity'];
+  protected $fillable = ['product_id', 'price', 'quantity', 'imei1', 'imei2', 'code'];
 
   /** @return BelongsTo<Product, $this> */
   public function product(): BelongsTo

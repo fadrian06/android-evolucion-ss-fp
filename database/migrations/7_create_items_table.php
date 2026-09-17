@@ -14,5 +14,8 @@ if (!Manager::schema()->hasTable('items')) {
     $blueprint->foreignIdFor(Product::class)->constrained();
     $blueprint->integer('price');
     $blueprint->integer('quantity');
+    $blueprint->string('imei1')->nullable();
+    $blueprint->string('imei2')->nullable();
+    $blueprint->string('code')->nullable();
   });
 }
