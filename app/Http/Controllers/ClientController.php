@@ -79,7 +79,7 @@ final readonly class ClientController implements ResourceController
       goto redirect;
     }
 
-    $validated = $this->form->validate(Flight::request()->data->getData()[$client->id], [
+    $validated = $this->form->validate(Flight::request()->data->getData(), [
       'name' => 'string',
     ]);
 
@@ -95,11 +95,14 @@ final readonly class ClientController implements ResourceController
       goto redirect;
     }
 
-    if ($this->user->clients->contains('name', Flight::request()->data['name'][$id])) {
+    if ($this->user->clients->contains('name', $validated['name'])) {
       Flash::set(['Ya existe un cliente con ese nombre'], 'errors');
 
       goto redirect;
     }
+
+    $client->update($validated);
+    Flash::set(['Cliente actualizado'], 'successes');
 
     redirect:
     Flight::redirect('/clientes');

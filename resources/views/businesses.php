@@ -13,7 +13,12 @@ use Illuminate\Database\Eloquent\Collection;
 ?>
 
 <form method="post" id="register-business"></form>
-<form method="post" id="update-business"></form>
+<?php foreach ($businesses as $businessItem): ?>
+  <form
+    method="post"
+    id="update-business-<?= $businessItem->id ?>"
+    action="./negocios/<?= $businessItem->id ?>"></form>
+<?php endforeach ?>
 
 <div class="table-responsive">
   <table
@@ -42,8 +47,8 @@ use Illuminate\Database\Eloquent\Collection;
         <tr>
           <td>
             <input
-              form="update-business"
-              name="<?= $businessItem->id ?>[name]"
+              form="update-business-<?= $businessItem->id ?>"
+              name="name"
               value="<?= $businessItem->name ?>"
               required
               class="form-control"
@@ -68,9 +73,8 @@ use Illuminate\Database\Eloquent\Collection;
           </td>
           <td>
             <input
-              form="update-business"
+              form="update-business-<?= $businessItem->id ?>"
               type="submit"
-              formaction="./negocios/<?= $businessItem->id ?>"
               value="Actualizar"
               class="btn btn-secondary w-100">
           </td>

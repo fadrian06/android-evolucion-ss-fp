@@ -115,7 +115,7 @@ final readonly class ProductController implements ResourceController
       goto redirect;
     }
 
-    $validated = $this->form->validate(Flight::request()->data["$product->id"], [
+    $validated = $this->form->validate(Flight::request()->data->getData(), [
       'name' => 'string',
       'price' => 'number',
       'stocks' => 'array<number>',

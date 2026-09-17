@@ -18,7 +18,12 @@ use Illuminate\Database\Eloquent\Collection;
 ?>
 
 <form method="post" id="sell"></form>
-<form method="post" id="pay"></form>
+<?php foreach ($sales as $sale): ?>
+  <form
+    method="post"
+    id="pay-sale-<?= $sale->id ?>"
+    action="./ventas/<?= $sale->id ?>/pagar"></form>
+<?php endforeach ?>
 
 <div class="table-responsive">
   <table class="table table-hover table-borderless caption-top align-middle">
@@ -106,7 +111,7 @@ use Illuminate\Database\Eloquent\Collection;
                       <div class="input-group">
                         <span class="input-group-text bi bi-currency-dollar"></span>
                         <input
-                          form="pay"
+                          form="pay-sale-<?= $sale->id ?>"
                           type="number"
                           name="amount"
                           required
@@ -117,7 +122,7 @@ use Illuminate\Database\Eloquent\Collection;
                       </div>
                     </td>
                     <td>
-                      <select form="pay" name="method" required class="form-select">
+                      <select form="pay-sale-<?= $sale->id ?>" name="method" required class="form-select">
                         <option value="" selected disabled>Método</option>
                         <option>Físico</option>
                         <option>Punto</option>
@@ -126,9 +131,8 @@ use Illuminate\Database\Eloquent\Collection;
                     </td>
                     <td>
                       <input
-                        form="pay"
+                        form="pay-sale-<?= $sale->id ?>"
                         type="submit"
-                        formaction="ventas/<?= $sale->id ?>/pagar"
                         value="Pagar"
                         class="btn btn-primary w-100">
                     </td>

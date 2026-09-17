@@ -15,7 +15,12 @@ use Illuminate\Database\Eloquent\Collection;
 ?>
 
 <form method="post" id="add-product"></form>
-<form method="post" id="update-product"></form>
+<?php foreach ($products as $product): ?>
+  <form
+    method="post"
+    id="update-product-<?= $product->id ?>"
+    action="./productos/<?= $product->id ?>"></form>
+<?php endforeach ?>
 
 <div class="table-responsive">
   <table
@@ -46,8 +51,8 @@ use Illuminate\Database\Eloquent\Collection;
         <tr>
           <td>
             <?php Flight::render('components/form-control', [
-              'form' => 'update-product',
-              'name' => "{$product->id}[name]",
+              'form' => "update-product-$product->id",
+              'name' => 'name',
               'value' => $product->name,
               'required' => true,
               'onInput' => "
@@ -59,9 +64,9 @@ use Illuminate\Database\Eloquent\Collection;
           </td>
           <td>
             <?php Flight::render('components/input-group', [
-              'form' => 'update-product',
+              'form' => "update-product-$product->id",
               'type' => 'number',
-              'name' => "{$product->id}[price]",
+              'name' => 'price',
               'value' => $product->price,
               'required' => true,
               'min' => 0,
@@ -79,9 +84,9 @@ use Illuminate\Database\Eloquent\Collection;
                     <td><?= $business->name ?></td>
                     <td>
                       <?php Flight::render('components/form-control', [
-                        'form' => 'update-product',
+                        'form' => "update-product-$product->id",
                         'type' => 'number',
-                        'name' => "{$product->id}[stocks][$business->id]",
+                        'name' => "stocks[$business->id]",
                         'value' => $batch?->stock ?? 0,
                         'required' => true,
                         'min' => 0,
@@ -106,9 +111,8 @@ use Illuminate\Database\Eloquent\Collection;
           </td>
           <td>
             <input
-              form="update-product"
+              form="update-product-<?= $product->id ?>"
               type="submit"
-              formaction="productos/<?= $product->id ?>"
               class="btn btn-primary w-100"
               value="Actualizar">
           </td>

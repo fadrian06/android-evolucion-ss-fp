@@ -79,7 +79,7 @@ final readonly class BusinessController implements ResourceController
       goto redirect;
     }
 
-    $validated = $this->form->validate(Flight::request()->data[$id] ?: [], [
+    $validated = $this->form->validate(Flight::request()->data->getData(), [
       'name' => 'string',
     ]);
 
