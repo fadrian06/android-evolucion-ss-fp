@@ -10,7 +10,7 @@ use Leaf\Flash;
 use Leaf\Form;
 use Override;
 
-final readonly class Register extends InvokableController
+final readonly class Register implements InvokableController
 {
   public function __construct(private Auth $auth, private Form $form)
   {

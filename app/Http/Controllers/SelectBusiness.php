@@ -10,7 +10,7 @@ use Leaf\Flash;
 use Leaf\Http\Session;
 use Override;
 
-final readonly class SelectBusiness extends InvokableController
+final readonly class SelectBusiness implements InvokableController
 {
   #[Override]
   public function __invoke(string ...$attributes): void

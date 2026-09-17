@@ -10,7 +10,7 @@ use Leaf\Flash;
 use Leaf\Http\Session;
 use Override;
 
-final readonly class Logout extends InvokableController
+final readonly class Logout implements InvokableController
 {
   public function __construct(private Auth $auth)
   {

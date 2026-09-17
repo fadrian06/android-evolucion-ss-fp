@@ -10,7 +10,7 @@ use Leaf\Flash;
 use Leaf\Form;
 use Override;
 
-final readonly class ClientController extends ResourceController
+final readonly class ClientController implements ResourceController
 {
   public function __construct(private User $user, private Form $form)
   {

@@ -11,9 +11,8 @@ use Flight;
 use Leaf\Flash;
 use Leaf\Form;
 use Override;
-use Throwable;
 
-final readonly class ProductController extends ResourceController
+final readonly class ProductController implements ResourceController
 {
   public function __construct(private User $user, private Form $form)
   {

@@ -14,7 +14,7 @@ use Leaf\Flash;
 use Leaf\Form;
 use Override;
 
-final readonly class SaleController extends ResourceController
+final readonly class SaleController implements ResourceController
 {
   public function __construct(private User $user, private Business $business, private Form $form)
   {

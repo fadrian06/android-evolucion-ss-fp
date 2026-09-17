@@ -11,7 +11,7 @@ use Leaf\Flash;
 use Leaf\Form;
 use Override;
 
-final readonly class PaySale extends InvokableController
+final readonly class PaySale implements InvokableController
 {
   public function __construct(private User $user, private Form $form)
   {
