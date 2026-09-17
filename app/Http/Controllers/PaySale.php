@@ -40,11 +40,29 @@ final readonly class PaySale implements InvokableController
 
     $validated = $this->form->validate(Flight::request()->data->getData(), [
       'amount' => 'number',
-      'method' => 'string',
+      'method' => 'in:[Físico,Punto,Transferencia]',
     ]);
 
     if (!$validated) {
       Flash::set($this->form->errors(), 'errors');
+
+      goto redirect;
+    }
+
+    if ((int) $validated['amount'] <= 0) {
+      Flash::set(['El monto debe ser mayor que cero'], 'errors');
+
+      goto redirect;
+    }
+
+    if ($sale->getRemainingAmount() <= 0) {
+      Flash::set(['La venta ya está pagada'], 'errors');
+
+      goto redirect;
+    }
+
+    if ($validated['amount'] > $sale->getRemainingAmount()) {
+      Flash::set(['El pago excede el saldo pendiente'], 'errors');
 
       goto redirect;
     }

@@ -113,7 +113,7 @@ use Illuminate\Database\Eloquent\Collection;
                     <?= $sale->getTotalPaid() ?>
                   </td>
                 </tr>
-                <?php if ($sale->getRemainingAmount()): ?>
+                <?php if ($sale->getRemainingAmount() > 0): ?>
                   <tr>
                     <td>
                       <div class="input-group">
@@ -124,7 +124,7 @@ use Illuminate\Database\Eloquent\Collection;
                           name="amount"
                           required
                           placeholder="Monto"
-                          min="0"
+                          min="1"
                           max="<?= $sale->getRemainingAmount() ?>"
                           class="form-control">
                       </div>
