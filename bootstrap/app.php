@@ -2,23 +2,10 @@
 
 declare(strict_types=1);
 
+use App\RequestHandlers\NotFoundHandler;
 use Faslatam\PsrFramework\QueueRequestHandler;
 use Faslatam\PsrFramework\RoutingMiddleware;
 use GuzzleHttp\Psr7\HttpFactory;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Server\RequestHandlerInterface;
-
-$notFoundHandler = new class implements RequestHandlerInterface {
-  #[Override]
-  #[NoDiscard]
-  public function handle(ServerRequestInterface $request): ResponseInterface
-  {
-    $responseFactory = new HttpFactory;
-
-    return $responseFactory->createResponse(404);
-  }
-};
 
 $middlewares = [];
 
@@ -28,7 +15,7 @@ foreach (glob(__DIR__ . '/../routes/*.php') as $routes) {
 }
 
 $queueRequestHandler = new QueueRequestHandler(
-  $notFoundHandler,
+  new NotFoundHandler(new HttpFactory),
   ...$middlewares,
 );
 
