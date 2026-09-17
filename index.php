@@ -61,8 +61,17 @@ $container->singleton(Manager::class, static fn(): Manager => $manager);
 $container->singleton(Auth::class, static fn(): Auth => $auth);
 $container->singleton(Db::class, static fn(): Db => $db);
 $container->singleton(PDO::class, static fn(): PDO => $pdo);
-$container->singleton(Request::class, static fn(): Request => Flight::request());
-$container->singleton(Connection::class, static fn(): Connection => $manager::connection());
+
+$container->singleton(
+  Request::class,
+  static fn(): Request => Flight::request(),
+);
+
+$container->singleton(
+  Connection::class,
+  static fn(): Connection => $manager::connection(),
+);
+
 $container->singleton(Form::class, static fn(): Form => $form);
 
 foreach (glob(__DIR__ . '/database/migrations/*.php') as $migration) {
@@ -73,9 +82,11 @@ $user = User::query()->find($auth->id());
 
 $container->singleton(User::class, static fn(): User => $user);
 
+$businessId = Session::get('business_id');
+
 $container->singleton(
   Business::class,
-  static fn(): Business => $user->businesses->find(Session::get('business_id'))
+  static fn(): Business => $user->businesses->find($businessId)
 );
 
 foreach (glob(__DIR__ . '/routes/*.php') as $routes) {
@@ -85,7 +96,7 @@ foreach (glob(__DIR__ . '/routes/*.php') as $routes) {
 Flight::set('flight.handle_errors', false);
 Flight::set('flight.views.path', __DIR__ . '/resources/views');
 Flight::view()->preserveVars = false;
-Flight::view()->set('auth', $container->get(Auth::class));
+Flight::view()->set('auth', $auth);
 Flight::view()->set('lingo', $lingo);
 Flight::registerContainerHandler($container->get(...));
 Flight::start();
