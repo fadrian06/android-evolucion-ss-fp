@@ -15,6 +15,7 @@ use Override;
  * @property-read int $id
  * @property-read DateTimeInterface $created_at
  * @property-read DateTimeInterface $updated_at
+ * @property-read null|DateTimeInterface $cancelled_at
  * @property-read Business $business
  * @property-read Client $client
  * @property-read Collection<int, Item> $items
@@ -24,6 +25,12 @@ final class Sale extends Model
 {
   #[Override]
   protected $fillable = ['client_id'];
+
+  #[Override]
+  protected function casts(): array
+  {
+    return ['cancelled_at' => 'datetime'];
+  }
 
   /** @return BelongsTo<Business, $this> */
   public function business(): BelongsTo

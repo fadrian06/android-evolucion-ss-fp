@@ -17,6 +17,7 @@ use Override;
  * @property-read string $phone
  * @property-read Collection<int, Sale> $sales
  * @property-read Collection<int, Repair> $repairs
+ * @property-read Collection<int, Layaway> $layaways
  */
 final class Business extends Model
 {
@@ -36,5 +37,11 @@ final class Business extends Model
   public function repairs(): HasMany
   {
     return $this->hasMany(Repair::class);
+  }
+
+  /** @return HasMany<Layaway, $this> */
+  public function layaways(): HasMany
+  {
+    return $this->hasMany(Layaway::class);
   }
 }

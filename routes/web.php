@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\CalculatorController;
+use App\Http\Controllers\CancelLayaway;
+use App\Http\Controllers\CancelSale;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\Login;
 use App\Http\Controllers\Logout;
+use App\Http\Controllers\LayawayController;
+use App\Http\Controllers\PayLayaway;
 use App\Http\Controllers\PaySale;
 use App\Http\Controllers\PayRepair;
 use App\Http\Controllers\ProductController;
@@ -59,6 +63,11 @@ Flight::group('', static function (): void {
     Flight::route('POST /ventas', [SaleController::class, 'store']);
     Flight::route('GET /ventas/@id', [SaleController::class, 'show']);
     Flight::route('POST /ventas/@id/pagar', [PaySale::class, '__invoke']);
+    Flight::route('POST /ventas/@id/anular', [CancelSale::class, '__invoke']);
+    Flight::route('GET /apartados', [LayawayController::class, 'index']);
+    Flight::route('POST /apartados', [LayawayController::class, 'store']);
+    Flight::route('POST /apartados/@id/pagar', [PayLayaway::class, '__invoke']);
+    Flight::route('POST /apartados/@id/cancelar', [CancelLayaway::class, '__invoke']);
     Flight::route('GET /reparaciones', [RepairController::class, 'index']);
     Flight::route('POST /reparaciones', [RepairController::class, 'store']);
     Flight::route('GET /reparaciones/@id', [RepairController::class, 'show']);

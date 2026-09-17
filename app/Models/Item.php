@@ -10,6 +10,7 @@ use Override;
 
 /**
  * @property-read int $id
+ * @property-read int $business_id
  * @property-read int $price
  * @property-read string $price_ves
  * @property-read int $quantity
@@ -17,6 +18,7 @@ use Override;
  * @property-read null|string $imei2
  * @property-read null|string $code
  * @property-read Product $product
+ * @property-read Business $business
  */
 final class Item extends Model
 {
@@ -24,7 +26,22 @@ final class Item extends Model
   public $timestamps = false;
 
   #[Override]
-  protected $fillable = ['product_id', 'price', 'price_ves', 'quantity', 'imei1', 'imei2', 'code'];
+  protected $fillable = [
+    'product_id',
+    'business_id',
+    'price',
+    'price_ves',
+    'quantity',
+    'imei1',
+    'imei2',
+    'code',
+  ];
+
+  /** @return BelongsTo<Business, $this> */
+  public function business(): BelongsTo
+  {
+    return $this->belongsTo(Business::class);
+  }
 
   /** @return BelongsTo<Product, $this> */
   public function product(): BelongsTo

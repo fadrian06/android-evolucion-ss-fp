@@ -136,6 +136,7 @@ final readonly class SaleController implements ResourceController
 
       $item = [
         'product_id' => $product->id,
+        'business_id' => $business->id,
         'price' => $product->price,
         'price_ves' => round($product->price * $exchangeRate, 2),
         'quantity' => $quantity,

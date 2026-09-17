@@ -38,6 +38,12 @@ final readonly class PaySale implements InvokableController
       goto redirect;
     }
 
+    if ($sale->cancelled_at) {
+      Flash::set(['No se puede pagar una factura anulada'], 'errors');
+
+      goto redirect;
+    }
+
     $validated = $this->form->validate(Flight::request()->data->getData(), [
       'amount' => 'number',
       'method' => 'in:[Físico,Punto,Transferencia]',

@@ -11,6 +11,9 @@ use App\Models\Sale;
 <section class="card">
   <div class="card-body">
     <h1 class="card-title h3">Factura</h1>
+    <?php if ($invoice->cancelled_at): ?>
+      <p class="alert alert-danger">Factura anulada</p>
+    <?php endif ?>
     <dl class="row mb-4">
       <dt class="col-sm-3">Nombre del negocio</dt>
       <dd class="col-sm-9"><?= $invoice->business->name ?></dd>

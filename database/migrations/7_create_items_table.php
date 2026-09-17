@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Models\Business;
 use App\Models\Product;
 use App\Models\Sale;
 use Illuminate\Database\Capsule\Manager;
@@ -12,6 +13,7 @@ if (!Manager::schema()->hasTable('items')) {
     $blueprint->id();
     $blueprint->foreignIdFor(Sale::class)->constrained();
     $blueprint->foreignIdFor(Product::class)->constrained();
+    $blueprint->foreignIdFor(Business::class)->constrained();
     $blueprint->integer('price');
     $blueprint->decimal('price_ves', 14, 2);
     $blueprint->integer('quantity');

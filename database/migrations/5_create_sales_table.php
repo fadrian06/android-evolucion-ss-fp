@@ -12,6 +12,7 @@ if (!Manager::schema()->hasTable('sales')) {
     $blueprint->id();
     $blueprint->foreignIdFor(Business::class)->constrained();
     $blueprint->foreignIdFor(Client::class)->constrained();
+    $blueprint->timestamp('cancelled_at')->nullable();
     $blueprint->timestamps();
   });
 }
@@ -25,6 +26,21 @@ if (!Manager::schema()->hasTable('repairs')) {
     $blueprint->integer('price');
     $blueprint->decimal('price_ves', 14, 2);
     $blueprint->date('due_date');
+    $blueprint->timestamps();
+  });
+}
+
+if (!Manager::schema()->hasTable('layaways')) {
+  Manager::schema()->create('layaways', static function (Blueprint $blueprint): void {
+    $blueprint->id();
+    $blueprint->foreignIdFor(Business::class)->constrained();
+    $blueprint->foreignIdFor(Client::class)->constrained();
+    $blueprint->foreignIdFor(\App\Models\Product::class)->constrained();
+    $blueprint->integer('price');
+    $blueprint->decimal('price_ves', 14, 2);
+    $blueprint->string('imei1');
+    $blueprint->string('imei2');
+    $blueprint->timestamp('cancelled_at')->nullable();
     $blueprint->timestamps();
   });
 }

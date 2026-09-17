@@ -20,6 +20,7 @@ $navItems = [
   ['href' => './clientes', 'slot' => 'Clientes'],
   ['href' => './productos', 'slot' => 'Productos'],
   ['href' => './ventas', 'slot' => 'Ventas'],
+  ['href' => './apartados', 'slot' => 'Apartados'],
   ['href' => './reparaciones', 'slot' => 'Reparaciones'],
   ['href' => './negocios', 'slot' => 'Negocios'],
   ['href' => './calculadora', 'slot' => 'Calculadora'],

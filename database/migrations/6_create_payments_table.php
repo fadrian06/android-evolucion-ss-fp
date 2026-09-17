@@ -29,3 +29,15 @@ if (!Manager::schema()->hasTable('repair_payments')) {
     }
   );
 }
+
+if (!Manager::schema()->hasTable('layaway_payments')) {
+  Manager::schema()->create(
+    'layaway_payments',
+    static function (Blueprint $blueprint): void {
+      $blueprint->id();
+      $blueprint->foreignId('layaway_id')->constrained();
+      $blueprint->integer('amount');
+      $blueprint->string('method');
+    }
+  );
+}

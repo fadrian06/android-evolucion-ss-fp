@@ -30,6 +30,10 @@ use Illuminate\Database\Eloquent\Collection;
     method="post"
     id="pay-sale-<?= $sale->id ?>"
     action="./ventas/<?= $sale->id ?>/pagar"></form>
+  <form
+    method="post"
+    id="cancel-sale-<?= $sale->id ?>"
+    action="./ventas/<?= $sale->id ?>/anular"></form>
 <?php endforeach ?>
 
 <div class="table-responsive">
@@ -42,6 +46,8 @@ use Illuminate\Database\Eloquent\Collection;
         <th colspan="4">Productos</th>
         <th colspan="4">Pagos</th>
         <th>Factura</th>
+        <th>Estado</th>
+        <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
@@ -113,7 +119,7 @@ use Illuminate\Database\Eloquent\Collection;
                     <?= $sale->getTotalPaid() ?>
                   </td>
                 </tr>
-                <?php if ($sale->getRemainingAmount() > 0): ?>
+                <?php if ($sale->getRemainingAmount() > 0 && !$sale->cancelled_at): ?>
                   <tr>
                     <td>
                       <div class="input-group">
@@ -156,6 +162,23 @@ use Illuminate\Database\Eloquent\Collection;
               class="btn btn-secondary w-100">
               Ver factura
             </a>
+          </td>
+          <td>
+            <?php if ($sale->cancelled_at): ?>
+              <span class="badge text-bg-danger">Anulada</span>
+            <?php else: ?>
+              <span class="badge text-bg-success">Activa</span>
+            <?php endif ?>
+          </td>
+          <td>
+            <?php if (!$sale->cancelled_at): ?>
+              <button
+                form="cancel-sale-<?= $sale->id ?>"
+                onclick="return confirm('¿Anular esta factura y restaurar el stock?')"
+                class="btn btn-danger w-100">
+                Anular
+              </button>
+            <?php endif ?>
           </td>
         </tr>
       <?php endforeach ?>
