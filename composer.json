@@ -24,5 +24,10 @@
       "type": "vcs",
       "url": "https://github.com/fadrian06/psr-framework"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests"
+    }
   }
 }
