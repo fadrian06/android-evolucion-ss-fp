@@ -24,8 +24,14 @@ use Override;
  */
 final class Layaway extends Model
 {
-  #[Override]
-  protected $fillable = ['client_id', 'product_id', 'price', 'price_ves', 'imei1', 'imei2'];
+  protected $fillable = [
+    'client_id',
+    'product_id',
+    'price',
+    'price_ves',
+    'imei1',
+    'imei2',
+  ];
 
   #[Override]
   protected function casts(): array

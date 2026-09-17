@@ -7,7 +7,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Override;
 
 /**
  * @property-read int $id
@@ -18,10 +17,7 @@ use Override;
  */
 final class Product extends Model
 {
-  #[Override]
   public $timestamps = false;
-
-  #[Override]
   protected $fillable = ['name', 'category', 'price'];
 
   /** @return HasMany<Batch, $this> */

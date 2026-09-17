@@ -19,10 +19,7 @@ use Override;
  */
 final class User extends Model
 {
-  #[Override]
   public $timestamps = false;
-
-  #[Override]
   protected $fillable = ['email', 'password'];
 
   /** @return HasMany<ExchangeRate, $this> */

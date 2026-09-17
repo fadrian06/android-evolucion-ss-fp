@@ -7,7 +7,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Override;
 
 /**
  * @property-read int $id
@@ -21,10 +20,7 @@ use Override;
  */
 final class Business extends Model
 {
-  #[Override]
   public $timestamps = false;
-
-  #[Override]
   protected $fillable = ['name', 'rif', 'address', 'phone'];
 
   /** @return HasMany<Sale, $this> */

@@ -6,7 +6,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Override;
 
 /**
  * @property-read int $id
@@ -22,10 +21,8 @@ use Override;
  */
 final class Item extends Model
 {
-  #[Override]
   public $timestamps = false;
 
-  #[Override]
   protected $fillable = [
     'product_id',
     'business_id',

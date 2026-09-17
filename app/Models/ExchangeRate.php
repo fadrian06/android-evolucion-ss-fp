@@ -6,7 +6,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Override;
 
 /**
  * @property-read int $id
@@ -17,10 +16,7 @@ use Override;
  */
 final class ExchangeRate extends Model
 {
-  #[Override]
   public $timestamps = false;
-
-  #[Override]
   protected $fillable = ['date', 'rate'];
 
   /** @return BelongsTo<User, $this> */

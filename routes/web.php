@@ -22,6 +22,7 @@ use App\Http\Controllers\ShowDashboardPage;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\EnsureBusinessSelected;
 use App\Http\Middleware\RedirectIfAuthenticated;
+use Faslatam\PsrFramework\Router;
 
 Flight::group('', static function (): void {
   Flight::route('GET /ingresar', static function (): void {
@@ -74,3 +75,7 @@ Flight::group('', static function (): void {
     Flight::route('POST /reparaciones/@id/pagar', [PayRepair::class, '__invoke']);
   }, [EnsureBusinessSelected::class]);
 }, [Authenticate::class]);
+
+$router = new Router;
+
+return $router;

@@ -23,7 +23,6 @@ use Override;
  */
 final class Sale extends Model
 {
-  #[Override]
   protected $fillable = ['client_id'];
 
   #[Override]

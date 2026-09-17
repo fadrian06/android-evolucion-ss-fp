@@ -6,7 +6,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Override;
 
 /**
  * @property-read int $id
@@ -15,10 +14,7 @@ use Override;
  */
 final class Batch extends Model
 {
-  #[Override]
   public $timestamps = false;
-
-  #[Override]
   protected $fillable = ['business_id', 'product_id', 'stock'];
 
   /** @return BelongsTo<Business, $this> */

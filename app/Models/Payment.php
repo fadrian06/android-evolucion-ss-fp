@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Override;
 
 /**
  * @property-read int $id
@@ -14,9 +13,6 @@ use Override;
  */
 final class Payment extends Model
 {
-  #[Override]
   public $timestamps = false;
-
-  #[Override]
   protected $fillable = ['amount', 'method'];
 }

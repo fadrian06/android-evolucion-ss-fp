@@ -23,8 +23,13 @@ use Override;
  */
 final class Repair extends Model
 {
-  #[Override]
-  protected $fillable = ['client_id', 'description', 'price', 'price_ves', 'due_date'];
+  protected $fillable = [
+    'client_id',
+    'description',
+    'price',
+    'price_ves',
+    'due_date',
+  ];
 
   #[Override]
   protected function casts(): array
