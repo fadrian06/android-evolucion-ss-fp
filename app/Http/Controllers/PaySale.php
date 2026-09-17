@@ -39,7 +39,7 @@ final readonly class PaySale implements InvokableController
     }
 
     $validated = $this->form->validate(Flight::request()->data->getData(), [
-      'amount' => 'integer',
+      'amount' => 'number',
       'method' => 'string',
     ]);
 

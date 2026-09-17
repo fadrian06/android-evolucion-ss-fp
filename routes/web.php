@@ -52,6 +52,7 @@ Flight::group('', static function (): void {
     Flight::route('GET /clientes/@id/eliminar', [ClientController::class, 'destroy']);
     Flight::route('GET /ventas', [SaleController::class, 'index']);
     Flight::route('POST /ventas', [SaleController::class, 'store']);
+    Flight::route('GET /ventas/@id', [SaleController::class, 'show']);
     Flight::route('POST /ventas/@id/pagar', [PaySale::class, '__invoke']);
   }, [EnsureBusinessSelected::class]);
 }, [Authenticate::class]);

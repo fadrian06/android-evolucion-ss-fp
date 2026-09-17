@@ -27,6 +27,9 @@ final readonly class SaleController implements ResourceController
   #[Override]
   public function index(): void
   {
+    $invoiceId = Flash::displaySaved();
+    Flash::clearSaved();
+
     Flight::render('sales', [
       'sales' => $this->business->sales,
       'clients' => $this->user->clients,
@@ -36,6 +39,7 @@ final readonly class SaleController implements ResourceController
         ->filter(static fn(Product $product): bool => $product->getStock() > 0)
         ->load('batches'),
       'businesses' => $this->user->businesses,
+      'invoiceId' => $invoiceId,
     ], 'slot');
 
     Flight::render('components/layout');
@@ -134,6 +138,7 @@ final readonly class SaleController implements ResourceController
     if ($sale instanceof Sale) {
       $sale->items()->createMany($items);
       $sale->payments()->createMany($payments);
+      Flash::save((string) $sale->id);
 
       if ($sale->getRemainingAmount() > 0) {
         Flash::set(['El pago no cubre el total de la venta'], 'warning');
@@ -153,7 +158,25 @@ final readonly class SaleController implements ResourceController
   #[Override]
   public function show(string $id): void
   {
-    throw new \Exception('Not implemented');
+    $invoice = null;
+
+    foreach ($this->user->businesses as $business) {
+      $invoice = $business->sales->find($id);
+
+      if ($invoice instanceof Sale) {
+        break;
+      }
+    }
+
+    if (!$invoice instanceof Sale) {
+      Flash::set(['Factura no encontrada'], 'errors');
+      Flight::redirect('/ventas');
+
+      return;
+    }
+
+    Flight::render('invoice', ['invoice' => $invoice], 'slot');
+    Flight::render('components/layout');
   }
 
   #[Override]

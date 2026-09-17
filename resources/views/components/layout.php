@@ -67,7 +67,7 @@ $flashTypes = [
 </head>
 
 <body>
-  <div class="toast-container position-fixed bottom-0 end-0 p-5">
+  <div class="toast-container position-fixed bottom-0 end-0 p-5 d-print-none">
     <?php foreach ($flashTypes as ['key' => $key, 'type' => $type]): ?>
       <?php foreach (((array) Flash::display($key)) as $body): ?>
         <?php Flight::render('components/toast', ['type' => $type, 'body' => $lingo->translate($body)]) ?>
@@ -75,7 +75,7 @@ $flashTypes = [
     <?php endforeach ?>
   </div>
 
-  <nav class="navbar navbar-expand-xl">
+  <nav class="navbar navbar-expand-xl d-print-none">
     <div class="container">
       <?php if (isset($business)): ?>
         <span class="navbar-brand"><?= $business->name ?></span>

@@ -13,9 +13,14 @@ use Illuminate\Database\Eloquent\Collection;
  * @var Collection<int, Client> $clients
  * @var Collection<int, Product> $products
  * @var Collection<int, Business> $businesses
+ * @var null|string $invoiceId
  */
 
 ?>
+
+<?php if ($invoiceId): ?>
+  <script>open('./ventas/<?= $invoiceId ?>', '_blank');</script>
+<?php endif ?>
 
 <form method="post" id="sell"></form>
 <?php foreach ($sales as $sale): ?>
@@ -34,6 +39,7 @@ use Illuminate\Database\Eloquent\Collection;
         <th>Cliente</th>
         <th colspan="4">Productos</th>
         <th colspan="4">Pagos</th>
+        <th>Factura</th>
       </tr>
     </thead>
     <tbody>
@@ -140,6 +146,14 @@ use Illuminate\Database\Eloquent\Collection;
                 <?php endif ?>
               </tfoot>
             </table>
+          </td>
+          <td>
+            <a
+              href="./ventas/<?= $sale->id ?>"
+              target="_blank"
+              class="btn btn-secondary w-100">
+              Ver factura
+            </a>
           </td>
         </tr>
       <?php endforeach ?>
