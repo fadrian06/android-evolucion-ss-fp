@@ -1,1 +1,0 @@
-{"version":2,"defects":{"Tests\\Unit\\NotFoundHandlerTest::it_returns_404_response":8},"times":{"Tests\\Unit\\NotFoundHandlerTest::it_returns_404_response_for_non_existent_route":0.014,"Tests\\Unit\\NotFoundHandlerTest::it_returns_404_response":0.014}}
