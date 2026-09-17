@@ -17,3 +17,15 @@ if (!Manager::schema()->hasTable('payments')) {
     }
   );
 }
+
+if (!Manager::schema()->hasTable('repair_payments')) {
+  Manager::schema()->create(
+    'repair_payments',
+    static function (Blueprint $blueprint): void {
+      $blueprint->id();
+      $blueprint->foreignId('repair_id')->constrained();
+      $blueprint->decimal('amount_ves', 14, 2);
+      $blueprint->string('method');
+    }
+  );
+}
