@@ -12,6 +12,7 @@ use Override;
 /**
  * @property-read int $id
  * @property-read string $name
+ * @property-read 'phone'|'accessory' $category
  * @property-read int $price
  * @property-read Collection<int, Batch> $batches
  */
@@ -21,7 +22,7 @@ final class Product extends Model
   public $timestamps = false;
 
   #[Override]
-  protected $fillable = ['name', 'price'];
+  protected $fillable = ['name', 'category', 'price'];
 
   /** @return HasMany<Batch, $this> */
   public function batches(): HasMany

@@ -41,6 +41,7 @@ final readonly class ProductController implements ResourceController
   {
     $validated = $this->form->validate(Flight::request()->data->getData(), [
       'name' => 'string',
+      'category' => 'in:[phone,accessory]',
       'price' => 'number',
       'stocks' => 'array<number>',
     ]);
@@ -79,6 +80,7 @@ final readonly class ProductController implements ResourceController
 
     $product = $this->user->products()->create([
       'name' => $validated['name'],
+      'category' => $validated['category'],
       'price' => $validated['price'],
     ]);
 
@@ -117,6 +119,7 @@ final readonly class ProductController implements ResourceController
 
     $validated = $this->form->validate(Flight::request()->data->getData(), [
       'name' => 'string',
+      'category' => 'in:[phone,accessory]',
       'price' => 'number',
       'stocks' => 'array<number>',
     ]);
@@ -162,6 +165,7 @@ final readonly class ProductController implements ResourceController
 
     $product->update([
       'name' => $validated['name'],
+      'category' => $validated['category'],
       'price' => $validated['price'],
     ]);
 

@@ -11,6 +11,7 @@ if (!Manager::schema()->hasTable('products')) {
     $blueprint->id();
     $blueprint->foreignIdFor(User::class)->constrained();
     $blueprint->string('name');
+    $blueprint->enum('category', ['phone', 'accessory']);
     $blueprint->integer('price');
     $blueprint->unique(['user_id', 'name']);
   });

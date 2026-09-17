@@ -42,6 +42,7 @@ use Illuminate\Database\Eloquent\Collection;
     <thead>
       <tr>
         <th>Nombre</th>
+        <th>Categoría</th>
         <th>Precio</th>
         <th colspan="3">Unidades disponibles</th>
       </tr>
@@ -61,6 +62,16 @@ use Illuminate\Database\Eloquent\Collection;
                   : undefined
               ",
             ]) ?>
+          </td>
+          <td>
+            <select
+              form="update-product-<?= $product->id ?>"
+              name="category"
+              required
+              class="form-select">
+              <option value="phone" <?= $product->category === 'phone' ? 'selected' : '' ?>>Teléfono</option>
+              <option value="accessory" <?= $product->category === 'accessory' ? 'selected' : '' ?>>Accesorio</option>
+            </select>
           </td>
           <td>
             <?php Flight::render('components/input-group', [
@@ -140,6 +151,13 @@ use Illuminate\Database\Eloquent\Collection;
                 ? ($el.checkValidity() && !productExists($el.value))
                 : undefined
             ">
+        </td>
+        <td>
+          <select form="add-product" name="category" required class="form-select">
+            <option value="" selected disabled>Categoría</option>
+            <option value="phone">Teléfono</option>
+            <option value="accessory">Accesorio</option>
+          </select>
         </td>
         <td>
           <?php Flight::render('components/input-group', [
