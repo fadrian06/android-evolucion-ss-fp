@@ -12,6 +12,9 @@ use Override;
 /**
  * @property-read int $id
  * @property-read string $name
+ * @property-read string $rif
+ * @property-read string $address
+ * @property-read string $phone
  * @property-read Collection<int, Sale> $sales
  */
 final class Business extends Model
@@ -20,7 +23,7 @@ final class Business extends Model
   public $timestamps = false;
 
   #[Override]
-  protected $fillable = ['name'];
+  protected $fillable = ['name', 'rif', 'address', 'phone'];
 
   /** @return HasMany<Sale, $this> */
   public function sales(): HasMany

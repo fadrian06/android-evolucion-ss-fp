@@ -12,8 +12,14 @@ use App\Models\Sale;
   <div class="card-body">
     <h1 class="card-title h3">Factura</h1>
     <dl class="row mb-4">
-      <dt class="col-sm-3">Negocio</dt>
+      <dt class="col-sm-3">Nombre del negocio</dt>
       <dd class="col-sm-9"><?= $invoice->business->name ?></dd>
+      <dt class="col-sm-3">RIF</dt>
+      <dd class="col-sm-9"><?= $invoice->business->rif ?></dd>
+      <dt class="col-sm-3">Dirección</dt>
+      <dd class="col-sm-9"><?= $invoice->business->address ?></dd>
+      <dt class="col-sm-3">Teléfono</dt>
+      <dd class="col-sm-9"><?= $invoice->business->phone ?></dd>
       <dt class="col-sm-3">Factura</dt>
       <dd class="col-sm-9">#<?= $invoice->id ?></dd>
       <dt class="col-sm-3">Fecha</dt>

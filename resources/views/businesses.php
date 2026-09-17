@@ -40,6 +40,9 @@ use Illuminate\Database\Eloquent\Collection;
     <thead>
       <tr>
         <th>Nombre</th>
+        <th>RIF</th>
+        <th>Dirección</th>
+        <th>Teléfono</th>
       </tr>
     </thead>
     <tbody>
@@ -59,6 +62,30 @@ use Illuminate\Database\Eloquent\Collection;
                   ? ($el.checkValidity() && !businessExists($el.value, <?= $businessItem->id ?>))
                   : undefined
               ">
+          </td>
+          <td>
+            <input
+              form="update-business-<?= $businessItem->id ?>"
+              name="rif"
+              value="<?= $businessItem->rif ?>"
+              required
+              class="form-control">
+          </td>
+          <td>
+            <input
+              form="update-business-<?= $businessItem->id ?>"
+              name="address"
+              value="<?= $businessItem->address ?>"
+              required
+              class="form-control">
+          </td>
+          <td>
+            <input
+              form="update-business-<?= $businessItem->id ?>"
+              name="phone"
+              value="<?= $businessItem->phone ?>"
+              required
+              class="form-control">
           </td>
           <td>
             <?php if (isset($business) && $business->id === $businessItem->id): ?>
@@ -94,6 +121,7 @@ use Illuminate\Database\Eloquent\Collection;
             name="name"
             required
             class="form-control"
+            placeholder="Nombre"
             :class="{ 'is-valid': isValid, 'is-invalid': isValid === false }"
             x-data="{ isValid: undefined }"
             @input="
@@ -101,6 +129,30 @@ use Illuminate\Database\Eloquent\Collection;
                 ? ($el.checkValidity() && !businessExists($el.value))
                 : undefined
             ">
+        </td>
+        <td>
+          <input
+            form="register-business"
+            name="rif"
+            required
+            class="form-control"
+            placeholder="RIF">
+        </td>
+        <td>
+          <input
+            form="register-business"
+            name="address"
+            required
+            class="form-control"
+            placeholder="Dirección">
+        </td>
+        <td>
+          <input
+            form="register-business"
+            name="phone"
+            required
+            class="form-control"
+            placeholder="Teléfono">
         </td>
         <td colspan="3">
           <button form="register-business" class="btn btn-primary w-100">

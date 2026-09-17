@@ -23,7 +23,7 @@ final class User extends Model
   public $timestamps = false;
 
   #[Override]
-  protected $fillable = ['string', 'password'];
+  protected $fillable = ['email', 'password'];
 
   /** @return HasMany<Business, $this> */
   public function businesses(): HasMany

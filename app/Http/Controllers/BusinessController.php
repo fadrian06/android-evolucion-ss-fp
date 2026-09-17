@@ -38,6 +38,9 @@ final readonly class BusinessController implements ResourceController
   {
     $validated = $this->form->validate(Flight::request()->data->getData(), [
       'name' => 'string',
+      'rif' => 'string',
+      'address' => 'string',
+      'phone' => 'string',
     ]);
 
     if (!$validated) {
@@ -84,6 +87,9 @@ final readonly class BusinessController implements ResourceController
 
     $validated = $this->form->validate(Flight::request()->data->getData(), [
       'name' => 'string',
+      'rif' => 'string',
+      'address' => 'string',
+      'phone' => 'string',
     ]);
 
     if (!$validated) {
@@ -92,8 +98,13 @@ final readonly class BusinessController implements ResourceController
       goto redirect;
     }
 
-    if ($business->name === $validated['name']) {
-      Flash::set(['El nombre del negocio no ha cambiado'], 'notes');
+    if (
+      $business->name === $validated['name']
+      && $business->rif === $validated['rif']
+      && $business->address === $validated['address']
+      && $business->phone === $validated['phone']
+    ) {
+      Flash::set(['Los datos del negocio no han cambiado'], 'notes');
 
       goto redirect;
     }
