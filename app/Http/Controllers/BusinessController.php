@@ -20,7 +20,10 @@ final readonly class BusinessController implements ResourceController
   #[Override]
   public function index(): void
   {
-    Flight::render('businesses', ['businesses' => $this->user->businesses], 'slot');
+    Flight::render('businesses', [
+      'businesses' => $this->user->businesses,
+    ], 'slot');
+
     Flight::render('components/layout');
   }
 

@@ -128,7 +128,10 @@ final readonly class ProductController implements ResourceController
     }
 
     if ($this->user->products->first(
-      static fn(Product $p): bool => $p->name === $validated['name'] && $p->id !== $product->id
+      static fn(Product $p): bool => (
+        $p->name === $validated['name']
+        && $p->id !== $product->id
+      )
     )) {
       Flash::set(['Ya existe un producto con ese nombre'], 'errors');
 
