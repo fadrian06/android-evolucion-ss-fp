@@ -23,6 +23,8 @@ if ($_ENV['DB_CONNECTION'] === 'sqlite' && !file_exists($_ENV['DB_DATABASE'])) {
   touch($_ENV['DB_DATABASE']);
 }
 
+ini_set('error_log', __DIR__ . '/storage/logs/php_errors.log');
+
 $container = Container::getInstance();
 
 $manager = new Manager($container);

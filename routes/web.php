@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\BusinessController;
+use App\Http\Controllers\CalculatorController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\Login;
 use App\Http\Controllers\Logout;
@@ -42,6 +43,8 @@ Flight::group('', static function (): void {
   Flight::group('', static function (): void {
     Flight::route('GET /negocios', [BusinessController::class, 'index']);
     Flight::route('GET /', [ShowDashboardPage::class, '__invoke']);
+    Flight::route('GET /calculadora', [CalculatorController::class, 'index']);
+    Flight::route('POST /calculadora/cotizacion', [CalculatorController::class, 'store']);
     Flight::route('GET /productos', [ProductController::class, 'index']);
     Flight::route('POST /productos', [ProductController::class, 'store']);
     Flight::route('POST /productos/@id', [ProductController::class, 'update']);

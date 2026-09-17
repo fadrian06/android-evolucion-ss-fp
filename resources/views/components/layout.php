@@ -21,6 +21,7 @@ $navItems = [
   ['href' => './productos', 'slot' => 'Productos'],
   ['href' => './ventas', 'slot' => 'Ventas'],
   ['href' => './negocios', 'slot' => 'Negocios'],
+  ['href' => './calculadora', 'slot' => 'Calculadora'],
 ];
 
 $requestUrl = Flight::request()->url;
@@ -92,7 +93,7 @@ $flashTypes = [
                 class="
                   nav-link
                   <?= $navItem['href'] !== ".$requestUrl" ? '' : 'active' ?>
-                  <?= $auth->user() && $business ? '' : 'disabled' ?>
+                  <?= $auth->user() && isset($business) ? '' : 'disabled' ?>
                 ">
                 <?= $navItem['slot'] ?>
               </a>

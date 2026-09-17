@@ -35,6 +35,9 @@ final readonly class ClientController implements ResourceController
   {
     $validated = $this->form->validate(Flight::request()->data->getData(), [
       'name' => 'string',
+      'cedula' => 'string',
+      'phone' => 'string',
+      'address' => 'string',
     ]);
 
     if (!$validated) {
@@ -81,6 +84,9 @@ final readonly class ClientController implements ResourceController
 
     $validated = $this->form->validate(Flight::request()->data->getData(), [
       'name' => 'string',
+      'cedula' => 'string',
+      'phone' => 'string',
+      'address' => 'string',
     ]);
 
     if (!$validated) {
@@ -89,8 +95,13 @@ final readonly class ClientController implements ResourceController
       goto redirect;
     }
 
-    if ($client->name === $validated['name']) {
-      Flash::set(['El nombre del cliente no ha cambiado'], 'notes');
+    if (
+      $client->name === $validated['name']
+      && $client->cedula === $validated['cedula']
+      && $client->phone === $validated['phone']
+      && $client->address === $validated['address']
+    ) {
+      Flash::set(['Los datos del cliente no han cambiado'], 'notes');
 
       goto redirect;
     }

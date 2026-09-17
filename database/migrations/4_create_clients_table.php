@@ -11,6 +11,9 @@ if (!Manager::schema()->hasTable('clients')) {
     $blueprint->id();
     $blueprint->foreignIdFor(User::class)->constrained();
     $blueprint->string('name');
+    $blueprint->string('cedula');
+    $blueprint->string('phone');
+    $blueprint->string('address');
     $blueprint->unique(['user_id', 'name']);
   });
 }

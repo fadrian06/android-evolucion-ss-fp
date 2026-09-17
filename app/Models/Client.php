@@ -10,6 +10,9 @@ use Override;
 /**
  * @property-read int $id
  * @property-read string $name
+ * @property-read string $cedula
+ * @property-read string $phone
+ * @property-read string $address
  */
 final class Client extends Model
 {
@@ -17,5 +20,5 @@ final class Client extends Model
   public $timestamps = false;
 
   #[Override]
-  protected $fillable = ['name'];
+  protected $fillable = ['name', 'cedula', 'phone', 'address'];
 }

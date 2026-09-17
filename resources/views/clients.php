@@ -36,7 +36,10 @@ use Illuminate\Database\Eloquent\Collection;
     <caption>Lista de clientes</caption>
     <thead>
       <tr>
-        <th colspan="3">Nombre</th>
+        <th>Nombre</th>
+        <th>Cédula</th>
+        <th>Teléfono</th>
+        <th>Dirección</th>
       </tr>
     </thead>
     <tbody>
@@ -56,6 +59,30 @@ use Illuminate\Database\Eloquent\Collection;
                   ? ($el.checkValidity() && !clientExists($el.value, <?= $client->id ?>))
                   : undefined
               ">
+          </td>
+          <td>
+            <input
+              form="update-client-<?= $client->id ?>"
+              name="cedula"
+              value="<?= $client->cedula ?>"
+              required
+              class="form-control">
+          </td>
+          <td>
+            <input
+              form="update-client-<?= $client->id ?>"
+              name="phone"
+              value="<?= $client->phone ?>"
+              required
+              class="form-control">
+          </td>
+          <td>
+            <input
+              form="update-client-<?= $client->id ?>"
+              name="address"
+              value="<?= $client->address ?>"
+              required
+              class="form-control">
           </td>
           <td>
             <input
@@ -80,6 +107,7 @@ use Illuminate\Database\Eloquent\Collection;
             name="name"
             required
             class="form-control"
+            placeholder="Nombre"
             :class="{ 'is-valid': isValid, 'is-invalid': isValid === false }"
             x-data="{ isValid: undefined }"
             @input="
@@ -87,6 +115,30 @@ use Illuminate\Database\Eloquent\Collection;
                 ? ($el.checkValidity() && !clientExists($el.value))
                 : undefined
             ">
+        </td>
+        <td>
+          <input
+            form="register-client"
+            name="cedula"
+            required
+            class="form-control"
+            placeholder="Cédula">
+        </td>
+        <td>
+          <input
+            form="register-client"
+            name="phone"
+            required
+            class="form-control"
+            placeholder="Teléfono">
+        </td>
+        <td>
+          <input
+            form="register-client"
+            name="address"
+            required
+            class="form-control"
+            placeholder="Dirección">
         </td>
         <td colspan="2">
           <button form="register-client" class="btn btn-primary w-100">

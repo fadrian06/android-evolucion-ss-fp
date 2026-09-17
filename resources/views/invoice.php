@@ -24,8 +24,14 @@ use App\Models\Sale;
       <dd class="col-sm-9">#<?= $invoice->id ?></dd>
       <dt class="col-sm-3">Fecha</dt>
       <dd class="col-sm-9"><?= $invoice->created_at->format('d/m/Y') ?></dd>
-      <dt class="col-sm-3">Cliente</dt>
+      <dt class="col-sm-3">Nombre del cliente</dt>
       <dd class="col-sm-9"><?= $invoice->client->name ?></dd>
+      <dt class="col-sm-3">Cédula</dt>
+      <dd class="col-sm-9"><?= $invoice->client->cedula ?></dd>
+      <dt class="col-sm-3">Teléfono</dt>
+      <dd class="col-sm-9"><?= $invoice->client->phone ?></dd>
+      <dt class="col-sm-3">Dirección</dt>
+      <dd class="col-sm-9"><?= $invoice->client->address ?></dd>
     </dl>
 
     <div class="table-responsive">

@@ -25,6 +25,12 @@ final class User extends Model
   #[Override]
   protected $fillable = ['email', 'password'];
 
+  /** @return HasMany<ExchangeRate, $this> */
+  public function exchangeRates(): HasMany
+  {
+    return $this->hasMany(ExchangeRate::class);
+  }
+
   /** @return HasMany<Business, $this> */
   public function businesses(): HasMany
   {
