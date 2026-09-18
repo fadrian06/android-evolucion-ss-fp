@@ -12,6 +12,7 @@ final readonly class ShowDashboardPage implements InvokableController
   #[Override]
   public function __invoke(string ...$attributes): void
   {
-    Flight::render('components/layout', ['slot' => '']);
+    Flight::render('dashboard', [], 'slot');
+    Flight::render('components/layout');
   }
 }

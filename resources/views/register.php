@@ -1,21 +1,9 @@
-<form method="post" class="col-xl-3 m-auto mt-5 d-grid gap-3">
-  <div class="input-group">
-    <span class="input-group-text bi bi-envelope-at-fill"></span>
-    <?php Flight::render('components/form-floating', [
-      'type' => 'email',
-      'name' => 'email',
-      'required' => true,
-      'label' => 'Correo electrónico',
-    ]) ?>
-  </div>
-  <div class="input-group">
-    <span class="input-group-text bi bi-lock-fill"></span>
-    <?php Flight::render('components/form-floating', [
-      'type' => 'password',
-      'name' => 'password',
-      'required' => true,
-      'label' => 'Contraseña',
-    ]) ?>
-  </div>
-  <input type="submit" value="Registrarse" class="btn btn-primary w-100">
-</form>
+<section class="auth-card card">
+  <div class="brand-auth">orion</div><h1>Crea tu cuenta</h1><p>Configura tu espacio de trabajo en minutos.</p>
+  <form method="post" class="stack">
+    <div class="field"><label>Correo electrónico</label><input name="email" type="email" required autocomplete="email" placeholder="nombre@correo.com"></div>
+    <div class="field"><label>Contraseña</label><input name="password" type="password" required autocomplete="new-password" placeholder="Crea una contraseña"></div>
+    <button class="btn btn-primary">Crear cuenta</button>
+  </form>
+  <p style="margin:20px 0 0;text-align:center">¿Ya tienes cuenta? <a style="color:var(--brand);font-weight:700" href="./ingresar">Inicia sesión</a></p>
+</section>

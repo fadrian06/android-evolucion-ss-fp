@@ -1,165 +1,31 @@
-<?php
-
-declare(strict_types=1);
-
-use App\Models\Business;
-use Illuminate\Database\Eloquent\Collection;
-
-/**
- * @var unset|Business $business
- * @var Collection<int, Business> $businesses
- */
-
-?>
-
-<form method="post" id="register-business"></form>
-<?php foreach ($businesses as $businessItem): ?>
-  <form
-    method="post"
-    id="update-business-<?= $businessItem->id ?>"
-    action="./negocios/<?= $businessItem->id ?>"></form>
-<?php endforeach ?>
-
-<div class="table-responsive">
-  <table
-    class="table table-striped table-hover table-borderless caption-top align-middle"
-    x-data='{
-      businesses: JSON.parse(`<?= $businesses->toJson() ?>`),
-
-      businessExists(name, excludedId) {
-        return this.businesses.some(business => {
-          if (business.id === excludedId) {
-            return false;
-          }
-
-          return business.name.toLowerCase() === name.toLowerCase();
-        });
-      },
-    }'>
-    <caption>Lista de negocios</caption>
-    <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>RIF</th>
-        <th>Dirección</th>
-        <th>Teléfono</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php foreach ($businesses as $businessItem): ?>
-        <tr>
-          <td>
-            <input
-              form="update-business-<?= $businessItem->id ?>"
-              name="name"
-              value="<?= $businessItem->name ?>"
-              required
-              class="form-control"
-              :class="{ 'is-valid': isValid, 'is-invalid': isValid === false }"
-              x-data="{ isValid: undefined }"
-              @input="
-                isValid = $el.value
-                  ? ($el.checkValidity() && !businessExists($el.value, <?= $businessItem->id ?>))
-                  : undefined
-              ">
-          </td>
-          <td>
-            <input
-              form="update-business-<?= $businessItem->id ?>"
-              name="rif"
-              value="<?= $businessItem->rif ?>"
-              required
-              class="form-control">
-          </td>
-          <td>
-            <input
-              form="update-business-<?= $businessItem->id ?>"
-              name="address"
-              value="<?= $businessItem->address ?>"
-              required
-              class="form-control">
-          </td>
-          <td>
-            <input
-              form="update-business-<?= $businessItem->id ?>"
-              name="phone"
-              value="<?= $businessItem->phone ?>"
-              required
-              class="form-control">
-          </td>
-          <td>
-            <?php if (isset($business) && $business->id === $businessItem->id): ?>
-              <span class="badge text-bg-info w-100">
-                Seleccionado
-              </span>
-            <?php else: ?>
-              <a href="./negocios/<?= $businessItem->id ?>/seleccionar" class="btn btn-primary w-100">
-                Seleccionar
-              </a>
-            <?php endif ?>
-          </td>
-          <td>
-            <input
-              form="update-business-<?= $businessItem->id ?>"
-              type="submit"
-              value="Actualizar"
-              class="btn btn-secondary w-100">
-          </td>
-          <td>
-            <a href="./negocios/<?= $businessItem->id ?>/eliminar" class="btn btn-danger w-100">
-              <span class="bi bi-trash"></span>
-            </a>
-          </td>
-        </tr>
-      <?php endforeach ?>
-    </tbody>
-    <tfoot>
-      <tr>
-        <td>
-          <input
-            form="register-business"
-            name="name"
-            required
-            class="form-control"
-            placeholder="Nombre"
-            :class="{ 'is-valid': isValid, 'is-invalid': isValid === false }"
-            x-data="{ isValid: undefined }"
-            @input="
-              isValid = $el.value
-                ? ($el.checkValidity() && !businessExists($el.value))
-                : undefined
-            ">
-        </td>
-        <td>
-          <input
-            form="register-business"
-            name="rif"
-            required
-            class="form-control"
-            placeholder="RIF">
-        </td>
-        <td>
-          <input
-            form="register-business"
-            name="address"
-            required
-            class="form-control"
-            placeholder="Dirección">
-        </td>
-        <td>
-          <input
-            form="register-business"
-            name="phone"
-            required
-            class="form-control"
-            placeholder="Teléfono">
-        </td>
-        <td colspan="3">
-          <button form="register-business" class="btn btn-primary w-100">
-            <span class="bi bi-plus-lg"></span>
-          </button>
-        </td>
-      </tr>
-    </tfoot>
-  </table>
-</div>
+<?php /** @var \Illuminate\Database\Eloquent\Collection $businesses */ ?>
+<header class="page-head"><div><span class="eyebrow">CONFIGURACIÓN</span><h1>Locales</h1><p>Administra los datos de tus puntos de venta.</p></div><button class="btn btn-primary" onclick="document.querySelector('#new').showModal()">+ Nuevo local</button></header>
+<dialog class="card" id="new" style="border:0;padding:0;width:min(520px,90vw)"><form class="panel stack" method="post" action="./negocios"><h2>Registrar nuevo local</h2><div class="field"><label>Nombre</label><input name="name" required placeholder="Nombre comercial"></div><div class="field"><label>RIF</label><input name="rif" required placeholder="J-00000000-0"></div><div class="field"><label>Dirección</label><input name="address" required placeholder="Dirección del local"></div><div class="field"><label>Teléfono</label><input name="phone" required placeholder="0412-0000000"></div><div class="actions"><button class="btn btn-primary">Guardar local</button><button type="button" class="btn btn-secondary" onclick="this.closest('dialog').close()">Cancelar</button></div></form></dialog>
+<section class="grid grid-3">
+  <?php foreach ($businesses as $item): ?>
+    <article class="card panel">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px">
+        <div style="display:grid;place-items:center;width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#635bff,#9e77ed);color:#fff;font-size:22px;font-weight:800">
+          <?= htmlspecialchars(strtoupper(substr($item->name, 0, 1))) ?>
+        </div>
+        <div>
+          <span class="eyebrow">LOCAL #<?= $item->id ?></span>
+          <h2 style="margin:2px 0;font-size:18px"><?= htmlspecialchars($item->name) ?></h2>
+        </div>
+      </div>
+      <div class="stack" style="gap:8px;margin-bottom:20px;color:var(--muted)">
+        <span><strong style="color:var(--ink)">RIF</strong> · <?= htmlspecialchars($item->rif) ?></span>
+        <span><?= htmlspecialchars($item->address) ?></span>
+        <span><?= htmlspecialchars($item->phone) ?></span>
+      </div>
+      <div class="actions">
+        <a class="btn btn-primary btn-sm" href="./negocios/<?= $item->id ?>/seleccionar">
+          <?= isset($business) && $business->id === $item->id ? 'Local activo' : 'Seleccionar' ?>
+        </a>
+        <button class="btn btn-secondary btn-sm" onclick="document.querySelector('#edit-<?= $item->id ?>').showModal()">Editar</button>
+        <a class="btn btn-danger btn-sm" href="./negocios/<?= $item->id ?>/eliminar">Eliminar</a>
+      </div>
+    </article>
+  <?php endforeach ?>
+</section>
+<?php foreach ($businesses as $item): ?><dialog id="edit-<?= $item->id ?>" class="card" style="border:0;padding:0;width:min(520px,90vw)"><form class="panel stack" method="post" action="./negocios/<?= $item->id ?>"><h2>Editar <?= htmlspecialchars($item->name) ?></h2><div class="field"><label>Nombre</label><input name="name" value="<?= htmlspecialchars($item->name) ?>" required></div><div class="field"><label>RIF</label><input name="rif" value="<?= htmlspecialchars($item->rif) ?>" required></div><div class="field"><label>Dirección</label><input name="address" value="<?= htmlspecialchars($item->address) ?>" required></div><div class="field"><label>Teléfono</label><input name="phone" value="<?= htmlspecialchars($item->phone) ?>" required></div><div class="actions"><button class="btn btn-primary">Guardar cambios</button><button type="button" class="btn btn-secondary" onclick="this.closest('dialog').close()">Cancelar</button></div></form></dialog><?php endforeach ?>
