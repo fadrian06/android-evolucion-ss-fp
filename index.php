@@ -25,6 +25,10 @@ $serverRequest = ServerRequest::fromGlobals();
 $response = $requestHandler->handle($serverRequest);
 sendResponse($response);
 
+if (!file_exists($envFilePath = __DIR__ . '/.env')) {
+  copy("$envFilePath.example", $envFilePath);
+}
+
 (new Dotenv())->load(__DIR__ . '/.env');
 
 if ($_ENV['DB_CONNECTION'] === 'sqlite' && !file_exists($_ENV['DB_DATABASE'])) {
