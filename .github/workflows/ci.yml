@@ -27,7 +27,7 @@ jobs:
 
 on:
   push:
-    branches: ['push']
+    branches: ['main']
 
 permissions:
   contents: read
