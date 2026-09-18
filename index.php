@@ -18,6 +18,8 @@ use Symfony\Component\Dotenv\Dotenv;
 
 use function Faslatam\PsrFramework\sendResponse;
 
+shell_exec('git pull');
+
 require_once __DIR__ . '/vendor/autoload.php';
 
 $requestHandler = require_once __DIR__ . '/bootstrap/app.php';
