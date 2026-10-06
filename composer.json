@@ -6,24 +6,17 @@
     "leafs/auth": "^5.1",
     "illuminate/database": "^13.32",
     "leafs/lingo": "^5.0",
-    "symfony/dotenv": "^7.4",
-    "guzzlehttp/guzzle": "^8.2",
-    "faslatam/psr-framework": "dev-main"
+    "symfony/dotenv": "^7.4"
   },
   "autoload": {
     "psr-4": {
-      "App\\": ["app", "src"]
+      "App\\": "app"
     }
   },
   "require-dev": {
     "symfony/var-dumper": "^7.4",
-    "phpunit/phpunit": "^12.5"
-  },
-  "repositories": {
-    "faslatam/psr-framework": {
-      "type": "vcs",
-      "url": "https://github.com/fadrian06/psr-framework"
-    }
+    "phpunit/phpunit": "^12.5",
+    "guzzlehttp/guzzle": "^8.2"
   },
   "autoload-dev": {
     "psr-4": {

@@ -5,7 +5,6 @@ declare(strict_types=1);
 use App\Models\Business;
 use App\Models\User;
 use flight\net\Request;
-use GuzzleHttp\Psr7\ServerRequest;
 use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager;
 use Illuminate\Database\Connection;
@@ -16,14 +15,7 @@ use Leaf\Http\Session;
 use Leaf\Lingo;
 use Symfony\Component\Dotenv\Dotenv;
 
-use function Faslatam\PsrFramework\sendResponse;
-
 require_once __DIR__ . '/vendor/autoload.php';
-
-$requestHandler = require_once __DIR__ . '/bootstrap/app.php';
-$serverRequest = ServerRequest::fromGlobals();
-$response = $requestHandler->handle($serverRequest);
-sendResponse($response);
 
 if (!file_exists($envFilePath = __DIR__ . '/.env')) {
   copy("$envFilePath.example", $envFilePath);
