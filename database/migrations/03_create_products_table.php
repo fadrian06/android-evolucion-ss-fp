@@ -16,12 +16,14 @@ return new readonly class implements Migration
       $builder->create(
         'products',
         static function (Blueprint $blueprint): void {
+          $user = new User;
+
           $blueprint->id();
-          $blueprint->foreignIdFor(User::class)->constrained();
+          $blueprint->foreignIdFor($user::class)->constrained();
           $blueprint->string('name');
           $blueprint->enum('category', ['phone', 'accessory']);
           $blueprint->integer('price');
-          $blueprint->unique(['user_id', 'name']);
+          $blueprint->unique([$user->getForeignKey(), 'name']);
         },
       );
     }

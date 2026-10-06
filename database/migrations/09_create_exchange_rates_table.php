@@ -16,11 +16,13 @@ return new readonly class implements Migration
       $builder->create(
         'exchange_rates',
         static function (Blueprint $blueprint): void {
+          $user = new User;
+
           $blueprint->id();
-          $blueprint->foreignIdFor(User::class)->constrained();
+          $blueprint->foreignIdFor($user::class)->constrained();
           $blueprint->date('date');
           $blueprint->decimal('rate', 12, 6);
-          $blueprint->unique(['user_id', 'date']);
+          $blueprint->unique([$user->getForeignKey(), 'date']);
         },
       );
     }

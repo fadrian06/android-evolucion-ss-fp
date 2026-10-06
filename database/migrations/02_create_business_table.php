@@ -16,13 +16,15 @@ return new readonly class implements Migration
       $builder->create(
         'businesses',
         static function (Blueprint $blueprint): void {
+          $user = new User;
+
           $blueprint->id();
-          $blueprint->foreignIdFor(User::class)->constrained();
+          $blueprint->foreignIdFor($user::class)->constrained();
           $blueprint->string('name');
-          $blueprint->string('rif');
+          $blueprint->string('rif')->unique();
           $blueprint->string('address');
           $blueprint->string('phone');
-          $blueprint->unique(['user_id', 'name']);
+          $blueprint->unique([$user->getForeignKey(), 'name']);
         },
       );
     }
