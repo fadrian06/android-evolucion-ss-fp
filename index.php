@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 use App\Models\Business;
 use App\Models\User;
-use flight\net\Request;
 use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager;
-use Illuminate\Database\Connection;
 use Leaf\Auth;
-use Leaf\Db;
 use Leaf\Form;
 use Leaf\Http\Session;
 use Leaf\Lingo;
@@ -23,7 +20,10 @@ if (!file_exists($envFilePath = __DIR__ . '/.env')) {
 
 (new Dotenv())->load("$envFilePath.example", $envFilePath);
 
-if ($_ENV['DB_CONNECTION'] === 'sqlite' && !file_exists($_ENV['DB_DATABASE'])) {
+if (
+  $_ENV['DB_CONNECTION'] === 'sqlite'
+  && !file_exists($_ENV['DB_DATABASE'])
+) {
   touch($_ENV['DB_DATABASE']);
 }
 
@@ -52,7 +52,6 @@ $auth->config('timestamps', false);
 $auth->config('unique', ['email', 'password']);
 $auth->config('session', true);
 $auth->dbConnection($pdo);
-$db = $auth->db();
 $lingo = new Lingo;
 
 $lingo->create([
@@ -63,21 +62,7 @@ $lingo->create([
 
 $form = new Form;
 
-$container->singleton(Manager::class, static fn(): Manager => $manager);
 $container->singleton(Auth::class, static fn(): Auth => $auth);
-$container->singleton(Db::class, static fn(): Db => $db);
-$container->singleton(PDO::class, static fn(): PDO => $pdo);
-
-$container->singleton(
-  Request::class,
-  static fn(): Request => Flight::request(),
-);
-
-$container->singleton(
-  Connection::class,
-  static fn(): Connection => $manager::connection(),
-);
-
 $container->singleton(Form::class, static fn(): Form => $form);
 
 foreach (glob(__DIR__ . '/database/migrations/*.php') as $migration) {
