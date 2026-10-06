@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
+use App\Migration;
 use App\Models\Business;
 use App\Models\User;
 use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager;
+use Illuminate\Database\Schema\Builder;
 use Leaf\Auth;
 use Leaf\Form;
 use Leaf\Http\Session;
@@ -46,6 +48,7 @@ $manager->addConnection([
 
 $manager->setAsGlobal();
 $manager->bootEloquent();
+$builder = $manager::schema();
 $pdo = $manager::connection()->getPdo();
 $auth = new Auth;
 $auth->config('timestamps', false);
@@ -64,9 +67,14 @@ $form = new Form;
 
 $container->singleton(Auth::class, static fn(): Auth => $auth);
 $container->singleton(Form::class, static fn(): Form => $form);
+$container->singleton(Builder::class, static fn(): Builder => $builder);
 
-foreach (glob(__DIR__ . '/database/migrations/*.php') as $migration) {
-  require_once $migration;
+foreach (glob(__DIR__ . '/database/migrations/*.php') as $migrationFile) {
+  $migration = require_once $migrationFile;
+
+  if ($migration instanceof Migration) {
+    $container->call($migration->up(...));
+  }
 }
 
 $user = User::query()->find($auth->id());
