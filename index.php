@@ -33,41 +33,88 @@ ini_set('error_log', __DIR__ . '/storage/logs/php_errors.log');
 
 $container = Container::getInstance();
 
-$manager = new Manager($container);
+$container->singleton(
+  Manager::class,
+  static function () use ($container): Manager {
+    $manager = new Manager($container);
 
-$manager->addConnection([
-  'driver' => $_ENV['DB_CONNECTION'],
-  'host' => 'localhost',
-  'database' => $_ENV['DB_DATABASE'],
-  'username' => 'root',
-  'password' => '',
-  'charset' => 'utf8',
-  'collation' => 'utf8_unicode_ci',
-  'prefix' => '',
-]);
+    $manager->addConnection([
+      'driver' => $_ENV['DB_CONNECTION'],
+      'host' => 'localhost',
+      'database' => $_ENV['DB_DATABASE'],
+      'username' => 'root',
+      'password' => '',
+      'charset' => 'utf8',
+      'collation' => 'utf8_unicode_ci',
+      'prefix' => '',
+    ]);
 
-$manager->setAsGlobal();
-$manager->bootEloquent();
-$builder = $manager::schema();
-$pdo = $manager::connection()->getPdo();
-$auth = new Auth;
-$auth->config('timestamps', false);
-$auth->config('unique', ['email', 'password']);
-$auth->config('session', true);
-$auth->dbConnection($pdo);
-$lingo = new Lingo;
+    $manager->setAsGlobal();
+    $manager->bootEloquent();
 
-$lingo->create([
-  'locales.default' => 'es',
-  'locales.path' => __DIR__ . '/lang',
-  'locales.strategy' => 'header',
-]);
+    return $manager;
+  }
+);
 
-$form = new Form;
+$container->singleton(
+  Builder::class,
+  static fn(): Builder => $container->get(Manager::class)::schema(),
+);
 
-$container->singleton(Auth::class, static fn(): Auth => $auth);
-$container->singleton(Form::class, static fn(): Form => $form);
-$container->singleton(Builder::class, static fn(): Builder => $builder);
+$container->singleton(
+  PDO::class,
+  static fn(): PDO => $container->get(Manager::class)::connection()->getPdo(),
+);
+
+$container->singleton(
+  Auth::class,
+  static function () use ($container): Auth {
+    $auth = new Auth;
+    $auth->config('timestamps', false);
+    $auth->config('unique', ['email', 'password']);
+    $auth->config('session', true);
+    $auth->dbConnection($container->get(PDO::class));
+
+    return $auth;
+  },
+);
+
+$container->singleton(Lingo::class, static function (): Lingo {
+  $lingo = new Lingo;
+
+  $lingo->create([
+    'locales.default' => 'es',
+    'locales.path' => __DIR__ . '/lang',
+    'locales.strategy' => 'header',
+  ]);
+
+  return $lingo;
+});
+
+$container->singleton(Form::class, static function (): Form {
+  $form = new Form;
+
+  // TODO: Add form rules
+
+  return $form;
+});
+
+$container->singleton(
+  User::class,
+  static function () use ($container): User {
+    return User::query()->findOrFail($container->get(Auth::class)->id());
+  },
+);
+
+$container->singleton(
+  Business::class,
+  static function () use ($container): Business {
+    return $container
+      ->get(User::class)
+      ->businesses
+      ->find(Session::get('business_id'));
+  },
+);
 
 foreach (glob(__DIR__ . '/database/migrations/*.php') as $migrationFile) {
   $migration = require_once $migrationFile;
@@ -77,17 +124,6 @@ foreach (glob(__DIR__ . '/database/migrations/*.php') as $migrationFile) {
   }
 }
 
-$user = User::query()->find($auth->id());
-
-$container->singleton(User::class, static fn(): User => $user);
-
-$businessId = Session::get('business_id');
-
-$container->singleton(
-  Business::class,
-  static fn(): Business => $user->businesses->find($businessId)
-);
-
 foreach (glob(__DIR__ . '/routes/*.php') as $routes) {
   require_once $routes;
 }
@@ -95,7 +131,7 @@ foreach (glob(__DIR__ . '/routes/*.php') as $routes) {
 Flight::set('flight.handle_errors', false);
 Flight::set('flight.views.path', __DIR__ . '/resources/views');
 Flight::view()->preserveVars = false;
-Flight::view()->set('auth', $auth);
-Flight::view()->set('lingo', $lingo);
+Flight::view()->set('auth', $container->get(Auth::class));
+Flight::view()->set('lingo', $container->get(Lingo::class));
 Flight::registerContainerHandler($container->get(...));
 Flight::start();
