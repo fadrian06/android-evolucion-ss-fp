@@ -19,23 +19,16 @@ use App\Http\Controllers\RepairController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\SelectBusiness;
 use App\Http\Controllers\ShowDashboardPage;
+use App\Http\Controllers\ShowLoginPage;
+use App\Http\Controllers\ShowRegisterPage;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\EnsureBusinessSelected;
 use App\Http\Middleware\RedirectIfAuthenticated;
 
 Flight::group('', static function (): void {
-  Flight::route('GET /ingresar', static function (): void {
-    Flight::render('login', [], 'slot');
-    Flight::render('components/layout');
-  });
-
+  Flight::route('GET /ingresar', [ShowLoginPage::class, '__invoke']);
   Flight::route('POST /ingresar', [Login::class, '__invoke']);
-
-  Flight::route('GET /registrarse', static function (): void {
-    Flight::render('register', [], 'slot');
-    Flight::render('components/layout');
-  });
-
+  Flight::route('GET /registrarse', [ShowRegisterPage::class, '__invoke']);
   Flight::route('POST /registrarse', [Register::class, '__invoke']);
 }, [RedirectIfAuthenticated::class]);
 
