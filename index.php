@@ -108,7 +108,7 @@ $container->singleton(
 
 $container->singleton(
   Business::class,
-  static function () use ($container): Business {
+  static function () use ($container): ?Business {
     return $container
       ->get(User::class)
       ->businesses

@@ -6,13 +6,11 @@ namespace App\Http\Middleware;
 
 use App\Models\Business;
 use Flight;
-use Leaf\Auth;
-use Leaf\Http\Session;
 use Override;
 
 final readonly class EnsureBusinessSelected implements BeforeMiddleware
 {
-  public function __construct(private Auth $auth)
+  public function __construct(private ?Business $business)
   {
     //
   }
@@ -20,14 +18,12 @@ final readonly class EnsureBusinessSelected implements BeforeMiddleware
   #[Override]
   public function before(): void
   {
-    $business = Business::query()->where('user_id', $this->auth->id())->find(Session::get('business_id'));
-
-    if (!$business && Flight::request()->url !== '/negocios') {
+    if (!$this->business && Flight::request()->url !== '/negocios') {
       Flight::redirect('/negocios');
 
       exit;
     }
 
-    Flight::view()->set('business', $business);
+    Flight::view()->set('business', $this->business);
   }
 }

@@ -6,6 +6,5 @@ namespace App\Http\Middleware;
 
 interface BeforeMiddleware
 {
-  /** @return void|never */
   public function before(): void;
 }
