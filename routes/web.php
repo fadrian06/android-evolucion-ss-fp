@@ -23,6 +23,7 @@ use App\Http\Controllers\ShowLoginPage;
 use App\Http\Controllers\ShowRegisterPage;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\EnsureBusinessSelected;
+use App\Http\Middleware\EnsureExchangeRateIsUpToDate;
 use App\Http\Middleware\RedirectIfAuthenticated;
 
 Flight::group('', static function (): void {
@@ -74,5 +75,5 @@ Flight::group('', static function (): void {
     Flight::route('POST /reparaciones', [RepairController::class, 'store']);
     Flight::route('GET /reparaciones/@id', [RepairController::class, 'show']);
     Flight::route('POST /reparaciones/@id/pagar', [PayRepair::class, '__invoke']);
-  }, [EnsureBusinessSelected::class]);
+  }, [EnsureBusinessSelected::class, EnsureExchangeRateIsUpToDate::class]);
 }, [Authenticate::class]);
