@@ -2,7 +2,7 @@
 <?php if($invoiceId): foreach(explode(',',$invoiceId) as $id): ?><script>open('./ventas/<?= $id ?>','_blank')</script><?php endforeach; endif ?>
 <style>
   .select-search { position: relative; align-self: start; }
-  .select-search > select { display: none; }
+  .select-search > select { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
   .select-search__trigger { width: 100%; min-height: 42px; padding: 10px 36px 10px 11px; border: 1px solid #d0d5dd; border-radius: 8px; background: #fff; color: #182230; text-align: left; position: relative; }
   .select-search__trigger::after { content: '⌄'; position: absolute; right: 12px; color: #667085; }
   .select-search__trigger:focus { border-color: var(--brand); box-shadow: 0 0 0 3px #635bff1c; outline: 0; }
