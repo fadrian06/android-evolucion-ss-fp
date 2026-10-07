@@ -41,10 +41,19 @@ Flight::group('', static function (): void {
 
 Flight::group('', static function (): void {
   Flight::route('GET /cerrar-sesion', [Logout::class, '__invoke']);
-  Flight::route('GET /negocios/@id/seleccionar', [SelectBusiness::class, '__invoke']);
+
+  Flight::route(
+    'GET /negocios/@id/seleccionar',
+    [SelectBusiness::class, '__invoke'],
+  );
+
   Flight::route('POST /negocios', [BusinessController::class, 'store']);
   Flight::route('POST /negocios/@id', [BusinessController::class, 'update']);
-  Flight::route('GET /negocios/@id/eliminar', [BusinessController::class, 'destroy']);
+
+  Flight::route(
+    'GET /negocios/@id/eliminar',
+    [BusinessController::class, 'destroy']
+  );
 
   Flight::group('', static function (): void {
     Flight::route('GET /negocios', [BusinessController::class, 'index']);

@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Models\Business;
+use App\Models\User;
 use Flight;
-use Leaf\Auth;
 use Leaf\Flash;
 use Leaf\Http\Session;
 use Override;
 
 final readonly class SelectBusiness implements InvokableController
 {
-  public function __construct(private Auth $auth)
+  public function __construct(private User $user)
   {
     //
   }
@@ -23,7 +22,7 @@ final readonly class SelectBusiness implements InvokableController
   {
     [$id] = $attributes;
 
-    $business = Business::query()->where('user_id', $this->auth->id())->find($id);
+    $business = $this->user->businesses->find($id);
 
     if (!$business) {
       Flash::set(['Negocio no encontrado'], 'errors');
