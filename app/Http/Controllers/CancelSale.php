@@ -27,13 +27,13 @@ final readonly class CancelSale implements InvokableController
     $sale = $this->business->sales()->find($id);
 
     if (!$sale instanceof Sale) {
-      Flash::set(['Factura no encontrada'], 'errors');
+      Flash::set(['Comprobante no encontrado'], 'errors');
 
       goto redirect;
     }
 
     if ($sale->cancelled_at) {
-      Flash::set(['La factura ya fue anulada'], 'errors');
+      Flash::set(['El comprobante ya fue anulado'], 'errors');
 
       goto redirect;
     }
@@ -47,7 +47,7 @@ final readonly class CancelSale implements InvokableController
         ->first();
 
       if (!$batch instanceof Batch) {
-        Flash::set(['No se encontró el lote original de un ítem facturado'], 'errors');
+        Flash::set(['No se encontró el lote original de un ítem vendido'], 'errors');
 
         goto redirect;
       }
@@ -65,7 +65,7 @@ final readonly class CancelSale implements InvokableController
       $sale->save();
     });
 
-    Flash::set(['Factura anulada y stock restaurado'], 'notes');
+    Flash::set(['Comprobante anulado y stock restaurado'], 'notes');
 
     redirect:
     Flight::redirect('/ventas');

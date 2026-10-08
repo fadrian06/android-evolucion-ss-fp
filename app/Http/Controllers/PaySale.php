@@ -45,7 +45,7 @@ final readonly class PaySale implements InvokableController
     }
 
     if ($sale->cancelled_at) {
-      Flash::set(['No se puede pagar una factura anulada'], 'errors');
+      Flash::set(['No se puede pagar un comprobante anulado'], 'errors');
 
       goto redirect;
     }

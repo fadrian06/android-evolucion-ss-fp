@@ -75,7 +75,7 @@ final readonly class SaleController implements ResourceController
     $customRate = $this->dailyExchangeRate->customRateFor($this->user);
 
     if (!$customRate) {
-      Flash::set(['Debes establecer una cotización personalizada antes de facturar'], 'errors');
+      Flash::set(['Debes establecer una cotización personalizada antes de generar un comprobante'], 'errors');
 
       goto redirect;
     }
@@ -260,7 +260,7 @@ final readonly class SaleController implements ResourceController
     }
 
     if (!$invoice instanceof Sale) {
-      Flash::set(['Factura no encontrada'], 'errors');
+      Flash::set(['Comprobante no encontrado'], 'errors');
       Flight::redirect('/ventas');
 
       return;
