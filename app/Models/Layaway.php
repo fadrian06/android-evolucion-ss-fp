@@ -15,8 +15,9 @@ use Override;
  * @property-read int $id
  * @property-read int $price
  * @property-read string $price_ves
- * @property-read string $imei1
- * @property-read string $imei2
+ * @property-read null|string $imei1
+ * @property-read null|string $imei2
+ * @property-read null|string $code
  * @property-read null|DateTimeInterface $cancelled_at
  * @property-read Client $client
  * @property-read Product $product
@@ -31,6 +32,7 @@ final class Layaway extends Model
     'price_ves',
     'imei1',
     'imei2',
+    'code',
   ];
 
   #[Override]

@@ -24,8 +24,9 @@ return new readonly class implements Migration
           $blueprint->foreignIdFor(Product::class)->constrained();
           $blueprint->integer('price');
           $blueprint->decimal('price_ves', 14, 2);
-          $blueprint->string('imei1');
-          $blueprint->string('imei2');
+          $blueprint->string('imei1')->nullable();
+          $blueprint->string('imei2')->nullable();
+          $blueprint->string('code')->nullable();
           $blueprint->timestamp('cancelled_at')->nullable();
           $blueprint->timestamps();
         }

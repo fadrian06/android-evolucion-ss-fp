@@ -38,13 +38,19 @@ final readonly class CancelLayaway implements InvokableController
       goto redirect;
     }
 
+    if ($layaway->getRemainingAmount() <= 0) {
+      Flash::set(['No se puede cancelar un apartado pagado'], 'errors');
+
+      goto redirect;
+    }
+
     $batch = Batch::query()
       ->where('product_id', $layaway->product_id)
       ->where('business_id', $this->business->id)
       ->first();
 
     if (!$batch instanceof Batch) {
-      Flash::set(['No se encontró el lote original del teléfono apartado'], 'errors');
+      Flash::set(['No se encontró el lote original del producto apartado'], 'errors');
 
       goto redirect;
     }
