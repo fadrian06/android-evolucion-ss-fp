@@ -71,7 +71,7 @@ $container->singleton(
   static function () use ($container): Auth {
     $auth = new Auth;
     $auth->config('timestamps', false);
-    $auth->config('unique', ['email', 'password']);
+    $auth->config('unique', ['email']);
     $auth->config('session', true);
     $auth->dbConnection($container->get(PDO::class));
 

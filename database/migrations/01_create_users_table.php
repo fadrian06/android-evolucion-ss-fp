@@ -15,7 +15,7 @@ return new readonly class implements Migration
       $builder->create('users', static function (Blueprint $blueprint): void {
         $blueprint->id();
         $blueprint->string('email')->unique();
-        $blueprint->string('password')->unique();
+        $blueprint->string('password');
       });
     }
   }
