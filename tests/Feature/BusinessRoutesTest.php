@@ -131,6 +131,38 @@ final class BusinessRoutesTest extends FeatureTestCase
   }
 
   #[Test]
+  public function a_business_with_associated_records_cannot_be_deleted(): void
+  {
+    $business = $this->business('Orion Inventario');
+    $this->post('/negocios', $business);
+    $businessId = $this->businessId($business['name']);
+    $product = $this->database->prepare(
+      'INSERT INTO products (user_id, name, category, price) VALUES (:user_id, :name, :category, :price)',
+    );
+    $product->execute([
+      'user_id' => $this->userId(),
+      'name' => 'Producto asociado ' . bin2hex(random_bytes(4)),
+      'category' => 'accessory',
+      'price' => 10,
+    ]);
+    $productId = (int) $this->database->lastInsertId();
+    $batch = $this->database->prepare(
+      'INSERT INTO batches (business_id, product_id, stock) VALUES (:business_id, :product_id, :stock)',
+    );
+    $batch->execute(['business_id' => $businessId, 'product_id' => $productId, 'stock' => 1]);
+
+    $response = $this->get("/negocios/$businessId/eliminar");
+
+    self::assertSame(303, $response->getStatusCode());
+    self::assertSame('/negocios', $response->getHeaderLine('Location'));
+    self::assertSame(1, $this->businessCount($business['name']));
+    self::assertSame(
+      1,
+      (int) $this->database->query("SELECT COUNT(*) FROM batches WHERE business_id = $businessId")->fetchColumn(),
+    );
+  }
+
+  #[Test]
   public function a_business_can_be_selected_as_active(): void
   {
     $business = $this->business('Orion Oeste');
@@ -155,6 +187,13 @@ final class BusinessRoutesTest extends FeatureTestCase
     $id = $userId->fetchColumn();
 
     if ($id !== false) {
+      $this->database->prepare(
+        'DELETE FROM batches WHERE product_id IN (SELECT id FROM products WHERE user_id = :user_id)',
+      )->execute(['user_id' => $id]);
+      $this->database->prepare(
+        'DELETE FROM products WHERE user_id = :user_id',
+      )->execute(['user_id' => $id]);
+
       $deleteBusinesses = $this->database->prepare(
         'DELETE FROM businesses WHERE user_id = :user_id',
       );

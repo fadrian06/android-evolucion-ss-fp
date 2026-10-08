@@ -1,4 +1,5 @@
 <?php /** @var \Illuminate\Database\Eloquent\Collection $businesses */ ?>
+<style>.disabled-action{position:relative;display:inline-flex}.disabled-action:hover:after{content:'No se puede eliminar un local con registros asociados';position:absolute;z-index:10;bottom:calc(100% + 8px);left:50%;width:max-content;max-width:220px;padding:8px 10px;border-radius:8px;background:#182230;color:#fff;font-size:11px;font-weight:600;line-height:1.35;text-align:center;box-shadow:var(--shadow);transform:translateX(-50%)}</style>
 <header class="page-head"><div><span class="eyebrow">CONFIGURACIÓN</span><h1>Locales</h1><p>Administra los datos de tus puntos de venta.</p></div><button class="btn btn-primary" onclick="document.querySelector('#new').showModal()">+ Nuevo local</button></header>
 <dialog class="card" id="new" style="border:0;padding:0;width:min(520px,90vw)"><form class="panel stack" method="post" action="./negocios"><h2>Registrar nuevo local</h2><div class="field"><label>Nombre</label><input name="name" required placeholder="Nombre comercial"></div><div class="field"><label>RIF</label><input name="rif" required placeholder="J-00000000-0"></div><div class="field"><label>Dirección</label><input name="address" required placeholder="Dirección del local"></div><div class="field"><label>Teléfono</label><input name="phone" required placeholder="0412-0000000"></div><div class="actions"><button class="btn btn-primary">Guardar local</button><button type="button" class="btn btn-secondary" onclick="this.closest('dialog').close()">Cancelar</button></div></form></dialog>
 <section class="grid grid-3">
@@ -18,12 +19,17 @@
         <span><?= htmlspecialchars($item->address) ?></span>
         <span><?= htmlspecialchars($item->phone) ?></span>
       </div>
+      <?php $hasAssociatedRecords = $item->batches_count + $item->items_count + $item->sales_count + $item->repairs_count + $item->layaways_count > 0; ?>
       <div class="actions">
         <a class="btn btn-primary btn-sm" href="./negocios/<?= $item->id ?>/seleccionar">
           <?= isset($business) && $business->id === $item->id ? 'Local activo' : 'Seleccionar' ?>
         </a>
         <button class="btn btn-secondary btn-sm" onclick="document.querySelector('#edit-<?= $item->id ?>').showModal()">Editar</button>
-        <a class="btn btn-danger btn-sm" href="./negocios/<?= $item->id ?>/eliminar">Eliminar</a>
+        <?php if ($hasAssociatedRecords): ?>
+          <span class="disabled-action"><button class="btn btn-danger btn-sm" type="button" disabled style="cursor:not-allowed;opacity:.45;filter:grayscale(1)">Eliminar</button></span>
+        <?php else: ?>
+          <a class="btn btn-danger btn-sm" href="./negocios/<?= $item->id ?>/eliminar">Eliminar</a>
+        <?php endif ?>
       </div>
     </article>
   <?php endforeach ?>

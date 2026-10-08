@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read string $rif
  * @property-read string $address
  * @property-read string $phone
+ * @property-read Collection<int, Batch> $batches
+ * @property-read Collection<int, Item> $items
  * @property-read Collection<int, Sale> $sales
  * @property-read Collection<int, Repair> $repairs
  * @property-read Collection<int, Layaway> $layaways
@@ -22,6 +24,18 @@ final class Business extends Model
 {
   public $timestamps = false;
   protected $fillable = ['name', 'rif', 'address', 'phone'];
+
+  /** @return HasMany<Batch, $this> */
+  public function batches(): HasMany
+  {
+    return $this->hasMany(Batch::class);
+  }
+
+  /** @return HasMany<Item, $this> */
+  public function items(): HasMany
+  {
+    return $this->hasMany(Item::class);
+  }
 
   /** @return HasMany<Sale, $this> */
   public function sales(): HasMany

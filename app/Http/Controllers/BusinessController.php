@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Models\Batch;
 use App\Models\Business;
+use App\Models\Item;
 use App\Models\User;
 use Flight;
 use Illuminate\Database\UniqueConstraintViolationException;
@@ -23,7 +25,9 @@ final readonly class BusinessController implements ResourceController
   public function index(): void
   {
     Flight::render('businesses', [
-      'businesses' => $this->user->businesses,
+      'businesses' => $this->user->businesses()
+        ->withCount(['batches', 'items', 'sales', 'repairs', 'layaways'])
+        ->get(),
     ], 'slot');
 
     Flight::render('components/layout');
@@ -180,6 +184,18 @@ final readonly class BusinessController implements ResourceController
 
     if (!$business) {
       Flash::set(['Negocio no encontrado'], 'errors');
+
+      goto redirect;
+    }
+
+    if (
+      Batch::query()->where('business_id', $business->id)->exists()
+      || Item::query()->where('business_id', $business->id)->exists()
+      || $business->sales()->exists()
+      || $business->repairs()->exists()
+      || $business->layaways()->exists()
+    ) {
+      Flash::set(['No se puede eliminar un negocio que tiene registros asociados'], 'errors');
 
       goto redirect;
     }
