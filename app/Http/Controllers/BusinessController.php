@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Models\Business;
 use App\Models\User;
 use Flight;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Leaf\Flash;
 use Leaf\Form;
 use Override;
@@ -49,13 +51,33 @@ final readonly class BusinessController implements ResourceController
       goto redirect;
     }
 
-    if ($this->user->businesses->contains('name', $validated['name'])) {
+    if ($this->user->businesses()->where('name', $validated['name'])->exists()) {
       Flash::set(['Ya existe un negocio con ese nombre'], 'errors');
 
       goto redirect;
     }
 
-    $this->user->businesses()->create($validated);
+    if (Business::query()->where('rif', $validated['rif'])->exists()) {
+      Flash::set(['Ya existe un negocio con ese RIF'], 'errors');
+
+      goto redirect;
+    }
+
+    if ($this->user->businesses()->where('address', $validated['address'])->exists()) {
+      Flash::set(['Ya existe un negocio con esa dirección'], 'errors');
+
+      goto redirect;
+    }
+
+    try {
+      $this->user->businesses()->create($validated);
+    } catch (UniqueConstraintViolationException $exception) {
+      error_log($exception->getMessage());
+      Flash::set(['No se pudo registrar el negocio porque ya existe un dato único'], 'errors');
+
+      goto redirect;
+    }
+
     Flash::set(['Negocio registrado'], 'successes');
 
     redirect:
@@ -109,18 +131,42 @@ final readonly class BusinessController implements ResourceController
       goto redirect;
     }
 
-    if ($this->user->businesses->first(
-      static fn($candidate): bool => (
-        $candidate->name === $validated['name']
-        && $candidate->id !== $business->id
-      )
-    )) {
+    if ($this->user->businesses()
+      ->where('name', $validated['name'])
+      ->where('id', '!=', $business->id)
+      ->exists()) {
       Flash::set(['Ya existe un negocio con ese nombre'], 'errors');
 
       goto redirect;
     }
 
-    $business->update($validated);
+    if (Business::query()
+      ->where('rif', $validated['rif'])
+      ->where('id', '!=', $business->id)
+      ->exists()) {
+      Flash::set(['Ya existe un negocio con ese RIF'], 'errors');
+
+      goto redirect;
+    }
+
+    if ($this->user->businesses()
+      ->where('address', $validated['address'])
+      ->where('id', '!=', $business->id)
+      ->exists()) {
+      Flash::set(['Ya existe un negocio con esa dirección'], 'errors');
+
+      goto redirect;
+    }
+
+    try {
+      $business->update($validated);
+    } catch (UniqueConstraintViolationException $exception) {
+      error_log($exception->getMessage());
+      Flash::set(['No se pudo actualizar el negocio porque ya existe un dato único'], 'errors');
+
+      goto redirect;
+    }
+
     Flash::set(['Negocio actualizado'], 'successes');
 
     redirect:

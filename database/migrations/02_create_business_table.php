@@ -25,6 +25,7 @@ return new readonly class implements Migration
           $blueprint->string('address');
           $blueprint->string('phone');
           $blueprint->unique([$user->getForeignKey(), 'name']);
+          $blueprint->unique([$user->getForeignKey(), 'address']);
         },
       );
     }

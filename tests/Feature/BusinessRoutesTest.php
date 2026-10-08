@@ -40,6 +40,50 @@ final class BusinessRoutesTest extends FeatureTestCase
   }
 
   #[Test]
+  public function duplicate_business_names_are_rejected_for_the_same_user(): void
+  {
+    $business = $this->business('Orion Duplicado');
+    $this->post('/negocios', $business);
+    $duplicate = $this->business('Orion Duplicado');
+
+    $response = $this->post('/negocios', $duplicate);
+
+    self::assertSame(303, $response->getStatusCode());
+    self::assertSame('/negocios', $response->getHeaderLine('Location'));
+    self::assertSame(1, $this->businessCount($business['name']));
+  }
+
+  #[Test]
+  public function duplicate_rifs_are_rejected(): void
+  {
+    $business = $this->business('Orion RIF Base');
+    $this->post('/negocios', $business);
+    $duplicate = $this->business('Orion RIF Duplicado');
+    $duplicate['rif'] = $business['rif'];
+
+    $response = $this->post('/negocios', $duplicate);
+
+    self::assertSame(303, $response->getStatusCode());
+    self::assertSame('/negocios', $response->getHeaderLine('Location'));
+    self::assertSame(1, $this->businessCountByRif($business['rif']));
+  }
+
+  #[Test]
+  public function duplicate_addresses_are_rejected_for_the_same_user(): void
+  {
+    $business = $this->business('Orion Dirección Base');
+    $this->post('/negocios', $business);
+    $duplicate = $this->business('Orion Dirección Duplicada');
+    $duplicate['address'] = $business['address'];
+
+    $response = $this->post('/negocios', $duplicate);
+
+    self::assertSame(303, $response->getStatusCode());
+    self::assertSame('/negocios', $response->getHeaderLine('Location'));
+    self::assertSame(1, $this->businessCountByAddress($business['address']));
+  }
+
+  #[Test]
   public function authenticated_users_can_list_their_businesses(): void
   {
     $business = $this->business('Orion Norte');
@@ -163,6 +207,26 @@ final class BusinessRoutesTest extends FeatureTestCase
       'SELECT COUNT(*) FROM businesses WHERE name = :name AND user_id = :user_id',
     );
     $statement->execute(['name' => $name, 'user_id' => $this->userId()]);
+
+    return (int) $statement->fetchColumn();
+  }
+
+  private function businessCountByRif(string $rif): int
+  {
+    $statement = $this->database->prepare(
+      'SELECT COUNT(*) FROM businesses WHERE rif = :rif',
+    );
+    $statement->execute(['rif' => $rif]);
+
+    return (int) $statement->fetchColumn();
+  }
+
+  private function businessCountByAddress(string $address): int
+  {
+    $statement = $this->database->prepare(
+      'SELECT COUNT(*) FROM businesses WHERE address = :address AND user_id = :user_id',
+    );
+    $statement->execute(['address' => $address, 'user_id' => $this->userId()]);
 
     return (int) $statement->fetchColumn();
   }
