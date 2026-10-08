@@ -109,7 +109,12 @@ final readonly class BusinessController implements ResourceController
       goto redirect;
     }
 
-    if ($this->user->businesses->contains('name', $validated['name'])) {
+    if ($this->user->businesses->first(
+      static fn($candidate): bool => (
+        $candidate->name === $validated['name']
+        && $candidate->id !== $business->id
+      )
+    )) {
       Flash::set(['Ya existe un negocio con ese nombre'], 'errors');
 
       goto redirect;

@@ -106,7 +106,12 @@ final readonly class ClientController implements ResourceController
       goto redirect;
     }
 
-    if ($this->user->clients->contains('name', $validated['name'])) {
+    if ($this->user->clients->first(
+      static fn($candidate): bool => (
+        $candidate->name === $validated['name']
+        && $candidate->id !== $client->id
+      )
+    )) {
       Flash::set(['Ya existe un cliente con ese nombre'], 'errors');
 
       goto redirect;

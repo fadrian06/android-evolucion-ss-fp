@@ -59,10 +59,10 @@ final class BusinessRoutesTest extends FeatureTestCase
     $this->post('/negocios', $original);
     $id = $this->businessId($original['name']);
     $updated = [
-      'name' => 'Orion Este Renovado',
+      'name' => $original['name'],
       'rif' => 'J-' . bin2hex(random_bytes(5)),
-      'address' => 'Avenida Principal, local 2',
-      'phone' => '0412-555-0101',
+      'address' => $original['address'],
+      'phone' => $original['phone'],
     ];
 
     $response = $this->post("/negocios/$id", $updated);
@@ -140,9 +140,9 @@ final class BusinessRoutesTest extends FeatureTestCase
   private function businessByName(string $name): array
   {
     $statement = $this->database->prepare(
-      'SELECT name, rif, address, phone FROM businesses WHERE name = :name',
+      'SELECT name, rif, address, phone FROM businesses WHERE name = :name AND user_id = :user_id',
     );
-    $statement->execute(['name' => $name]);
+    $statement->execute(['name' => $name, 'user_id' => $this->userId()]);
 
     return $statement->fetch(PDO::FETCH_ASSOC);
   }
@@ -150,9 +150,9 @@ final class BusinessRoutesTest extends FeatureTestCase
   private function businessId(string $name): int
   {
     $statement = $this->database->prepare(
-      'SELECT id FROM businesses WHERE name = :name',
+      'SELECT id FROM businesses WHERE name = :name AND user_id = :user_id',
     );
-    $statement->execute(['name' => $name]);
+    $statement->execute(['name' => $name, 'user_id' => $this->userId()]);
 
     return (int) $statement->fetchColumn();
   }
@@ -160,9 +160,19 @@ final class BusinessRoutesTest extends FeatureTestCase
   private function businessCount(string $name): int
   {
     $statement = $this->database->prepare(
-      'SELECT COUNT(*) FROM businesses WHERE name = :name',
+      'SELECT COUNT(*) FROM businesses WHERE name = :name AND user_id = :user_id',
     );
-    $statement->execute(['name' => $name]);
+    $statement->execute(['name' => $name, 'user_id' => $this->userId()]);
+
+    return (int) $statement->fetchColumn();
+  }
+
+  private function userId(): int
+  {
+    $statement = $this->database->prepare(
+      'SELECT id FROM users WHERE email = :email',
+    );
+    $statement->execute(['email' => $this->email]);
 
     return (int) $statement->fetchColumn();
   }

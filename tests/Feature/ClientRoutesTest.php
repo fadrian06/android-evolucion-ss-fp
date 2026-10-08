@@ -69,10 +69,10 @@ final class ClientRoutesTest extends FeatureTestCase
     $this->post('/clientes', $original);
     $id = $this->clientId($original['name']);
     $updated = [
-      'name' => 'Carla Díaz Torres',
-      'cedula' => 'V-' . random_int(10_000_000, 99_999_999),
+      'name' => $original['name'],
+      'cedula' => $original['cedula'],
       'phone' => '0424-555-0101',
-      'address' => 'Calle Comercio, edificio 2',
+      'address' => $original['address'],
     ];
 
     $response = $this->post("/clientes/$id", $updated);
