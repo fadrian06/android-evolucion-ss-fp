@@ -15,7 +15,6 @@ use Override;
  * @property-read int $id
  * @property-read string $description
  * @property-read int $price
- * @property-read string $price_ves
  * @property-read DateTimeInterface $due_date
  * @property-read Business $business
  * @property-read Client $client
@@ -55,19 +54,19 @@ final class Repair extends Model
     return $this->hasMany(RepairPayment::class);
   }
 
-  public function getTotalPaidVes(): float
+  public function getTotalPaid(): float
   {
     $total = 0;
 
     foreach ($this->payments as $payment) {
-      $total += (float) $payment->amount_ves;
+      $total += $payment->getAmountUsd();
     }
 
-    return $total;
+    return round($total, 2);
   }
 
-  public function getRemainingAmountVes(): float
+  public function getRemainingAmount(): float
   {
-    return (float) $this->price_ves - $this->getTotalPaidVes();
+    return round((float) $this->price - $this->getTotalPaid(), 2);
   }
 }

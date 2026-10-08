@@ -150,9 +150,9 @@ final class ProductRoutesTest extends FeatureTestCase
   private function productByName(string $name): array
   {
     $statement = $this->database->prepare(
-      'SELECT name, category, price FROM products WHERE name = :name',
+      'SELECT name, category, price FROM products WHERE name = :name AND user_id = :user_id',
     );
-    $statement->execute(['name' => $name]);
+    $statement->execute(['name' => $name, 'user_id' => $this->userId()]);
 
     return $statement->fetch(PDO::FETCH_ASSOC);
   }
@@ -170,9 +170,9 @@ final class ProductRoutesTest extends FeatureTestCase
   private function productId(string $name): int
   {
     $statement = $this->database->prepare(
-      'SELECT id FROM products WHERE name = :name',
+      'SELECT id FROM products WHERE name = :name AND user_id = :user_id',
     );
-    $statement->execute(['name' => $name]);
+    $statement->execute(['name' => $name, 'user_id' => $this->userId()]);
 
     return (int) $statement->fetchColumn();
   }
@@ -190,9 +190,19 @@ final class ProductRoutesTest extends FeatureTestCase
   private function productCount(string $name): int
   {
     $statement = $this->database->prepare(
-      'SELECT COUNT(*) FROM products WHERE name = :name',
+      'SELECT COUNT(*) FROM products WHERE name = :name AND user_id = :user_id',
     );
-    $statement->execute(['name' => $name]);
+    $statement->execute(['name' => $name, 'user_id' => $this->userId()]);
+
+    return (int) $statement->fetchColumn();
+  }
+
+  private function userId(): int
+  {
+    $statement = $this->database->prepare(
+      'SELECT id FROM users WHERE email = :email',
+    );
+    $statement->execute(['email' => $this->email]);
 
     return (int) $statement->fetchColumn();
   }

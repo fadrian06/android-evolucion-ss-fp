@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\Sale;
 use App\Models\User;
 use App\Services\DailyExchangeRate;
+use App\Support\PaymentDetails;
 use Flight;
 use Illuminate\Database\Capsule\Manager;
 use Leaf\Flash;
@@ -184,27 +185,27 @@ final readonly class SaleController implements ResourceController
     }
 
     if (!$hasPhone) {
-      $paymentValidation = $this->form->validate($data, [
-        'amount' => 'array<number>',
-        'method' => 'array<string>',
-      ]);
-
-      if (!$paymentValidation) {
-        Flash::set($this->form->errors(), 'errors');
+      try {
+        $payments = PaymentDetails::fromInputs(
+          $data['amount'] ?? null,
+          $data['method'] ?? null,
+          $exchangeRate,
+        );
+      } catch (\InvalidArgumentException $exception) {
+        Flash::set([$exception->getMessage()], 'errors');
 
         goto redirect;
       }
 
-      foreach ($paymentValidation['amount'] as $index => $amount) {
-        $method = $paymentValidation['method'][$index] ?? null;
+      $accessoryTotal = array_sum(array_map(
+        static fn(array $item): float => $item['price'] * $item['quantity'],
+        $accessoryItems,
+      ));
 
-        if (!is_string($method)) {
-          Flash::set(['Los datos de los pagos no coinciden'], 'errors');
+      if (PaymentDetails::totalUsd($payments) > $accessoryTotal) {
+        Flash::set(['Los pagos iniciales exceden el total de la venta'], 'errors');
 
-          goto redirect;
-        }
-
-        $payments[] = ['amount' => $amount, 'method' => $method];
+        goto redirect;
       }
     }
 
@@ -231,7 +232,7 @@ final readonly class SaleController implements ResourceController
       if ($accessoryItems) {
         $sale = $this->business->sales()->create(['client_id' => $validated['client_id']]);
         $sale->items()->createMany($accessoryItems);
-        $sale->payments()->createMany($payments);
+        $sale->payments()->createMany(PaymentDetails::forPersistence($payments));
         $invoiceIds[] = $sale->id;
       }
 

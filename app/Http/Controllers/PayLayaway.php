@@ -6,6 +6,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Business;
 use App\Models\Layaway;
+use App\Models\User;
+use App\Services\DailyExchangeRate;
+use App\Support\PaymentDetails;
 use Flight;
 use Leaf\Flash;
 use Leaf\Form;
@@ -13,7 +16,12 @@ use Override;
 
 final readonly class PayLayaway implements InvokableController
 {
-  public function __construct(private Business $business, private Form $form)
+  public function __construct(
+    private Business $business,
+    private User $user,
+    private DailyExchangeRate $dailyExchangeRate,
+    private Form $form,
+  )
   {
     //
   }
@@ -36,30 +44,33 @@ final readonly class PayLayaway implements InvokableController
       goto redirect;
     }
 
-    $validated = $this->form->validate(Flight::request()->data->getData(), [
-      'amount' => 'number',
-      'method' => 'in:[Físico,Punto,Transferencia]',
-    ]);
-
-    if (!$validated || (int) $validated['amount'] <= 0) {
-      Flash::set($validated ? ['El monto debe ser mayor que cero'] : $this->form->errors(), 'errors');
-
-      goto redirect;
-    }
-
     if ($layaway->getRemainingAmount() <= 0) {
       Flash::set(['El apartado ya está pagado'], 'errors');
 
       goto redirect;
     }
 
-    if ((int) $validated['amount'] > $layaway->getRemainingAmount()) {
+    try {
+      $customRate = $this->dailyExchangeRate->customRateFor($this->user);
+      $payment = PaymentDetails::fromInput(
+        Flight::request()->data->amount,
+        Flight::request()->data->method,
+        $customRate ? (float) $customRate->rate : null,
+      );
+    } catch (\InvalidArgumentException $exception) {
+      Flash::set([$exception->getMessage()], 'errors');
+
+      goto redirect;
+    }
+
+    if ($payment['amount_usd'] > $layaway->getRemainingAmount()) {
       Flash::set(['El pago excede el saldo pendiente'], 'errors');
 
       goto redirect;
     }
 
-    $layaway->payments()->create($validated);
+    unset($payment['amount_usd']);
+    $layaway->payments()->create($payment);
     Flash::set(['Pago registrado'], 'successes');
 
     redirect:

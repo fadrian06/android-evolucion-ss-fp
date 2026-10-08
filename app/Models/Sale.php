@@ -55,9 +55,9 @@ final class Sale extends Model
     return $this->hasMany(Payment::class);
   }
 
-  public function getRemainingAmount(): int
+  public function getRemainingAmount(): float
   {
-    return $this->getTotal() - $this->getTotalPaid();
+    return round($this->getTotal() - $this->getTotalPaid(), 2);
   }
 
   public function getTotal(): int
@@ -82,14 +82,14 @@ final class Sale extends Model
     return $total;
   }
 
-  public function getTotalPaid(): int
+  public function getTotalPaid(): float
   {
     $total = 0;
 
     foreach ($this->payments as $payment) {
-      $total += $payment->amount;
+      $total += $payment->getAmountUsd();
     }
 
-    return $total;
+    return round($total, 2);
   }
 }

@@ -6,6 +6,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Business;
 use App\Models\Repair;
+use App\Models\User;
+use App\Services\DailyExchangeRate;
+use App\Support\PaymentDetails;
 use Flight;
 use Leaf\Flash;
 use Leaf\Form;
@@ -13,7 +16,12 @@ use Override;
 
 final readonly class PayRepair implements InvokableController
 {
-  public function __construct(private Business $business, private Form $form)
+  public function __construct(
+    private Business $business,
+    private User $user,
+    private DailyExchangeRate $dailyExchangeRate,
+    private Form $form,
+  )
   {
     //
   }
@@ -30,33 +38,34 @@ final readonly class PayRepair implements InvokableController
       goto redirect;
     }
 
-    $validated = $this->form->validate(Flight::request()->data->getData(), [
-      'amount_ves' => 'numeric',
-      'method' => 'in:[Físico,Punto,Transferencia]',
-    ]);
-
-    if (!$validated || (float) $validated['amount_ves'] <= 0) {
-      Flash::set(
-        $validated ? ['El monto debe ser mayor que cero'] : $this->form->errors(),
-        'errors',
-      );
-
-      goto redirect;
-    }
-
-    if ($repair->getRemainingAmountVes() <= 0) {
+    if ($repair->getRemainingAmount() <= 0) {
       Flash::set(['La reparación ya está pagada'], 'errors');
 
       goto redirect;
     }
 
-    if ((float) $validated['amount_ves'] > $repair->getRemainingAmountVes()) {
+    try {
+      $customRate = $this->dailyExchangeRate->customRateFor($this->user);
+      $data = Flight::request()->data->getData();
+      $payment = PaymentDetails::fromInput(
+        $data['amount'] ?? null,
+        $data['method'] ?? null,
+        $customRate ? (float) $customRate->rate : null,
+      );
+    } catch (\InvalidArgumentException $exception) {
+      Flash::set([$exception->getMessage()], 'errors');
+
+      goto redirect;
+    }
+
+    if ($payment['amount_usd'] > $repair->getRemainingAmount()) {
       Flash::set(['El pago excede el saldo pendiente'], 'errors');
 
       goto redirect;
     }
 
-    $repair->payments()->create($validated);
+    unset($payment['amount_usd']);
+    $repair->payments()->create($payment);
     Flash::set(['Pago registrado'], 'successes');
 
     redirect:

@@ -4,15 +4,26 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Support\PaymentMethod;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property-read int $id
- * @property-read string $amount_ves
+ * @property-read string $amount
  * @property-read string $method
+ * @property-read null|string $exchange_rate
  */
 final class RepairPayment extends Model
 {
   public $timestamps = false;
-  protected $fillable = ['amount_ves', 'method'];
+  protected $fillable = ['amount', 'method', 'exchange_rate'];
+
+  public function getAmountUsd(): float
+  {
+    if (!PaymentMethod::isVes($this->method)) {
+      return (float) $this->amount;
+    }
+
+    return round((float) $this->amount / (float) $this->exchange_rate, 2);
+  }
 }

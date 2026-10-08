@@ -6,6 +6,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Sale;
 use App\Models\User;
+use App\Services\DailyExchangeRate;
+use App\Support\PaymentDetails;
 use Flight;
 use Leaf\Flash;
 use Leaf\Form;
@@ -13,7 +15,11 @@ use Override;
 
 final readonly class PaySale implements InvokableController
 {
-  public function __construct(private User $user, private Form $form)
+  public function __construct(
+    private User $user,
+    private DailyExchangeRate $dailyExchangeRate,
+    private Form $form,
+  )
   {
     //
   }
@@ -44,36 +50,33 @@ final readonly class PaySale implements InvokableController
       goto redirect;
     }
 
-    $validated = $this->form->validate(Flight::request()->data->getData(), [
-      'amount' => 'number',
-      'method' => 'in:[Físico,Punto,Transferencia]',
-    ]);
-
-    if (!$validated) {
-      Flash::set($this->form->errors(), 'errors');
-
-      goto redirect;
-    }
-
-    if ((int) $validated['amount'] <= 0) {
-      Flash::set(['El monto debe ser mayor que cero'], 'errors');
-
-      goto redirect;
-    }
-
     if ($sale->getRemainingAmount() <= 0) {
       Flash::set(['La venta ya está pagada'], 'errors');
 
       goto redirect;
     }
 
-    if ($validated['amount'] > $sale->getRemainingAmount()) {
+    try {
+      $customRate = $this->dailyExchangeRate->customRateFor($this->user);
+      $payment = PaymentDetails::fromInput(
+        Flight::request()->data->amount,
+        Flight::request()->data->method,
+        $customRate ? (float) $customRate->rate : null,
+      );
+    } catch (\InvalidArgumentException $exception) {
+      Flash::set([$exception->getMessage()], 'errors');
+
+      goto redirect;
+    }
+
+    if ($payment['amount_usd'] > $sale->getRemainingAmount()) {
       Flash::set(['El pago excede el saldo pendiente'], 'errors');
 
       goto redirect;
     }
 
-    $sale->payments()->create($validated);
+    unset($payment['amount_usd']);
+    $sale->payments()->create($payment);
     Flash::set(['Pago registrado'], 'successes');
 
     redirect:

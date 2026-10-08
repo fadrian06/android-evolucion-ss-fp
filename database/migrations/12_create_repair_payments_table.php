@@ -18,8 +18,9 @@ return new readonly class implements Migration
         static function (Blueprint $blueprint): void {
           $blueprint->id();
           $blueprint->foreignIdFor(Repair::class)->constrained();
-          $blueprint->decimal('amount_ves', 14, 2);
+          $blueprint->decimal('amount', 14, 2);
           $blueprint->string('method');
+          $blueprint->decimal('exchange_rate', 14, 6)->nullable();
         }
       );
     }

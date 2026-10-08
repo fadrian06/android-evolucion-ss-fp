@@ -57,19 +57,19 @@ final class Layaway extends Model
     return $this->hasMany(LayawayPayment::class);
   }
 
-  public function getTotalPaid(): int
+  public function getTotalPaid(): float
   {
     $total = 0;
 
     foreach ($this->payments as $payment) {
-      $total += $payment->amount;
+      $total += $payment->getAmountUsd();
     }
 
-    return $total;
+    return round($total, 2);
   }
 
-  public function getRemainingAmount(): int
+  public function getRemainingAmount(): float
   {
-    return $this->price - $this->getTotalPaid();
+    return round((float) $this->price - $this->getTotalPaid(), 2);
   }
 }

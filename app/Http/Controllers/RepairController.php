@@ -8,10 +8,12 @@ use App\Models\Business;
 use App\Models\Repair;
 use App\Models\User;
 use App\Services\DailyExchangeRate;
+use App\Support\PaymentDetails;
 use DateInterval;
 use DateTimeImmutable;
 use DateTimeZone;
 use Flight;
+use Illuminate\Database\Capsule\Manager;
 use Leaf\Flash;
 use Leaf\Form;
 use Override;
@@ -79,15 +81,42 @@ final readonly class RepairController implements ResourceController
       return;
     }
 
-    $repair = $this->business->repairs()->create([
-      'client_id' => $validated['client_id'],
-      'description' => $validated['description'],
-      'price' => $validated['price'],
-      'price_ves' => round((int) $validated['price'] * (float) $customRate->rate, 2),
-      'due_date' => (new DateTimeImmutable('today', new DateTimeZone('America/Caracas')))
-        ->add(new DateInterval('P15D'))
-        ->format('Y-m-d'),
-    ]);
+    $data = Flight::request()->data->getData();
+
+    try {
+      $payments = PaymentDetails::fromInputs(
+        $data['amount'] ?? null,
+        $data['method'] ?? null,
+        (float) $customRate->rate,
+      );
+    } catch (\InvalidArgumentException $exception) {
+      Flash::set([$exception->getMessage()], 'errors');
+      Flight::redirect('/reparaciones');
+
+      return;
+    }
+
+    if (PaymentDetails::totalUsd($payments) > (float) $validated['price']) {
+      Flash::set(['Los pagos iniciales exceden el saldo de la reparación'], 'errors');
+      Flight::redirect('/reparaciones');
+
+      return;
+    }
+
+    $repair = Manager::connection()->transaction(function () use ($validated, $customRate, $payments): Repair {
+      $repair = $this->business->repairs()->create([
+        'client_id' => $validated['client_id'],
+        'description' => $validated['description'],
+        'price' => $validated['price'],
+        'price_ves' => round((int) $validated['price'] * (float) $customRate->rate, 2),
+        'due_date' => (new DateTimeImmutable('today', new DateTimeZone('America/Caracas')))
+          ->add(new DateInterval('P15D'))
+          ->format('Y-m-d'),
+      ]);
+      $repair->payments()->createMany(PaymentDetails::forPersistence($payments));
+
+      return $repair;
+    });
 
     Flash::set((string) $repair->id, 'repairReceipt');
     Flash::set(['Reparación registrada'], 'successes');

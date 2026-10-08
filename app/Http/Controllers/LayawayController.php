@@ -10,6 +10,7 @@ use App\Models\Layaway;
 use App\Models\Product;
 use App\Models\User;
 use App\Services\DailyExchangeRate;
+use App\Support\PaymentDetails;
 use Flight;
 use Illuminate\Database\Capsule\Manager;
 use Leaf\Flash;
@@ -108,11 +109,31 @@ final readonly class LayawayController implements ResourceController
       goto redirect;
     }
 
-    Manager::connection()->transaction(function () use ($batch, $client, $product, $customRate, $validated): void {
+    $data = Flight::request()->data->getData();
+
+    try {
+      $payments = PaymentDetails::fromInputs(
+        $data['amount'] ?? null,
+        $data['method'] ?? null,
+        (float) $customRate->rate,
+      );
+    } catch (\InvalidArgumentException $exception) {
+      Flash::set([$exception->getMessage()], 'errors');
+
+      goto redirect;
+    }
+
+    if (PaymentDetails::totalUsd($payments) > (float) $product->price) {
+      Flash::set(['Los pagos iniciales exceden el saldo del apartado'], 'errors');
+
+      goto redirect;
+    }
+
+    Manager::connection()->transaction(function () use ($batch, $client, $product, $customRate, $validated, $payments): void {
       $batch->stock--;
       $batch->save();
 
-      $this->business->layaways()->create([
+      $layaway = $this->business->layaways()->create([
         'client_id' => $client->id,
         'product_id' => $product->id,
         'price' => $product->price,
@@ -120,6 +141,7 @@ final readonly class LayawayController implements ResourceController
         'imei1' => trim($validated['imei1']),
         'imei2' => trim($validated['imei2']),
       ]);
+      $layaway->payments()->createMany(PaymentDetails::forPersistence($payments));
     });
 
     Flash::set(['Teléfono apartado'], 'successes');
