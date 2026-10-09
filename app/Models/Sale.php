@@ -60,15 +60,15 @@ final class Sale extends Model
     return round($this->getTotal() - $this->getTotalPaid(), 2);
   }
 
-  public function getTotal(): int
+  public function getTotal(): float
   {
-    $total = 0;
+    $total = 0.0;
 
     foreach ($this->items as $item) {
       $total += $item->getTotal();
     }
 
-    return $total;
+    return round($total, 2);
   }
 
   public function getTotalVes(): float
