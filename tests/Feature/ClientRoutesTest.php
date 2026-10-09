@@ -11,6 +11,7 @@ use PHPUnit\Framework\Attributes\Test;
 final class ClientRoutesTest extends FeatureTestCase
 {
   private string $email;
+  private int $businessId;
   private PDO $database;
 
   #[Override]
@@ -33,7 +34,8 @@ final class ClientRoutesTest extends FeatureTestCase
       'phone' => '0412-555-0100',
     ];
     $this->post('/negocios', $business);
-    $this->get('/negocios/' . $this->businessId($business['name']) . '/seleccionar');
+    $this->businessId = $this->businessId($business['name']);
+    $this->get('/negocios/' . $this->businessId . '/seleccionar');
     $this->post('/calculadora/cotizacion', ['rate' => '100']);
   }
 
@@ -59,7 +61,7 @@ final class ClientRoutesTest extends FeatureTestCase
 
     self::assertSame(200, $response->getStatusCode());
     self::assertStringContainsString($client['name'], (string) $response->getBody());
-    self::assertStringContainsString($client['cedula'], (string) $response->getBody());
+    self::assertStringContainsString($client['id_card'], (string) $response->getBody());
   }
 
   #[Test]
@@ -70,7 +72,7 @@ final class ClientRoutesTest extends FeatureTestCase
     $id = $this->clientId($original['name']);
     $updated = [
       'name' => $original['name'],
-      'cedula' => $original['cedula'],
+      'id_card' => $original['id_card'],
       'phone' => '0424-555-0101',
       'address' => $original['address'],
     ];
@@ -96,6 +98,57 @@ final class ClientRoutesTest extends FeatureTestCase
     self::assertSame(0, $this->clientCount($client['name']));
   }
 
+  #[Test]
+  public function duplicate_client_names_are_rejected_for_the_same_user(): void
+  {
+    $client = $this->client('Cliente Duplicado');
+    $this->post('/clientes', $client);
+    $duplicate = $this->client('Cliente Duplicado');
+
+    $response = $this->post('/clientes', $duplicate);
+
+    self::assertSame(303, $response->getStatusCode());
+    self::assertSame(1, $this->clientCount($client['name']));
+  }
+
+  #[Test]
+  public function duplicate_id_cards_are_rejected_for_the_same_user(): void
+  {
+    $client = $this->client('Cliente Cédula Base');
+    $this->post('/clientes', $client);
+    $duplicate = $this->client('Cliente Cédula Duplicada');
+    $duplicate['id_card'] = $client['id_card'];
+
+    $response = $this->post('/clientes', $duplicate);
+
+    self::assertSame(303, $response->getStatusCode());
+    self::assertSame(1, $this->clientCountByIdCard($client['id_card']));
+  }
+
+  #[Test]
+  public function a_client_with_associated_records_cannot_be_deleted(): void
+  {
+    $client = $this->client('Cliente con reparación');
+    $this->post('/clientes', $client);
+    $clientId = $this->clientId($client['name']);
+    $repair = $this->database->prepare(
+      'INSERT INTO repairs (business_id, client_id, description, price, price_ves, due_date) VALUES (:business_id, :client_id, :description, :price, :price_ves, :due_date)',
+    );
+    $repair->execute([
+      'business_id' => $this->businessId,
+      'client_id' => $clientId,
+      'description' => 'Registro asociado',
+      'price' => 10,
+      'price_ves' => 1000,
+      'due_date' => '2026-12-31',
+    ]);
+
+    $response = $this->get("/clientes/$clientId/eliminar");
+
+    self::assertSame(303, $response->getStatusCode());
+    self::assertSame(1, $this->clientCount($client['name']));
+  }
+
   #[Override]
   protected function tearDown(): void
   {
@@ -106,6 +159,9 @@ final class ClientRoutesTest extends FeatureTestCase
     $userId = $statement->fetchColumn();
 
     if ($userId !== false) {
+      $this->database->prepare(
+        'DELETE FROM repairs WHERE client_id IN (SELECT id FROM clients WHERE user_id = :user_id)',
+      )->execute(['user_id' => $userId]);
       $this->database->prepare(
         'DELETE FROM clients WHERE user_id = :user_id',
       )->execute(['user_id' => $userId]);
@@ -123,24 +179,24 @@ final class ClientRoutesTest extends FeatureTestCase
     parent::tearDown();
   }
 
-  /** @return array{name: string, cedula: string, phone: string, address: string} */
+  /** @return array{name: string, id_card: string, phone: string, address: string} */
   private function client(string $name): array
   {
     return [
       'name' => $name,
-      'cedula' => 'V-' . random_int(10_000_000, 99_999_999),
+      'id_card' => 'V-' . random_int(10_000_000, 99_999_999),
       'phone' => '0412-555-0100',
       'address' => 'Avenida Principal, edificio 1',
     ];
   }
 
-  /** @return array{name: string, cedula: string, phone: string, address: string} */
+  /** @return array{name: string, id_card: string, phone: string, address: string} */
   private function clientByName(string $name): array
   {
     $statement = $this->database->prepare(
-      'SELECT name, cedula, phone, address FROM clients WHERE name = :name',
+      'SELECT name, id_card, phone, address FROM clients WHERE name = :name AND user_id = :user_id',
     );
-    $statement->execute(['name' => $name]);
+    $statement->execute(['name' => $name, 'user_id' => $this->userId()]);
 
     return $statement->fetch(PDO::FETCH_ASSOC);
   }
@@ -148,9 +204,9 @@ final class ClientRoutesTest extends FeatureTestCase
   private function businessId(string $name): int
   {
     $statement = $this->database->prepare(
-      'SELECT id FROM businesses WHERE name = :name',
+      'SELECT id FROM businesses WHERE name = :name AND user_id = :user_id',
     );
-    $statement->execute(['name' => $name]);
+    $statement->execute(['name' => $name, 'user_id' => $this->userId()]);
 
     return (int) $statement->fetchColumn();
   }
@@ -158,9 +214,9 @@ final class ClientRoutesTest extends FeatureTestCase
   private function clientId(string $name): int
   {
     $statement = $this->database->prepare(
-      'SELECT id FROM clients WHERE name = :name',
+      'SELECT id FROM clients WHERE name = :name AND user_id = :user_id',
     );
-    $statement->execute(['name' => $name]);
+    $statement->execute(['name' => $name, 'user_id' => $this->userId()]);
 
     return (int) $statement->fetchColumn();
   }
@@ -168,9 +224,27 @@ final class ClientRoutesTest extends FeatureTestCase
   private function clientCount(string $name): int
   {
     $statement = $this->database->prepare(
-      'SELECT COUNT(*) FROM clients WHERE name = :name',
+      'SELECT COUNT(*) FROM clients WHERE name = :name AND user_id = :user_id',
     );
-    $statement->execute(['name' => $name]);
+    $statement->execute(['name' => $name, 'user_id' => $this->userId()]);
+
+    return (int) $statement->fetchColumn();
+  }
+
+  private function clientCountByIdCard(string $idCard): int
+  {
+    $statement = $this->database->prepare(
+      'SELECT COUNT(*) FROM clients WHERE id_card = :id_card AND user_id = :user_id',
+    );
+    $statement->execute(['id_card' => $idCard, 'user_id' => $this->userId()]);
+
+    return (int) $statement->fetchColumn();
+  }
+
+  private function userId(): int
+  {
+    $statement = $this->database->prepare('SELECT id FROM users WHERE email = :email');
+    $statement->execute(['email' => $this->email]);
 
     return (int) $statement->fetchColumn();
   }

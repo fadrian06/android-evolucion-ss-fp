@@ -39,7 +39,7 @@ final class LayawayRoutesTest extends FeatureTestCase
     $this->post('/calculadora/cotizacion', ['rate' => '100']);
     $this->post('/clientes', [
       'name' => 'Cliente ' . bin2hex(random_bytes(4)),
-      'cedula' => 'V-' . random_int(10_000_000, 99_999_999),
+      'id_card' => 'V-' . random_int(10_000_000, 99_999_999),
       'phone' => '0412-555-0101',
       'address' => 'Dirección de prueba',
     ]);
