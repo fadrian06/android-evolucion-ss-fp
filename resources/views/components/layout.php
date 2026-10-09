@@ -54,6 +54,10 @@ $flashTypes = [
       flex: 0 0 auto;
     }
 
+    .mobile-logout {
+      display: none;
+    }
+
     .toast {
       transition: opacity 200ms ease, transform 200ms ease;
     }
@@ -71,6 +75,11 @@ $flashTypes = [
       .sidebar nav {
         overflow-x: auto;
         overflow-y: hidden;
+      }
+
+      .sidebar nav .mobile-logout {
+        display: flex;
+        color: #fecdca;
       }
     }
   </style>
@@ -100,6 +109,7 @@ $flashTypes = [
               <span><?= $item['icon'] ?></span><?= $item['label'] ?>
             </a>
           <?php endforeach ?>
+          <a class="mobile-logout" href="./cerrar-sesion"><span>↪</span>Salir</a>
         </nav>
         <a class="profile" href="./cerrar-sesion"><span><?= strtoupper(substr($auth->user()->email, 0, 1)) ?></span><small><?= htmlspecialchars($auth->user()->email, ENT_QUOTES, 'UTF-8') ?></small><b>Salir</b></a>
       </aside>
