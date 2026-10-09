@@ -13,7 +13,7 @@ use Override;
 
 /**
  * @property-read int $id
- * @property-read int $price
+ * @property-read float $price
  * @property-read string $price_ves
  * @property-read null|string $imei1
  * @property-read null|string $imei2
@@ -38,7 +38,7 @@ final class Layaway extends Model
   #[Override]
   protected function casts(): array
   {
-    return ['cancelled_at' => 'datetime'];
+    return ['cancelled_at' => 'datetime', 'price' => 'float'];
   }
 
   /** @return BelongsTo<Client, $this> */

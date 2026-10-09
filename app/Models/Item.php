@@ -6,11 +6,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Override;
 
 /**
  * @property-read int $id
  * @property-read int $business_id
- * @property-read int $price
+ * @property-read float $price
  * @property-read string $price_ves
  * @property-read int $quantity
  * @property-read null|string $imei1
@@ -34,6 +35,12 @@ final class Item extends Model
     'code',
   ];
 
+  #[Override]
+  protected function casts(): array
+  {
+    return ['price' => 'float'];
+  }
+
   /** @return BelongsTo<Business, $this> */
   public function business(): BelongsTo
   {
@@ -46,7 +53,7 @@ final class Item extends Model
     return $this->belongsTo(Product::class);
   }
 
-  public function getTotal(): int
+  public function getTotal(): float
   {
     return $this->price * $this->quantity;
   }

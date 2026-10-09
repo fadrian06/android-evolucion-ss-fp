@@ -8,6 +8,8 @@ use App\Models\Batch;
 use App\Models\Product;
 use App\Models\User;
 use Flight;
+use Illuminate\Database\Capsule\Manager;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Leaf\Flash;
 use Leaf\Form;
 use Override;
@@ -41,18 +43,21 @@ final readonly class ProductController implements ResourceController
   {
     $validated = $this->form->validate(Flight::request()->data->getData(), [
       'name' => 'string',
-      'category' => 'in:[phone,accessory]',
-      'price' => 'number',
+      'category' => 'in:[phone,accessory,spare_part]',
+      'price' => 'optional',
       'stocks' => 'array<number>',
     ]);
 
-    if (!$validated) {
+    if (!$validated || !is_numeric($validated['price'] ?? null) || (float) $validated['price'] <= 0) {
       Flash::set($this->form->errors(), 'errors');
+      if ($validated) {
+        Flash::set(['El precio debe ser mayor que cero'], 'errors');
+      }
 
       goto redirect;
     }
 
-    if ($this->user->products->contains('name', $validated['name'])) {
+    if ($this->user->products()->where('name', $validated['name'])->exists()) {
       Flash::set(['Ya existe un producto con ese nombre'], 'errors');
 
       goto redirect;
@@ -78,14 +83,20 @@ final readonly class ProductController implements ResourceController
       $batches[] = ['business_id' => $businessId, 'stock' => $stock];
     }
 
-    $product = $this->user->products()->create([
-      'name' => $validated['name'],
-      'category' => $validated['category'],
-      'price' => $validated['price'],
-    ]);
+    try {
+      Manager::connection()->transaction(function () use ($validated, $batches): void {
+        $product = $this->user->products()->create([
+          'name' => $validated['name'],
+          'category' => $validated['category'],
+          'price' => $validated['price'],
+        ]);
+        $product->batches()->createMany($batches);
+      });
+    } catch (UniqueConstraintViolationException $exception) {
+      error_log($exception->getMessage());
+      Flash::set(['No se pudo registrar el producto porque ya existe un dato único'], 'errors');
 
-    if ($product instanceof Product) {
-      $product->batches()->createMany($batches);
+      goto redirect;
     }
 
     Flash::set(['Producto registrado'], 'successes');
@@ -119,13 +130,16 @@ final readonly class ProductController implements ResourceController
 
     $validated = $this->form->validate(Flight::request()->data->getData(), [
       'name' => 'string',
-      'category' => 'in:[phone,accessory]',
-      'price' => 'number',
+      'category' => 'in:[phone,accessory,spare_part]',
+      'price' => 'optional',
       'stocks' => 'array<number>',
     ]);
 
-    if (!$validated) {
+    if (!$validated || !is_numeric($validated['price'] ?? null) || (float) $validated['price'] <= 0) {
       Flash::set($this->form->errors(), 'errors');
+      if ($validated) {
+        Flash::set(['El precio debe ser mayor que cero'], 'errors');
+      }
 
       goto redirect;
     }
@@ -140,8 +154,6 @@ final readonly class ProductController implements ResourceController
 
       goto redirect;
     }
-
-    $product->batches->each(static fn(Batch $batch) => $batch->delete());
 
     $batches = [];
 
@@ -163,14 +175,21 @@ final readonly class ProductController implements ResourceController
       $batches[] = ['business_id' => $businessId, 'stock' => $stock];
     }
 
-    $product->update([
-      'name' => $validated['name'],
-      'category' => $validated['category'],
-      'price' => $validated['price'],
-    ]);
+    try {
+      Manager::connection()->transaction(function () use ($product, $validated, $batches): void {
+        $product->batches()->delete();
+        $product->update([
+          'name' => $validated['name'],
+          'category' => $validated['category'],
+          'price' => $validated['price'],
+        ]);
+        $product->batches()->createMany($batches);
+      });
+    } catch (UniqueConstraintViolationException $exception) {
+      error_log($exception->getMessage());
+      Flash::set(['No se pudo actualizar el producto porque ya existe un dato único'], 'errors');
 
-    if ($product instanceof Product) {
-      $product->batches()->createMany($batches);
+      goto redirect;
     }
 
     Flash::set(['Producto actualizado'], 'successes');

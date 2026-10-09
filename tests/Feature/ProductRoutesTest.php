@@ -56,6 +56,45 @@ final class ProductRoutesTest extends FeatureTestCase
   }
 
   #[Test]
+  public function a_spare_part_can_be_registered_with_a_decimal_price(): void
+  {
+    $product = $this->product('Pantalla OLED de repuesto', 'spare_part', 49.95, 2);
+
+    $response = $this->post('/productos', $product);
+
+    self::assertSame(303, $response->getStatusCode());
+    self::assertSame(
+      ['name' => $product['name'], 'category' => 'spare_part', 'price' => 49.95],
+      $this->productByName($product['name']),
+    );
+    self::assertSame(2, $this->stockFor($product['name']));
+  }
+
+  #[Test]
+  public function duplicate_product_names_are_rejected_for_the_same_user(): void
+  {
+    $product = $this->product('Cable USB-C', 'accessory', 8, 3);
+    $this->post('/productos', $product);
+    $duplicate = $this->product('Cable USB-C', 'spare_part', 4.5, 5);
+
+    $response = $this->post('/productos', $duplicate);
+
+    self::assertSame(303, $response->getStatusCode());
+    self::assertSame(1, $this->productCount($product['name']));
+  }
+
+  #[Test]
+  public function invalid_product_categories_are_rejected(): void
+  {
+    $product = $this->product('Categoría inválida', 'invalid', 10, 1);
+
+    $response = $this->post('/productos', $product);
+
+    self::assertSame(303, $response->getStatusCode());
+    self::assertSame(0, $this->productCount($product['name']));
+  }
+
+  #[Test]
   public function authenticated_users_can_list_their_products(): void
   {
     $product = $this->product('Cargador Solar', 'accessory', 25, 8);
@@ -131,11 +170,11 @@ final class ProductRoutesTest extends FeatureTestCase
     parent::tearDown();
   }
 
-  /** @return array{name: string, category: string, price: int, stocks: array<int, int>} */
+  /** @return array{name: string, category: string, price: float|int, stocks: array<int, int>} */
   private function product(
     string $name,
     string $category,
-    int $price,
+    float|int $price,
     int $stock,
   ): array {
     return [
@@ -146,7 +185,7 @@ final class ProductRoutesTest extends FeatureTestCase
     ];
   }
 
-  /** @return array{name: string, category: string, price: int} */
+  /** @return array{name: string, category: string, price: float|int} */
   private function productByName(string $name): array
   {
     $statement = $this->database->prepare(

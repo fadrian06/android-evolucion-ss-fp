@@ -20,7 +20,7 @@ return new readonly class implements Migration
         $blueprint->foreignIdFor(Sale::class)->constrained();
         $blueprint->foreignIdFor(Product::class)->constrained();
         $blueprint->foreignIdFor(Business::class)->constrained();
-        $blueprint->integer('price');
+        $blueprint->decimal('price', 14, 2);
         $blueprint->decimal('price_ves', 14, 2);
         $blueprint->integer('quantity');
         $blueprint->string('imei1')->nullable();

@@ -83,7 +83,7 @@ final readonly class SaleController implements ResourceController
     $exchangeRate = (float) $customRate->rate;
 
     $phoneItems = [];
-    $accessoryItems = [];
+    $nonPhoneItems = [];
     $stockChanges = [];
     $hasPhone = false;
 
@@ -161,7 +161,7 @@ final readonly class SaleController implements ResourceController
 
         $hasPhone = true;
         $phoneItems[] = [...$item, 'imei1' => trim($imei1), 'imei2' => trim($imei2)];
-      } else {
+      } elseif ($product->category === 'accessory') {
         $code = $data['code'][$index] ?? null;
 
         if (!is_string($code) || trim($code) === '') {
@@ -170,7 +170,9 @@ final readonly class SaleController implements ResourceController
           goto redirect;
         }
 
-        $accessoryItems[] = [...$item, 'code' => trim($code)];
+        $nonPhoneItems[] = [...$item, 'code' => trim($code)];
+      } else {
+        $nonPhoneItems[] = $item;
       }
 
       $stockChanges[] = ['batch' => $batch, 'quantity' => $quantity];
@@ -197,12 +199,12 @@ final readonly class SaleController implements ResourceController
         goto redirect;
       }
 
-      $accessoryTotal = array_sum(array_map(
+      $nonPhoneTotal = array_sum(array_map(
         static fn(array $item): float => $item['price'] * $item['quantity'],
-        $accessoryItems,
+        $nonPhoneItems,
       ));
 
-      if (PaymentDetails::totalUsd($payments) > $accessoryTotal) {
+      if (PaymentDetails::totalUsd($payments) > $nonPhoneTotal) {
         Flash::set(['Los pagos iniciales exceden el total de la venta'], 'errors');
 
         goto redirect;
@@ -213,7 +215,7 @@ final readonly class SaleController implements ResourceController
       $validated,
       $stockChanges,
       $phoneItems,
-      $accessoryItems,
+      $nonPhoneItems,
       $payments,
     ): array {
       foreach ($stockChanges as ['batch' => $batch, 'quantity' => $quantity]) {
@@ -229,9 +231,9 @@ final readonly class SaleController implements ResourceController
         $invoiceIds[] = $sale->id;
       }
 
-      if ($accessoryItems) {
+      if ($nonPhoneItems) {
         $sale = $this->business->sales()->create(['client_id' => $validated['client_id']]);
-        $sale->items()->createMany($accessoryItems);
+        $sale->items()->createMany($nonPhoneItems);
         $sale->payments()->createMany(PaymentDetails::forPersistence($payments));
         $invoiceIds[] = $sale->id;
       }
