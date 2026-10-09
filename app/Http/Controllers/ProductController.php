@@ -25,7 +25,14 @@ final readonly class ProductController implements ResourceController
   public function index(): void
   {
     Flight::render('products', [
-      'products' => $this->user->products,
+      'products' => $this->user->products()
+        ->with('batches')
+        ->withCount([
+          'batches as stocked_batches_count' => static fn($query) => $query->where('stock', '>', 0),
+          'items',
+          'layaways',
+        ])
+        ->get(),
       'businesses' => $this->user->businesses,
     ], 'slot');
 
@@ -205,6 +212,16 @@ final readonly class ProductController implements ResourceController
 
     if (!$product) {
       Flash::set(['Producto no encontrado'], 'errors');
+
+      goto redirect;
+    }
+
+    if (
+      $product->batches()->where('stock', '>', 0)->exists()
+      || $product->items()->exists()
+      || $product->layaways()->exists()
+    ) {
+      Flash::set(['No se puede eliminar un producto que tiene registros asociados'], 'errors');
 
       goto redirect;
     }

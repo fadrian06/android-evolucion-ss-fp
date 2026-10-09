@@ -129,7 +129,7 @@ final class ProductRoutesTest extends FeatureTestCase
   #[Test]
   public function a_product_can_be_deleted(): void
   {
-    $product = $this->product('Protector de pantalla', 'accessory', 10, 15);
+    $product = $this->product('Protector de pantalla', 'accessory', 10, 0);
     $this->post('/productos', $product);
     $id = $this->productId($product['name']);
 
@@ -138,6 +138,21 @@ final class ProductRoutesTest extends FeatureTestCase
     self::assertSame(303, $response->getStatusCode());
     self::assertSame('/productos', $response->getHeaderLine('Location'));
     self::assertSame(0, $this->productCount($product['name']));
+  }
+
+  #[Test]
+  public function a_product_with_associated_records_cannot_be_deleted(): void
+  {
+    $product = $this->product('Producto con inventario', 'accessory', 10, 1);
+    $this->post('/productos', $product);
+    $id = $this->productId($product['name']);
+
+    $response = $this->get("/productos/$id/eliminar");
+
+    self::assertSame(303, $response->getStatusCode());
+    self::assertSame('/productos', $response->getHeaderLine('Location'));
+    self::assertSame(1, $this->productCount($product['name']));
+    self::assertSame(1, $this->stockFor($product['name']));
   }
 
   #[Override]

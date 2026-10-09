@@ -15,6 +15,8 @@ use Override;
  * @property-read 'phone'|'accessory'|'spare_part' $category
  * @property-read float $price
  * @property-read Collection<int, Batch> $batches
+ * @property-read Collection<int, Item> $items
+ * @property-read Collection<int, Layaway> $layaways
  */
 final class Product extends Model
 {
@@ -33,6 +35,18 @@ final class Product extends Model
   public function batches(): HasMany
   {
     return $this->hasMany(Batch::class);
+  }
+
+  /** @return HasMany<Item, $this> */
+  public function items(): HasMany
+  {
+    return $this->hasMany(Item::class);
+  }
+
+  /** @return HasMany<Layaway, $this> */
+  public function layaways(): HasMany
+  {
+    return $this->hasMany(Layaway::class);
   }
 
   public function getStock(): int
