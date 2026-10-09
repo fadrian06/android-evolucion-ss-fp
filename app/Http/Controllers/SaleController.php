@@ -161,17 +161,13 @@ final readonly class SaleController implements ResourceController
 
         $hasPhone = true;
         $phoneItems[] = [...$item, 'imei1' => trim($imei1), 'imei2' => trim($imei2)];
-      } elseif ($product->category === 'accessory') {
+      } else {
         $code = $data['code'][$index] ?? null;
 
-        if (!is_string($code) || trim($code) === '') {
-          Flash::set(['Cada accesorio debe tener un código'], 'errors');
-
-          goto redirect;
+        if (is_string($code) && trim($code) !== '') {
+          $item['code'] = trim($code);
         }
 
-        $nonPhoneItems[] = [...$item, 'code' => trim($code)];
-      } else {
         $nonPhoneItems[] = $item;
       }
 
