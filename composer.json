@@ -6,7 +6,8 @@
     "leafs/auth": "^5.1",
     "illuminate/database": "^13.32",
     "leafs/lingo": "^5.0",
-    "symfony/dotenv": "^7.4"
+    "symfony/dotenv": "^7.4",
+    "guzzlehttp/guzzle": "^8.2"
   },
   "autoload": {
     "psr-4": {
@@ -15,8 +16,7 @@
   },
   "require-dev": {
     "symfony/var-dumper": "^7.4",
-    "phpunit/phpunit": "^12.5",
-    "guzzlehttp/guzzle": "^8.2"
+    "phpunit/phpunit": "^12.5"
   },
   "autoload-dev": {
     "psr-4": {
