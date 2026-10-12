@@ -105,6 +105,10 @@ final class LayawayRoutesTest extends FeatureTestCase
     self::assertSame('/apartados', $response->getHeaderLine('Location'));
     self::assertSame(1, $this->stockFor($productId));
     self::assertNotNull($this->database->query("SELECT cancelled_at FROM layaways WHERE id = $layawayId")->fetchColumn());
+    self::assertStringContainsString(
+      '<span class="status status-danger">Cancelado</span>',
+      (string) $this->get('/apartados')->getBody(),
+    );
   }
 
   #[Test]
@@ -122,7 +126,15 @@ final class LayawayRoutesTest extends FeatureTestCase
     self::assertSame(303, $response->getStatusCode());
     self::assertSame('/apartados', $response->getHeaderLine('Location'));
     self::assertSame(2, (int) $this->database->query("SELECT COUNT(*) FROM layaway_payments WHERE layaway_id = $layawayId")->fetchColumn());
-    self::assertStringContainsString('Pagado', (string) $this->get('/apartados')->getBody());
+    $layaways = (string) $this->get('/apartados')->getBody();
+    self::assertStringContainsString(
+      '<th>Total</th><th class="layaway-paid">Pagado</th><th class="layaway-remaining">Pago pendiente</th><th></th>',
+      $layaways,
+    );
+    self::assertStringContainsString(
+      '$30,00</td><td class="layaway-paid">$30,00</td><td class="layaway-remaining"><span class="status status-success">Pagado</span>',
+      $layaways,
+    );
 
     $cancelled = $this->post("/apartados/$layawayId/cancelar", []);
 

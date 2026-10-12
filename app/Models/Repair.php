@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Models;
 
 use DateTimeInterface;
+use DateTimeImmutable;
+use DateTimeZone;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -68,5 +70,11 @@ final class Repair extends Model
   public function getRemainingAmount(): float
   {
     return round((float) $this->price - $this->getTotalPaid(), 2);
+  }
+
+  public function isOverdue(): bool
+  {
+    return $this->getRemainingAmount() > 0
+      && $this->due_date < new DateTimeImmutable('today', new DateTimeZone('America/Caracas'));
   }
 }

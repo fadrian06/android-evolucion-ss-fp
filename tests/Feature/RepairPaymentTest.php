@@ -86,6 +86,25 @@ final class RepairPaymentTest extends FeatureTestCase
   }
 
   #[Test]
+  public function overdue_repairs_display_their_badge_without_a_ves_reference(): void
+  {
+    $this->createRepair('Equipo vencido');
+    $repairId = $this->repairId('Equipo vencido');
+    $this->database->exec("UPDATE repairs SET due_date = '2000-01-01' WHERE id = $repairId");
+
+    $response = $this->get('/reparaciones');
+    $body = (string) $response->getBody();
+
+    self::assertSame(200, $response->getStatusCode());
+    self::assertStringContainsString('<span class="status status-danger">Vencida</span>', $body);
+    self::assertStringContainsString(
+      '<th class="repair-due">Vence</th><th class="repair-total">Total</th>',
+      $body,
+    );
+    self::assertStringNotContainsString('Ref. Bs.', $body);
+  }
+
+  #[Test]
   public function a_repair_receipt_can_be_viewed(): void
   {
     $this->createRepair('Limpieza de puerto', ['3'], ['Efectivo USD']);
@@ -106,19 +125,23 @@ final class RepairPaymentTest extends FeatureTestCase
     $repairId = $this->repairId('Diagnóstico de placa');
 
     $response = $this->post("/reparaciones/$repairId/pagar", [
-      'amount' => '200',
+      'amount' => '700',
       'method' => 'Transferencia',
     ]);
 
     self::assertSame(303, $response->getStatusCode());
     self::assertSame('/reparaciones', $response->getHeaderLine('Location'));
     self::assertSame(
-      ['amount' => 200, 'method' => 'Transferencia', 'exchange_rate' => 100],
+      ['amount' => 700, 'method' => 'Transferencia', 'exchange_rate' => 100],
       $this->database
         ->query(
           "SELECT amount, method, exchange_rate FROM repair_payments WHERE repair_id = $repairId",
         )
         ->fetch(PDO::FETCH_ASSOC),
+    );
+    self::assertStringContainsString(
+      '<span class="status status-success">Pagado</span>',
+      (string) $this->get('/reparaciones')->getBody(),
     );
   }
 

@@ -61,6 +61,8 @@ final class SaleRoutesTest extends FeatureTestCase
       'business_id' => [$this->businessId, $this->businessId],
       'quantity' => [1, 1],
       'code' => ['ACC-001', ''],
+      'amount' => ['74.95'],
+      'method' => ['Efectivo USD'],
     ]);
 
     self::assertSame(303, $response->getStatusCode());
@@ -71,6 +73,18 @@ final class SaleRoutesTest extends FeatureTestCase
         ['product_id' => $sparePartId, 'code' => null],
       ],
       $this->saleItems(),
+    );
+
+    $sales = $this->get('/ventas');
+
+    self::assertSame(200, $sales->getStatusCode());
+    self::assertStringContainsString(
+      '<th>Total</th><th>Pagado</th><th>Pago pendiente</th><th></th>',
+      (string) $sales->getBody(),
+    );
+    self::assertStringContainsString(
+      '$74,95</td><td>$74,95</td><td><span class="status status-success">Pagado</span>',
+      (string) $sales->getBody(),
     );
   }
 

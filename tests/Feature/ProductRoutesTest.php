@@ -133,6 +133,10 @@ final class ProductRoutesTest extends FeatureTestCase
     $product = $this->product('Protector de pantalla', 'accessory', 10, 0);
     $this->post('/productos', $product);
     $id = $this->productId($product['name']);
+    self::assertStringContainsString(
+      '0 unidades<br><span class="status status-danger">Agotado</span>',
+      (string) $this->get('/productos')->getBody(),
+    );
 
     $response = $this->get("/productos/$id/eliminar");
 
@@ -147,6 +151,10 @@ final class ProductRoutesTest extends FeatureTestCase
     $product = $this->product('Producto con inventario', 'accessory', 10, 1);
     $this->post('/productos', $product);
     $id = $this->productId($product['name']);
+    self::assertStringContainsString(
+      '1 unidad<br><span class="status status-warning">Casi agotado</span>',
+      (string) $this->get('/productos')->getBody(),
+    );
 
     $response = $this->get("/productos/$id/eliminar");
 
