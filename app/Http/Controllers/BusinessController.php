@@ -61,12 +61,6 @@ final readonly class BusinessController implements ResourceController
       goto redirect;
     }
 
-    if (Business::query()->where('rif', $validated['rif'])->exists()) {
-      Flash::set(['Ya existe un negocio con ese RIF'], 'errors');
-
-      goto redirect;
-    }
-
     if ($this->user->businesses()->where('address', $validated['address'])->exists()) {
       Flash::set(['Ya existe un negocio con esa dirección'], 'errors');
 

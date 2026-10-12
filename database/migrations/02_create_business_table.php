@@ -21,7 +21,7 @@ return new readonly class implements Migration
           $blueprint->id();
           $blueprint->foreignIdFor($user::class)->constrained();
           $blueprint->string('name');
-          $blueprint->string('rif')->unique();
+          $blueprint->string('rif');
           $blueprint->string('address');
           $blueprint->string('phone');
           $blueprint->unique([$user->getForeignKey(), 'name']);
