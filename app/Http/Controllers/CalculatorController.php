@@ -25,18 +25,25 @@ final readonly class CalculatorController
   {
     $rate = null;
     $source = null;
+    $bcvRate = null;
     $customRate = $this->dailyExchangeRate->customRateFor($this->user);
 
     try {
-      $rate = $this->dailyExchangeRate->rateFor($this->user);
+      $bcvRate = $this->dailyExchangeRate->bcvRate();
+      $rate = $customRate ? (float) $customRate->rate : $bcvRate;
       $source = $customRate ? 'personalizada' : 'BCV';
     } catch (\RuntimeException $exception) {
       Flash::set([$exception->getMessage()], 'errors');
+      if ($customRate) {
+        $rate = (float) $customRate->rate;
+        $source = 'personalizada';
+      }
     }
 
     Flight::render('calculator', [
       'rate' => $rate,
       'source' => $source,
+      'bcvRate' => $bcvRate,
       'customRate' => $customRate,
     ], 'slot');
     Flight::render('components/layout');

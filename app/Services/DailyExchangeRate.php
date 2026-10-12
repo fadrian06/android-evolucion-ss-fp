@@ -25,7 +25,12 @@ final readonly class DailyExchangeRate
   {
     $customRate = $this->customRateFor($user);
 
-    return $customRate ? (float) $customRate->rate : $this->bcvExchangeRate->rate();
+    return $customRate ? (float) $customRate->rate : $this->bcvRate();
+  }
+
+  public function bcvRate(): float
+  {
+    return $this->bcvExchangeRate->rate();
   }
 
   public function today(): string
