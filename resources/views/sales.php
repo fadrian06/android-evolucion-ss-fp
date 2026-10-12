@@ -4,7 +4,7 @@
   .select-search { position: relative; align-self: start; }
   .select-search > select { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
   .select-search__trigger { width: 100%; min-height: 42px; padding: 10px 36px 10px 11px; border: 1px solid #d0d5dd; border-radius: 8px; background: #fff; color: #182230; text-align: left; position: relative; }
-  .select-search__trigger::after { content: '⌄'; position: absolute; right: 12px; color: #667085; }
+  .select-search__trigger::after { content: '⌄'; position: absolute; right: 16px; color: #667085; }
   .select-search__trigger:focus { border-color: var(--brand); box-shadow: 0 0 0 3px #635bff1c; outline: 0; }
   .select-search__menu { display: none; position: absolute; z-index: 20; top: calc(100% + 5px); width: 100%; padding: 8px; border: 1px solid var(--line); border-radius: 10px; background: #fff; box-shadow: var(--shadow); }
   .select-search.is-open .select-search__menu { display: grid; gap: 6px; }
