@@ -105,6 +105,7 @@ final class ProductRoutesTest extends FeatureTestCase
     self::assertSame(200, $response->getStatusCode());
     self::assertStringContainsString($product['name'], (string) $response->getBody());
     self::assertStringContainsString('Accesorio', (string) $response->getBody());
+    self::assertStringContainsString('data-tooltip="Bs. 2.500,00"', (string) $response->getBody());
   }
 
   #[Test]

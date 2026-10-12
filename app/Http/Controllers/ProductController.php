@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Models\Batch;
 use App\Models\Product;
 use App\Models\User;
+use App\Services\DailyExchangeRate;
 use Flight;
 use Illuminate\Database\Capsule\Manager;
 use Illuminate\Database\UniqueConstraintViolationException;
@@ -16,7 +17,11 @@ use Override;
 
 final readonly class ProductController implements ResourceController
 {
-  public function __construct(private User $user, private Form $form)
+  public function __construct(
+    private User $user,
+    private DailyExchangeRate $dailyExchangeRate,
+    private Form $form,
+  )
   {
     //
   }
@@ -34,6 +39,7 @@ final readonly class ProductController implements ResourceController
         ])
         ->get(),
       'businesses' => $this->user->businesses,
+        'customRate' => $this->dailyExchangeRate->customRateFor($this->user),
     ], 'slot');
 
     Flight::render('components/layout');
