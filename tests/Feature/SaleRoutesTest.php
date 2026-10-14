@@ -79,11 +79,11 @@ final class SaleRoutesTest extends FeatureTestCase
 
     self::assertSame(200, $sales->getStatusCode());
     self::assertStringContainsString(
-      '<th>Total</th><th>Pagado</th><th>Pago pendiente</th><th></th>',
+      '<th class="sale-total">Total</th><th class="sale-paid">Pagado</th><th class="sale-remaining">Pago pendiente</th><th></th>',
       (string) $sales->getBody(),
     );
     self::assertStringContainsString(
-      '$74,95</td><td>$74,95</td><td><span class="status status-success">Pagado</span>',
+      '<td class="sale-total">$74,95</td><td class="sale-paid">$74,95</td><td class="sale-remaining"><span class="status status-success">Pagado</span>',
       (string) $sales->getBody(),
     );
   }

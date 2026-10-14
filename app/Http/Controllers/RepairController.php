@@ -49,21 +49,29 @@ final readonly class RepairController implements ResourceController
   #[Override]
   public function store(): void
   {
-    $validated = $this->form->validate(Flight::request()->data->getData(), [
+    $data = Flight::request()->data->getData();
+    $validated = $this->form->validate($data, [
       'client_id' => 'number',
       'description' => 'string',
-      'price' => 'number',
     ]);
 
-    if (!$validated || (int) $validated['price'] <= 0) {
-      Flash::set(
-        $validated ? ['El precio debe ser mayor que cero'] : $this->form->errors(),
-        'errors',
-      );
+    if (!$validated) {
+      Flash::set($this->form->errors(), 'errors');
       Flight::redirect('/reparaciones');
 
       return;
     }
+
+    $rawPrice = trim((string) ($data['price'] ?? ''));
+
+    if ($rawPrice !== '' && (!is_numeric($rawPrice) || (float) $rawPrice < 0)) {
+      Flash::set(['El costo de mano de obra debe ser mayor o igual a cero'], 'errors');
+      Flight::redirect('/reparaciones');
+
+      return;
+    }
+
+    $price = $rawPrice !== '' ? (float) $rawPrice : 0;
 
     if (!$this->user->clients->find($validated['client_id'])) {
       Flash::set(['Cliente no encontrado'], 'errors');
@@ -81,8 +89,6 @@ final readonly class RepairController implements ResourceController
       return;
     }
 
-    $data = Flight::request()->data->getData();
-
     try {
       $payments = PaymentDetails::fromInputs(
         $data['amount'] ?? null,
@@ -96,19 +102,19 @@ final readonly class RepairController implements ResourceController
       return;
     }
 
-    if (PaymentDetails::totalUsd($payments) > (float) $validated['price']) {
+    if (PaymentDetails::totalUsd($payments) > $price) {
       Flash::set(['Los pagos iniciales exceden el saldo de la reparación'], 'errors');
       Flight::redirect('/reparaciones');
 
       return;
     }
 
-    $repair = Manager::connection()->transaction(function () use ($validated, $customRate, $payments): Repair {
+    $repair = Manager::connection()->transaction(function () use ($validated, $price, $customRate, $payments): Repair {
       $repair = $this->business->repairs()->create([
         'client_id' => $validated['client_id'],
         'description' => $validated['description'],
-        'price' => $validated['price'],
-        'price_ves' => round((int) $validated['price'] * (float) $customRate->rate, 2),
+        'price' => $price,
+        'price_ves' => round($price * (float) $customRate->rate, 2),
         'due_date' => (new DateTimeImmutable('today', new DateTimeZone('America/Caracas')))
           ->add(new DateInterval('P15D'))
           ->format('Y-m-d'),

@@ -74,6 +74,25 @@ final class RepairPaymentTest extends FeatureTestCase
   }
 
   #[Test]
+  public function a_repair_can_be_registered_without_a_cost(): void
+  {
+    $created = $this->post('/reparaciones', [
+      'client_id' => $this->clientId(),
+      'description' => 'Revisión técnica',
+      'price' => '',
+    ]);
+
+    self::assertSame(303, $created->getStatusCode());
+    self::assertSame('/reparaciones', $created->getHeaderLine('Location'));
+    self::assertSame(
+      0,
+      (int) $this->database->query(
+        "SELECT price FROM repairs WHERE description = 'Revisión técnica'",
+      )->fetchColumn(),
+    );
+  }
+
+  #[Test]
   public function authenticated_users_can_list_their_repairs(): void
   {
     $this->createRepair('Reemplazo de pantalla');
@@ -83,6 +102,7 @@ final class RepairPaymentTest extends FeatureTestCase
     self::assertSame(200, $response->getStatusCode());
     self::assertStringContainsString('Reemplazo de pantalla', (string) $response->getBody());
     self::assertStringContainsString('Pago pendiente', (string) $response->getBody());
+    self::assertStringContainsString('Costo (mano de obra)', (string) $response->getBody());
   }
 
   #[Test]
