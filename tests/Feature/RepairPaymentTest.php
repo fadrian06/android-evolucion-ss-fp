@@ -90,6 +90,10 @@ final class RepairPaymentTest extends FeatureTestCase
         "SELECT price FROM repairs WHERE description = 'Revisión técnica'",
       )->fetchColumn(),
     );
+    self::assertStringContainsString(
+      '<td colspan="3" class="repair-total"><span class="status status-warning">Mano de obra gratis</span></td>',
+      (string) $this->get('/reparaciones')->getBody(),
+    );
   }
 
   #[Test]
