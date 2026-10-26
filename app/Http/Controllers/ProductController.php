@@ -33,7 +33,6 @@ final readonly class ProductController implements ResourceController
       'products' => $this->user->products()
         ->with('batches')
         ->withCount([
-          'batches as stocked_batches_count' => static fn($query) => $query->where('stock', '>', 0),
           'items',
           'layaways',
         ])
@@ -223,8 +222,7 @@ final readonly class ProductController implements ResourceController
     }
 
     if (
-      $product->batches()->where('stock', '>', 0)->exists()
-      || $product->items()->exists()
+      $product->items()->exists()
       || $product->layaways()->exists()
     ) {
       Flash::set(['No se puede eliminar un producto que tiene registros asociados'], 'errors');
@@ -232,7 +230,10 @@ final readonly class ProductController implements ResourceController
       goto redirect;
     }
 
-    $product->delete();
+    Manager::connection()->transaction(function () use ($product): void {
+      $product->batches()->delete();
+      $product->delete();
+    });
     Flash::set(['Producto eliminado'], 'notes');
 
     redirect:

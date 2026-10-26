@@ -146,7 +146,7 @@ final class ProductRoutesTest extends FeatureTestCase
   }
 
   #[Test]
-  public function a_product_with_associated_records_cannot_be_deleted(): void
+  public function a_product_with_batches_can_be_deleted(): void
   {
     $product = $this->product('Producto con inventario', 'accessory', 10, 1);
     $this->post('/productos', $product);
@@ -160,8 +160,35 @@ final class ProductRoutesTest extends FeatureTestCase
 
     self::assertSame(303, $response->getStatusCode());
     self::assertSame('/productos', $response->getHeaderLine('Location'));
+    self::assertSame(0, $this->productCount($product['name']));
+    self::assertSame(0, $this->stockFor($product['name']));
+  }
+
+  #[Test]
+  public function a_product_with_associated_records_cannot_be_deleted(): void
+  {
+    $this->post('/clientes', [
+      'name' => 'Cliente Reservas',
+      'id_card' => 'V-99999999',
+      'phone' => '0412-555-0199',
+      'address' => 'Dirección de prueba',
+    ]);
+    $clientId = (int) $this->database->query("SELECT id FROM clients WHERE user_id = {$this->userId()}")->fetchColumn();
+
+    $product = $this->product('Producto con apartado', 'accessory', 10, 1);
+    $this->post('/productos', $product);
+    $productId = $this->productId($product['name']);
+
+    $this->post('/apartados', [
+      'client_id' => $clientId,
+      'product_id' => $productId,
+    ]);
+
+    $response = $this->get("/productos/$productId/eliminar");
+
+    self::assertSame(303, $response->getStatusCode());
+    self::assertSame('/productos', $response->getHeaderLine('Location'));
     self::assertSame(1, $this->productCount($product['name']));
-    self::assertSame(1, $this->stockFor($product['name']));
   }
 
   #[Override]
