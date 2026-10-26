@@ -102,12 +102,6 @@ final readonly class RepairController implements ResourceController
       return;
     }
 
-    if (PaymentDetails::totalUsd($payments) > $price) {
-      Flash::set(['Los pagos iniciales exceden el saldo de la reparación'], 'errors');
-      Flight::redirect('/reparaciones');
-
-      return;
-    }
 
     $repair = Manager::connection()->transaction(function () use ($validated, $price, $customRate, $payments): Repair {
       $repair = $this->business->repairs()->create([

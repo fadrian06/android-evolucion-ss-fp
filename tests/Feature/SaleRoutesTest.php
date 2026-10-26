@@ -88,6 +88,29 @@ final class SaleRoutesTest extends FeatureTestCase
     );
   }
 
+  #[Test]
+  public function initial_payments_can_exceed_sale_total(): void
+  {
+    $accessoryId = $this->createProduct('Cargador extra', 'accessory', 20, 1);
+
+    $response = $this->post('/ventas', [
+      'client_id' => $this->clientId,
+      'product_id' => [$accessoryId],
+      'business_id' => [$this->businessId],
+      'quantity' => [1],
+      'code' => [''],
+      'amount' => ['25'],
+      'method' => ['Efectivo USD'],
+    ]);
+
+    self::assertSame(303, $response->getStatusCode());
+    self::assertSame('/ventas', $response->getHeaderLine('Location'));
+
+    $sales = $this->get('/ventas');
+    self::assertSame(200, $sales->getStatusCode());
+    self::assertStringContainsString('<td class="sale-total">$20,00</td><td class="sale-paid">$25,00</td>', (string) $sales->getBody());
+  }
+
   #[Override]
   protected function tearDown(): void
   {

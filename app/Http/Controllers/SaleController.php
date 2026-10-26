@@ -194,17 +194,6 @@ final readonly class SaleController implements ResourceController
 
         goto redirect;
       }
-
-      $nonPhoneTotal = array_sum(array_map(
-        static fn(array $item): float => $item['price'] * $item['quantity'],
-        $nonPhoneItems,
-      ));
-
-      if (PaymentDetails::totalUsd($payments) > $nonPhoneTotal) {
-        Flash::set(['Los pagos iniciales exceden el total de la venta'], 'errors');
-
-        goto redirect;
-      }
     }
 
     $invoiceIds = Manager::connection()->transaction(function () use (

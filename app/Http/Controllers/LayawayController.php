@@ -127,11 +127,6 @@ final readonly class LayawayController implements ResourceController
       goto redirect;
     }
 
-    if (PaymentDetails::totalUsd($payments) > (float) $product->price) {
-      Flash::set(['Los pagos iniciales exceden el saldo del apartado'], 'errors');
-
-      goto redirect;
-    }
 
     Manager::connection()->transaction(function () use ($batch, $client, $product, $customRate, $imei1, $imei2, $code, $payments): void {
       $batch->stock--;
