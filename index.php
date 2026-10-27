@@ -10,6 +10,7 @@ use Illuminate\Database\Capsule\Manager;
 use Illuminate\Database\Schema\Builder;
 use Leaf\Auth;
 use Leaf\Form;
+use Leaf\Helpers\Password;
 use Leaf\Http\Session;
 use Leaf\Lingo;
 use Symfony\Component\Dotenv\Dotenv;
@@ -73,6 +74,12 @@ $container->singleton(
 
     $auth->config([
       'timestamps' => false,
+      'password.encode' => static fn(
+        #[SensitiveParameter]
+        string $password,
+      ): string => Password::hash($password, Password::BCRYPT, [
+        'cost' => $_ENV['BCRYPT_ROUNDS'],
+      ]),
       'unique' => ['email'],
       'session' => true,
     ]);
