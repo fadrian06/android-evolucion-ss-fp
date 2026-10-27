@@ -16,6 +16,7 @@ use Leaf\Auth;
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
+  <meta name="color-scheme" content="light dark">
   <base href="<?= str_replace('index.php', '', $_SERVER['SCRIPT_NAME']) ?>">
   <link rel="icon" href="./resources/images/favicon.svg">
   <link rel="stylesheet" href="./resources/styles/app.css">
@@ -30,8 +31,7 @@ use Leaf\Auth;
         <?php Flight::render('components/brand') ?>
         <?php Flight::render('components/business-switcher') ?>
         <?php Flight::render('components/nav') ?>
-
-        <a class="profile" href="./cerrar-sesion"><span><?= strtoupper(substr($auth->user()->email, 0, 1)) ?></span><small><?= htmlspecialchars($auth->user()->email, ENT_QUOTES, 'UTF-8') ?></small><b>Salir</b></a>
+        <?php Flight::render('components/profile') ?>
       </aside>
       <main class="content"><?= $slot ?></main>
     </div>
