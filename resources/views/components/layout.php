@@ -43,10 +43,7 @@ $items = [
   <?php if ($auth->user()): ?>
     <div class="app-shell">
       <aside class="sidebar d-print-none">
-        <a class="brand" href=".<?= $redirectGuest ?>">
-          <span class="brand-mark">O</span>
-          <span>orion</span>
-        </a>
+        <?php Flight::render('components/brand') ?>
 
         <div class="business-switcher">
           <span class="eyebrow">LOCAL ACTIVO</span>
