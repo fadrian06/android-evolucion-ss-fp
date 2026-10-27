@@ -1,5 +1,6 @@
 :root {
-  --bg: light-dark(#f5f7fb, #111827);
+  --bg-dark: #111827;
+  --bg: light-dark(#f5f7fb, var(--bg-dark));
   --surface: light-dark(white, #1d2939);
   --ink: light-dark(#182230, white);
   --muted: light-dark(#667085, #98a2b3);
@@ -42,7 +43,7 @@ button {
 .app-shell {
   display: grid;
   grid-template-columns: 252px minmax(0, 1fr);
-  min-height: 100vh
+  min-height: 100vh;
 }
 
 .sidebar {
@@ -50,21 +51,22 @@ button {
   top: 0;
   height: 100vh;
   padding: 28px 16px;
-  background: #111827;
+  box-sizing: border-box;
+  background: var(--bg-dark);
   color: #d0d5dd;
   display: flex;
-  flex-direction: column
+  flex-direction: column;
 }
 
 .brand {
   display: flex;
   align-items: center;
   gap: 9px;
-  color: #fff;
+  color: white;
   font-size: 22px;
   font-weight: 800;
   letter-spacing: -1px;
-  padding: 0 12px
+  padding: 0 12px;
 }
 
 .brand-mark {
