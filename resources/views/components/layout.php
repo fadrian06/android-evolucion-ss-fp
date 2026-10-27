@@ -9,6 +9,8 @@ use Leaf\Auth;
  * @var string $slot
  */
 
+$baseHref = str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
+
 ?>
 
 <!doctype html>
@@ -18,7 +20,7 @@ use Leaf\Auth;
   <meta name="viewport" content="width=device-width">
   <meta name="color-scheme" content="light dark">
   <title>Orion · Gestión comercial</title>
-  <base href="<?= str_replace('index.php', '', $_SERVER['SCRIPT_NAME']) ?>">
+  <base href="<?= $baseHref ?>">
   <link rel="icon" href="./resources/images/favicon.svg">
   <link rel="stylesheet" href="./resources/styles/app.css">
   <script
