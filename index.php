@@ -87,9 +87,9 @@ $container->singleton(Lingo::class, static function (): Lingo {
   $lingo = new Lingo;
 
   $lingo->create([
-    'locales.default' => 'es',
+    'locales.default' => $_ENV['APP_LOCALE'],
     'locales.path' => __DIR__ . '/lang',
-    'locales.strategy' => 'header',
+    'locales.strategy' => $_ENV['LOCALES_STRATEGY'],
   ]);
 
   return $lingo;
