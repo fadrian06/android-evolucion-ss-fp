@@ -9,7 +9,6 @@ use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager;
 use Illuminate\Database\Schema\Builder;
 use Leaf\Auth;
-use Leaf\Auth\Config;
 use Leaf\Form;
 use Leaf\Helpers\Password;
 use Leaf\Http\Session;
@@ -87,7 +86,7 @@ $container->singleton(
       'password.verify' => Password::verify(...),
       'unique' => ['email'],
       'session' => true,
-      'session.lifetime' => $_ENV['SESSION_LIFETIME'],
+      'session.lifetime' => (int) $_ENV['SESSION_LIFETIME'],
     ]);
 
     $auth->dbConnection($container->get(PDO::class));
