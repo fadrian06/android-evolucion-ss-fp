@@ -44,19 +44,5 @@ $baseHref = str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
       <?= $slot ?>
     </main>
   <?php endif ?>
-
-  <script>
-    setTimeout(() => {
-      document.querySelectorAll('.toast').forEach(toast => {
-        toast.classList.add('is-leaving');
-
-        toast.addEventListener(
-          'transitionend',
-          () => toast.remove(),
-          { once: true },
-        );
-      });
-    }, 5000);
-  </script>
 </body>
 </html>
