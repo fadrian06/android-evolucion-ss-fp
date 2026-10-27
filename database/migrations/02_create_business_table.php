@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Migration;
+use App\Models\Business;
 use App\Models\User;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Builder;
@@ -12,9 +13,11 @@ return new readonly class implements Migration
   #[Override]
   public function up(Builder $builder): void
   {
-    if (!$builder->hasTable('businesses')) {
+    $business = new Business;
+
+    if (!$builder->hasTable($business->getTable())) {
       $builder->create(
-        'businesses',
+        $business->getTable(),
         static function (Blueprint $blueprint): void {
           $user = new User;
 
