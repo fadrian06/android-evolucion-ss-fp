@@ -9,9 +9,16 @@ use App\Models\Business;
 ?>
 
 <div class="business-switcher">
-  <span class="eyebrow">LOCAL ACTIVO</span>
-  <strong>
-    <?= $business?->name ?: 'Selecciona un local' ?>
+  <?php if ($business): ?>
+    <span class="eyebrow">LOCAL ACTIVO</span>
+  <?php endif ?>
+
+  <strong class="business-switcher-name">
+    <?= $business?->name ?: 'Sin local activo' ?>
   </strong>
-  <a href="./negocios">Cambiar local →</a>
+
+  <a href="./negocios" class="business-switcher-link">
+    <?= $business ? 'Cambiar local' : 'Seleccionar local' ?>
+    →
+  </a>
 </div>

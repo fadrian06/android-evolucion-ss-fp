@@ -1,4 +1,4 @@
-<aside class="sidebar d-print-none">
+<aside class="sidebar">
   <?php Flight::render('components/brand') ?>
   <?php Flight::render('components/business-switcher') ?>
   <?php Flight::render('components/nav') ?>
