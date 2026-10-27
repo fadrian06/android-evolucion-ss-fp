@@ -7,17 +7,17 @@ use Leaf\Lingo;
 
 /** @var Lingo $lingo */
 
-$flashTypes = [
-  ['key' => 'errors', 'class' => 'toast--error'],
-  ['key' => 'warnings', 'class' => 'toast--warning'],
-  ['key' => 'successes', 'class' => 'toast--success'],
-  ['key' => 'notes', 'class' => 'toast--note'],
+$flashClassesByKey = [
+  'errors' => 'toast--error',
+  'warnings' => 'toast--warning',
+  'successes' => 'toast--success',
+  'notes' => 'toast--note',
 ];
 
 ?>
 
 <div class="toasts d-print-none">
-  <?php foreach ($flashTypes as ['key' => $key, 'class' => $class]): ?>
+  <?php foreach ($flashClassesByKey as $key => $class): ?>
     <?php foreach ((array) Flash::display($key) as $message): ?>
       <div class="toast <?= $class ?>">
         <?= $lingo->translate($message) ?>
