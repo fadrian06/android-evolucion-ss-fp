@@ -104,12 +104,19 @@ $flashTypes = [
   <?php if ($auth->user()): ?>
     <div class="app-shell">
       <aside class="sidebar d-print-none">
-        <a class="brand" href="./"><span class="brand-mark">O</span><span>orion</span></a>
+        <a class="brand" href=".<?= $redirectGuest ?>">
+          <span class="brand-mark">O</span>
+          <span>orion</span>
+        </a>
+
         <div class="business-switcher">
           <span class="eyebrow">LOCAL ACTIVO</span>
-          <strong><?= isset($business) ? htmlspecialchars($business->name, ENT_QUOTES, 'UTF-8') : 'Selecciona un local' ?></strong>
+          <strong>
+            <?= $business?->name ?: 'Selecciona un local' ?>
+          </strong>
           <a href="./negocios">Cambiar local →</a>
         </div>
+
         <nav>
           <?php foreach ($items as $item): ?>
             <?php $active = $path === '/' ? $item['href'] === './' : str_contains($item['href'], ltrim($path, '/')) ?>
