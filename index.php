@@ -71,8 +71,11 @@ $container->singleton(
   Auth::class,
   static function () use ($container): Auth {
     $auth = new Auth;
+    $user = new User;
 
     $auth->config([
+      'id.key' => $user->getKeyName(),
+      'db.table' => $user->getTable(),
       'timestamps' => false,
       'password.encode' => static fn(
         #[SensitiveParameter]
