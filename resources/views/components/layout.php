@@ -2,28 +2,12 @@
 
 declare(strict_types=1);
 
-use App\Models\Business;
 use Leaf\Auth;
-use Leaf\Lingo;
 
-/** @var Auth $auth */
-/** @var string $slot */
-/** @var ?Business $business */
-/** @var Lingo $lingo */
-
-$path = Flight::request()->url;
-$redirectGuest = $auth->config('redirect.guest');
-
-$items = [
-  ['href' => ".$redirectGuest", 'label' => 'Inicio', 'icon' => '⌂'],
-  ['href' => './ventas', 'label' => 'Ventas', 'icon' => '↗'],
-  ['href' => './apartados', 'label' => 'Apartados', 'icon' => '◇'],
-  ['href' => './reparaciones', 'label' => 'Reparaciones', 'icon' => '⌕'],
-  ['href' => './productos', 'label' => 'Inventario', 'icon' => '▦'],
-  ['href' => './clientes', 'label' => 'Clientes', 'icon' => '♙'],
-  ['href' => './calculadora', 'label' => 'Calculadora', 'icon' => '⊞'],
-  ['href' => './negocios', 'label' => 'Locales', 'icon' => '⌖'],
-];
+/**
+ * @var Auth $auth
+ * @var string $slot
+ */
 
 ?>
 
@@ -45,16 +29,8 @@ $items = [
       <aside class="sidebar d-print-none">
         <?php Flight::render('components/brand') ?>
         <?php Flight::render('components/business-switcher') ?>
+        <?php Flight::render('components/nav') ?>
 
-        <nav>
-          <?php foreach ($items as $item): ?>
-            <?php $active = $path === '/' ? $item['href'] === './' : str_contains($item['href'], ltrim($path, '/')) ?>
-            <a class="<?= $active ? 'is-active' : '' ?> <?= !isset($business) && $item['href'] !== './negocios' ? 'is-disabled' : '' ?>" href="<?= $item['href'] ?>">
-              <span><?= $item['icon'] ?></span><?= $item['label'] ?>
-            </a>
-          <?php endforeach ?>
-          <a class="mobile-logout" href="./cerrar-sesion"><span>↪</span>Salir</a>
-        </nav>
         <a class="profile" href="./cerrar-sesion"><span><?= strtoupper(substr($auth->user()->email, 0, 1)) ?></span><small><?= htmlspecialchars($auth->user()->email, ENT_QUOTES, 'UTF-8') ?></small><b>Salir</b></a>
       </aside>
       <main class="content"><?= $slot ?></main>
