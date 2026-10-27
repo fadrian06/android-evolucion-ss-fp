@@ -27,6 +27,9 @@ $baseHref = str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
   </title>
   <base href="<?= $baseHref ?>">
   <link rel="icon" href="./resources/images/favicon.svg">
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@fontsource-variable/inter@5.3.0/index.css">
   <link rel="stylesheet" href="./resources/styles/app.css">
   <script
     defer
