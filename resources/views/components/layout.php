@@ -41,53 +41,8 @@ $flashTypes = [
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
   <base href="<?= str_replace('index.php', '', $_SERVER['SCRIPT_NAME']) ?>">
-  <link rel="icon" href="./resources/views/assets/favicon.svg">
-  <link rel="stylesheet" href="./resources/views/assets/app.css">
-  <style>
-    .sidebar {
-      overflow: hidden;
-    }
-
-    .sidebar nav {
-      flex: 1;
-      min-height: 0;
-      overflow-y: auto;
-      scrollbar-width: thin;
-    }
-
-    .profile {
-      flex: 0 0 auto;
-    }
-
-    .mobile-logout {
-      display: none;
-    }
-
-    .toast {
-      transition: opacity 200ms ease, transform 200ms ease;
-    }
-
-    .toast.is-leaving {
-      opacity: 0;
-      transform: translateX(16px);
-    }
-
-    @media (max-width: 820px) {
-      .sidebar {
-        overflow: visible;
-      }
-
-      .sidebar nav {
-        overflow-x: auto;
-        overflow-y: hidden;
-      }
-
-      .sidebar nav .mobile-logout {
-        display: flex;
-        color: #fecdca;
-      }
-    }
-  </style>
+  <link rel="icon" href="./resources/images/favicon.svg">
+  <link rel="stylesheet" href="./resources/styles/app.css">
   <title>Orion · Gestión comercial</title>
 </head>
 <body>
