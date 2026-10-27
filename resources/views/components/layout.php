@@ -13,8 +13,10 @@ use Leaf\Lingo;
 /** @var Lingo $lingo */
 
 $path = Flight::request()->url;
+$redirectGuest = $auth->config('redirect.guest');
+
 $items = [
-  ['href' => './', 'label' => 'Inicio', 'icon' => '⌂'],
+  ['href' => ".$redirectGuest", 'label' => 'Inicio', 'icon' => '⌂'],
   ['href' => './ventas', 'label' => 'Ventas', 'icon' => '↗'],
   ['href' => './apartados', 'label' => 'Apartados', 'icon' => '◇'],
   ['href' => './reparaciones', 'label' => 'Reparaciones', 'icon' => '⌕'],
@@ -23,20 +25,23 @@ $items = [
   ['href' => './calculadora', 'label' => 'Calculadora', 'icon' => '⊞'],
   ['href' => './negocios', 'label' => 'Locales', 'icon' => '⌖'],
 ];
+
 $flashTypes = [
   ['key' => 'errors', 'class' => 'toast--error'],
   ['key' => 'warnings', 'class' => 'toast--warning'],
   ['key' => 'successes', 'class' => 'toast--success'],
   ['key' => 'notes', 'class' => 'toast--note'],
 ];
+
 ?>
+
 <!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width">
   <base href="<?= str_replace('index.php', '', $_SERVER['SCRIPT_NAME']) ?>">
-  <link rel="icon" href="./resources/views/assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="./resources/views/assets/favicon.svg">
   <link rel="stylesheet" href="./resources/views/assets/app.css">
   <style>
     .sidebar {
@@ -89,10 +94,13 @@ $flashTypes = [
   <div class="toasts d-print-none">
     <?php foreach ($flashTypes as ['key' => $key, 'class' => $class]): ?>
       <?php foreach ((array) Flash::display($key) as $message): ?>
-        <div class="toast <?= $class ?>"><?= htmlspecialchars($lingo->translate($message), ENT_QUOTES, 'UTF-8') ?></div>
+        <div class="toast <?= $class ?>">
+          <?= $lingo->translate($message) ?>
+        </div>
       <?php endforeach ?>
     <?php endforeach ?>
   </div>
+
   <?php if ($auth->user()): ?>
     <div class="app-shell">
       <aside class="sidebar d-print-none">

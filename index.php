@@ -151,5 +151,6 @@ Flight::set('flight.views.path', __DIR__ . '/resources/views');
 Flight::view()->preserveVars = false;
 Flight::view()->set('auth', $container->get(Auth::class));
 Flight::view()->set('lingo', $container->get(Lingo::class));
+Flight::view()->set('business', null);
 Flight::registerContainerHandler($container->get(...));
 Flight::start();
