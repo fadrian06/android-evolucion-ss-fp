@@ -10,10 +10,7 @@ use Override;
 
 final readonly class EnsureBusinessSelected implements BeforeMiddleware
 {
-  public function __construct(private ?Business $business)
-  {
-    //
-  }
+  public function __construct(private ?Business $business) {}
 
   #[Override]
   public function before(): void
@@ -21,7 +18,7 @@ final readonly class EnsureBusinessSelected implements BeforeMiddleware
     if (!$this->business && Flight::request()->url !== '/negocios') {
       Flight::redirect('/negocios');
 
-      exit;
+      return;
     }
 
     Flight::view()->set('business', $this->business);

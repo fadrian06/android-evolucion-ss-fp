@@ -10,10 +10,7 @@ use Override;
 
 final readonly class Authenticate implements BeforeMiddleware
 {
-  public function __construct(private Auth $auth)
-  {
-    //
-  }
+  public function __construct(private Auth $auth) {}
 
   #[Override]
   public function before(): void
@@ -21,7 +18,7 @@ final readonly class Authenticate implements BeforeMiddleware
     if (!$this->auth->user()) {
       Flight::redirect('/ingresar');
 
-      exit;
+      return;
     }
   }
 }

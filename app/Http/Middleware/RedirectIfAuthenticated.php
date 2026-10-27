@@ -10,10 +10,7 @@ use Override;
 
 final readonly class RedirectIfAuthenticated implements BeforeMiddleware
 {
-  public function __construct(private Auth $auth)
-  {
-    //
-  }
+  public function __construct(private Auth $auth) {}
 
   #[Override]
   public function before(): void

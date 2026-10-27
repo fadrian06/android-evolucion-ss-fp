@@ -14,17 +14,17 @@ final readonly class EnsureExchangeRateIsUpToDate implements BeforeMiddleware
   public function __construct(
     private User $user,
     private DailyExchangeRate $dailyExchangeRate,
-  ) {
-    //
-  }
+  ) {}
 
   #[Override]
   public function before(): void
   {
     $latestExchangeRate = $this->user->exchangeRates()->latest('date')->first();
+
     $hasRateForToday = $latestExchangeRate?->date === $this->dailyExchangeRate->today();
 
     Flight::view()->set('exchangeRate', $hasRateForToday ? $latestExchangeRate : null);
+
     Flight::view()->set('hasRateForToday', $hasRateForToday);
 
     if (
@@ -37,7 +37,7 @@ final readonly class EnsureExchangeRateIsUpToDate implements BeforeMiddleware
     if (!$hasRateForToday) {
       Flight::redirect('/calculadora');
 
-      exit;
+      return;
     }
   }
 }
