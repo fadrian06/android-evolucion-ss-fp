@@ -1,9 +1,10 @@
 <section class="auth-card card">
-  <div class="brand-auth">
-    <?= strtolower($_ENV['APP_NAME']) ?>
-  </div>
-  <h1>Bienvenido de vuelta</h1>
-  <p>Inicia sesión para gestionar tu local.</p>
+  <div class="brand-auth"><?= strtolower($_ENV['APP_NAME']) ?></div>
+  <h1 class="auth-card-title">Bienvenido de vuelta</h1>
+  <p class="auth-card-subtitle">
+    Inicia sesión para gestionar tu local.
+  </p>
+
   <form method="post" class="stack">
     <div class="field">
       <label>Correo electrónico</label>
@@ -14,6 +15,7 @@
         autocomplete="email"
         placeholder="nombre@correo.com">
     </div>
+
     <div class="field">
       <label>Contraseña</label>
       <input
@@ -23,12 +25,12 @@
         autocomplete="current-password"
         placeholder="••••••••">
     </div>
+
     <button class="btn btn-primary">Iniciar sesión</button>
   </form>
-  <p style="margin:20px 0 0;text-align:center">
+
+  <p class="auth-card-subtitle auth-card-footer">
     ¿No tienes cuenta?
-    <a style="color:var(--brand);font-weight:700" href="./registrarse">
-      Regístrate
-    </a>
+    <a class="auth-card-link" href="./registrarse">Regístrate</a>
   </p>
 </section>
