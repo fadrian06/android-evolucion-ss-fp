@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Flash;
 use App\FlashKey;
-use Leaf\Flash;
 use Leaf\Lingo;
 
 /** @var Lingo $lingo */
@@ -11,9 +11,9 @@ use Leaf\Lingo;
 ?>
 
 <div class="toasts d-print-none">
-  <?php foreach (FlashKey::cases() as $flashKey): ?>
-    <?php foreach ((array) Flash::display($flashKey->key()) as $message): ?>
-      <div class="<?= $flashKey->class() ?>">
+  <?php foreach (FlashKey::cases() as $key): ?>
+    <?php foreach (Flash::retrieve($key) as $message): ?>
+      <div class="<?= $key->class() ?>">
         <?= $lingo->translate($message) ?>
       </div>
     <?php endforeach ?>
