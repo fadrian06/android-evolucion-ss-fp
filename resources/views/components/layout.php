@@ -21,7 +21,10 @@ $baseHref = str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
   <meta name="color-scheme" content="light dark">
-  <title>Orion · Gestión comercial</title>
+  <title>
+    <?= mb_convert_case($_ENV['APP_NAME'], MB_CASE_TITLE) ?>
+    · Gestión comercial
+  </title>
   <base href="<?= $baseHref ?>">
   <link rel="icon" href="./resources/images/favicon.svg">
   <link rel="stylesheet" href="./resources/styles/app.css">

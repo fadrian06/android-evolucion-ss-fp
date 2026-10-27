@@ -1,5 +1,7 @@
 <section class="auth-card card">
-  <div class="brand-auth">orion</div>
+  <div class="brand-auth">
+    <?= strtolower($_ENV['APP_NAME']) ?>
+  </div>
   <h1>Bienvenido de vuelta</h1>
   <p>Inicia sesión para gestionar tu local.</p>
   <form method="post" class="stack">

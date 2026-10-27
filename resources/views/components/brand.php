@@ -11,6 +11,10 @@ $redirectGuest = $auth->config('redirect.guest');
 ?>
 
 <a class="brand" href=".<?= $redirectGuest ?>">
-  <span class="brand-mark">O</span>
-  <span>orion</span>
+  <span class="brand-mark">
+    <?= strtoupper($_ENV['APP_NAME'][0]) ?>
+  </span>
+  <span>
+    <?= strtolower($_ENV['APP_NAME']) ?>
+  </span>
 </a>
