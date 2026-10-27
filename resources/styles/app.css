@@ -40,10 +40,6 @@
   --shadow: 0 12px 32px light-dark(var(--shadow-light), var(--shadow-dark));
 }
 
-* {
-  box-sizing: border-box
-}
-
 body {
   margin: 0;
   background: var(--bg);
@@ -204,7 +200,8 @@ nav .is-disabled {
   max-width: 1500px;
   width: 100%;
   padding: 42px 52px;
-  margin: auto
+  box-sizing: border-box;
+  margin: auto;
 }
 
 .page-head {
@@ -389,9 +386,10 @@ nav .is-disabled {
   border: 1px solid #d0d5dd;
   border-radius: 8px;
   padding: 10px 11px;
+  box-sizing: border-box;
   background: #fff;
   color: #182230;
-  outline: none
+  outline: none;
 }
 
 .field select {
@@ -505,7 +503,8 @@ nav .is-disabled {
 
 .auth-card {
   width: min(100%, 420px);
-  padding: 36px
+  padding: 36px;
+  box-sizing: border-box;
 }
 
 .auth-card h1 {
@@ -594,9 +593,10 @@ nav .is-disabled {
     position: static;
     height: auto;
     padding: 14px;
+    box-sizing: border-box;
     display: grid;
     grid-template-columns: auto 1fr;
-    gap: 10px
+    gap: 10px;
   }
 
   .business-switcher {
