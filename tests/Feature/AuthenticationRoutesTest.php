@@ -38,7 +38,7 @@ final class AuthenticationRoutesTest extends FeatureTestCase
     $home = $this->get('/');
 
     self::assertSame(303, $home->getStatusCode());
-    self::assertSame('/negocios', $home->getHeaderLine('Location'));
+    self::assertSame('/calculadora', $home->getHeaderLine('Location'));
   }
 
   #[Test]
