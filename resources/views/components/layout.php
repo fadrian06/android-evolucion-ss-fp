@@ -44,14 +44,7 @@ $items = [
     <div class="app-shell">
       <aside class="sidebar d-print-none">
         <?php Flight::render('components/brand') ?>
-
-        <div class="business-switcher">
-          <span class="eyebrow">LOCAL ACTIVO</span>
-          <strong>
-            <?= $business?->name ?: 'Selecciona un local' ?>
-          </strong>
-          <a href="./negocios">Cambiar local →</a>
-        </div>
+        <?php Flight::render('components/business-switcher') ?>
 
         <nav>
           <?php foreach ($items as $item): ?>
