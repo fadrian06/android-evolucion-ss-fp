@@ -60,19 +60,38 @@ Flight::group('', static function () use ($redirectGuest): void {
 
     Flight::route(
       "GET $redirectGuest",
-      [ShowDashboardPage::class, '__invoke']
+      [ShowDashboardPage::class, '__invoke'],
     );
 
     Flight::route('GET /calculadora', [CalculatorController::class, 'index']);
-    Flight::route('POST /calculadora/cotizacion', [CalculatorController::class, 'store']);
+
+    Flight::route(
+      'POST /calculadora/cotizacion',
+      [CalculatorController::class, 'store'],
+    );
+
     Flight::route('GET /productos', [ProductController::class, 'index']);
     Flight::route('POST /productos', [ProductController::class, 'store']);
-    Flight::route('POST /productos/@id', [ProductController::class, 'update']);
-    Flight::route('GET /productos/@id/eliminar', [ProductController::class, 'destroy']);
+
+    Flight::route(
+      'POST /productos/@id',
+      [ProductController::class, 'update'],
+    );
+
+    Flight::route(
+      'GET /productos/@id/eliminar',
+      [ProductController::class, 'destroy'],
+    );
+
     Flight::route('GET /clientes', [ClientController::class, 'index']);
     Flight::route('POST /clientes', [ClientController::class, 'store']);
     Flight::route('POST /clientes/@id', [ClientController::class, 'update']);
-    Flight::route('GET /clientes/@id/eliminar', [ClientController::class, 'destroy']);
+
+    Flight::route(
+      'GET /clientes/@id/eliminar',
+      [ClientController::class, 'destroy'],
+    );
+
     Flight::route('GET /ventas', [SaleController::class, 'index']);
     Flight::route('POST /ventas', [SaleController::class, 'store']);
     Flight::route('GET /ventas/@id', [SaleController::class, 'show']);
@@ -80,11 +99,24 @@ Flight::group('', static function () use ($redirectGuest): void {
     Flight::route('POST /ventas/@id/anular', [CancelSale::class, '__invoke']);
     Flight::route('GET /apartados', [LayawayController::class, 'index']);
     Flight::route('POST /apartados', [LayawayController::class, 'store']);
-    Flight::route('POST /apartados/@id/pagar', [PayLayaway::class, '__invoke']);
-    Flight::route('POST /apartados/@id/cancelar', [CancelLayaway::class, '__invoke']);
+
+    Flight::route(
+      'POST /apartados/@id/pagar',
+      [PayLayaway::class, '__invoke'],
+    );
+
+    Flight::route(
+      'POST /apartados/@id/cancelar',
+      [CancelLayaway::class, '__invoke'],
+    );
+
     Flight::route('GET /reparaciones', [RepairController::class, 'index']);
     Flight::route('POST /reparaciones', [RepairController::class, 'store']);
     Flight::route('GET /reparaciones/@id', [RepairController::class, 'show']);
-    Flight::route('POST /reparaciones/@id/pagar', [PayRepair::class, '__invoke']);
+
+    Flight::route(
+      'POST /reparaciones/@id/pagar',
+      [PayRepair::class, '__invoke'],
+    );
   }, [EnsureBusinessSelected::class, EnsureExchangeRateIsUpToDate::class]);
 }, [Authenticate::class]);
