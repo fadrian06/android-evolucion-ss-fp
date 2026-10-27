@@ -3,11 +3,13 @@
 declare(strict_types=1);
 
 use App\Models\Business;
+use App\Models\ExchangeRate;
 use Leaf\Auth;
 
 /**
  * @var Auth $auth
  * @var ?Business $business
+ * @var ?ExchangeRate $exchangeRate
  */
 
 $redirectGuest = $auth->config('redirect.guest');
@@ -33,7 +35,11 @@ $items = [
         ? $item['href'] === './'
         : str_contains($item['href'], ltrim($path, '/'));
 
-      $disable = !$business && $item['href'] !== './negocios';
+      $disable = !$business && $item['href'] !== './negocios'
+        || !$exchangeRate && !in_array($item['href'], [
+          './negocios',
+          './calculadora',
+        ]);
     ?>
 
     <a
