@@ -70,9 +70,13 @@ $container->singleton(
   Auth::class,
   static function () use ($container): Auth {
     $auth = new Auth;
-    $auth->config('timestamps', false);
-    $auth->config('unique', ['email']);
-    $auth->config('session', true);
+
+    $auth->config([
+      'timestamps' => false,
+      'unique' => ['email'],
+      'session' => true,
+    ]);
+
     $auth->dbConnection($container->get(PDO::class));
 
     return $auth;
