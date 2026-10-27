@@ -25,15 +25,21 @@ use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\EnsureBusinessSelected;
 use App\Http\Middleware\EnsureExchangeRateIsUpToDate;
 use App\Http\Middleware\RedirectIfAuthenticated;
+use Illuminate\Container\Container;
+use Leaf\Auth;
 
-Flight::group('', static function (): void {
-  Flight::route('GET /ingresar', [ShowLoginPage::class, '__invoke']);
-  Flight::route('POST /ingresar', [Login::class, '__invoke']);
+$auth = Container::getInstance()->get(Auth::class);
+$redirectLogin = $auth->config('redirect.login');
+$redirectGuest = $auth->config('redirect.guest');
+
+Flight::group('', static function () use ($redirectLogin): void {
+  Flight::route("GET $redirectLogin", [ShowLoginPage::class, '__invoke']);
+  Flight::route("POST $redirectLogin", [Login::class, '__invoke']);
   Flight::route('GET /registrarse', [ShowRegisterPage::class, '__invoke']);
   Flight::route('POST /registrarse', [Register::class, '__invoke']);
 }, [RedirectIfAuthenticated::class]);
 
-Flight::group('', static function (): void {
+Flight::group('', static function () use ($redirectGuest): void {
   Flight::route('GET /cerrar-sesion', [Logout::class, '__invoke']);
 
   Flight::route(
@@ -49,9 +55,14 @@ Flight::group('', static function (): void {
     [BusinessController::class, 'destroy']
   );
 
-  Flight::group('', static function (): void {
+  Flight::group('', static function () use ($redirectGuest): void {
     Flight::route('GET /negocios', [BusinessController::class, 'index']);
-    Flight::route('GET /', [ShowDashboardPage::class, '__invoke']);
+
+    Flight::route(
+      "GET $redirectGuest",
+      [ShowDashboardPage::class, '__invoke']
+    );
+
     Flight::route('GET /calculadora', [CalculatorController::class, 'index']);
     Flight::route('POST /calculadora/cotizacion', [CalculatorController::class, 'store']);
     Flight::route('GET /productos', [ProductController::class, 'index']);
