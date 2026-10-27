@@ -27,25 +27,35 @@ use Leaf\Auth;
 
   <?php if ($auth->user()): ?>
     <div class="app-shell">
-      <aside class="sidebar d-print-none">
-        <?php Flight::render('components/brand') ?>
-        <?php Flight::render('components/business-switcher') ?>
-        <?php Flight::render('components/nav') ?>
-        <?php Flight::render('components/profile') ?>
-      </aside>
-      <main class="content"><?= $slot ?></main>
+      <?php Flight::render('components/sidebar') ?>
+
+      <main class="content">
+        <?= $slot ?>
+      </main>
     </div>
   <?php else: ?>
-    <main class="auth-shell"><?= $slot ?></main>
+    <main class="auth-shell">
+      <?= $slot ?>
+    </main>
   <?php endif ?>
+
   <script>
     setTimeout(() => {
       document.querySelectorAll('.toast').forEach(toast => {
         toast.classList.add('is-leaving');
-        toast.addEventListener('transitionend', () => toast.remove(), { once: true });
+
+        toast.addEventListener(
+          'transitionend',
+          () => toast.remove(),
+          { once: true },
+        );
       });
     }, 5000);
   </script>
-  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <script
+    defer
+    src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js">
+  </script>
 </body>
 </html>
