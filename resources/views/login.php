@@ -1,9 +1,7 @@
 <section class="auth-card card">
   <div class="brand-auth"><?= strtolower($_ENV['APP_NAME']) ?></div>
   <h1 class="auth-card-title">Bienvenido de vuelta</h1>
-  <p class="auth-card-subtitle">
-    Inicia sesión para gestionar tu local.
-  </p>
+  <p class="auth-card-subtitle">Inicia sesión para gestionar tu local.</p>
 
   <form method="post" class="stack">
     <div class="field">
