@@ -83,6 +83,7 @@ $container->singleton(
       ): string => Password::hash($password, Password::BCRYPT, [
         'cost' => $_ENV['BCRYPT_ROUNDS'],
       ]),
+      'password.verify' => Password::verify(...),
       'unique' => ['email'],
       'session' => true,
     ]);
