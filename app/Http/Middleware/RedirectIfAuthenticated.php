@@ -18,10 +18,12 @@ final readonly class RedirectIfAuthenticated implements BeforeMiddleware
   #[Override]
   public function before(): void
   {
-    if ($this->auth->user()) {
-      Flight::redirect('/');
+    $redirectGuest = $this->auth->config('redirect.guest');
 
-      exit;
+    if ($this->auth->user()) {
+      Flight::redirect($redirectGuest);
+
+      return;
     }
   }
 }

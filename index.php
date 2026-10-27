@@ -87,6 +87,8 @@ $container->singleton(
       'unique' => ['email'],
       'session' => true,
       'session.lifetime' => (int) $_ENV['SESSION_LIFETIME'],
+      'redirect.login' => '/ingresar',
+      'redirect.guest' => '/',
     ]);
 
     $auth->dbConnection($container->get(PDO::class));
