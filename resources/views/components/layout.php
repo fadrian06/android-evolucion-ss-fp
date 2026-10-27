@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use App\Models\Business;
 use Leaf\Auth;
-use Leaf\Flash;
 use Leaf\Lingo;
 
 /** @var Auth $auth */
@@ -26,13 +25,6 @@ $items = [
   ['href' => './negocios', 'label' => 'Locales', 'icon' => '⌖'],
 ];
 
-$flashTypes = [
-  ['key' => 'errors', 'class' => 'toast--error'],
-  ['key' => 'warnings', 'class' => 'toast--warning'],
-  ['key' => 'successes', 'class' => 'toast--success'],
-  ['key' => 'notes', 'class' => 'toast--note'],
-];
-
 ?>
 
 <!doctype html>
@@ -46,15 +38,7 @@ $flashTypes = [
   <title>Orion · Gestión comercial</title>
 </head>
 <body>
-  <div class="toasts d-print-none">
-    <?php foreach ($flashTypes as ['key' => $key, 'class' => $class]): ?>
-      <?php foreach ((array) Flash::display($key) as $message): ?>
-        <div class="toast <?= $class ?>">
-          <?= $lingo->translate($message) ?>
-        </div>
-      <?php endforeach ?>
-    <?php endforeach ?>
-  </div>
+  <?php Flight::render('components/toast-container') ?>
 
   <?php if ($auth->user()): ?>
     <div class="app-shell">
