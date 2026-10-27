@@ -1,6 +1,6 @@
 {
   "require": {
-    "php": ">=8.3",
+    "php": ">=8.4.27",
     "flightphp/core": "^3.19",
     "ext-pdo_sqlite": "*",
     "leafs/auth": "^5.1",

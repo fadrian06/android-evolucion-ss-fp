@@ -3,7 +3,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
       - run: |
           composer install --no-dev
       - uses: SamKirkland/FTP-Deploy-Action@v4.4.0
@@ -14,8 +17,6 @@ jobs:
             **/tests/**
             .env
             composer.*
-            package-lock.json
-            package.json
             phpunit.*
           log-level: minimal
           password: ${{ secrets.ftp_password }}
@@ -27,6 +28,3 @@ jobs:
 on:
   push:
     branches: ['main']
-
-permissions:
-  contents: read
