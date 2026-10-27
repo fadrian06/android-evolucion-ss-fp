@@ -9,11 +9,11 @@ use Leaf\Auth;
 ?>
 
 <a class="profile" href="./cerrar-sesion">
-  <span>
+  <span class="profile-avatar">
     <?= strtoupper(substr($auth->user()->email, 0, 1)) ?>
   </span>
-  <small>
+  <small class="profile-email">
     <?= $auth->user()->email ?>
   </small>
-  <b>Salir</b>
+  <b class="profile-logout">Salir</b>
 </a>

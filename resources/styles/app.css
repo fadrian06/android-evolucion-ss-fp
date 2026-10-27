@@ -38,6 +38,8 @@
   --shadow-dark: #0000001a;
   --shadow-light: #15203c12;
   --shadow: 0 12px 32px light-dark(var(--shadow-light), var(--shadow-dark));
+
+  --sidebar-link: #a9a4ff;
 }
 
 body {
@@ -118,7 +120,7 @@ button {
 
 .business-switcher-link {
   font-size: 12px;
-  color: #a9a4ff;
+  color: var(--sidebar-link);
 }
 
 .eyebrow {
@@ -162,38 +164,38 @@ button {
 
 .profile {
   margin-top: auto;
-  border-top: 1px solid #344054;
+  border-top: 1px solid var(--line-dark);
   padding: 18px 8px 0;
   display: grid;
   grid-template-columns: 30px minmax(0, 1fr) auto;
   align-items: center;
   gap: 9px;
   max-width: 100%;
-  overflow: hidden
+  overflow: hidden;
 }
 
-.profile>span {
+.profile-avatar {
   display: grid;
   place-items: center;
   width: 30px;
   height: 30px;
-  background: #635bff;
+  background: var(--brand);
   border-radius: 50%;
-  color: #fff;
-  font-weight: 800
+  color: white;
+  font-weight: 800;
 }
 
-.profile small {
+.profile-email {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap
+  white-space: nowrap;
 }
 
-.profile b {
+.profile-logout {
   font-size: 11px;
-  color: #a9a4ff;
-  white-space: nowrap
+  color: var(--sidebar-link);
+  white-space: nowrap;
 }
 
 .content {
