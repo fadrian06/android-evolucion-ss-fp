@@ -19,6 +19,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read Collection<int, Sale> $sales
  * @property-read Collection<int, Repair> $repairs
  * @property-read Collection<int, Layaway> $layaways
+ * @property-read int $batches_count
+ * @property-read int $items_count
+ * @property-read int $sales_count
+ * @property-read int $repairs_count
+ * @property-read int $layaways_count
  */
 final class Business extends Model
 {
@@ -53,5 +58,18 @@ final class Business extends Model
   public function layaways(): HasMany
   {
     return $this->hasMany(Layaway::class);
+  }
+
+  public function hasAssociatedRecords(): bool
+  {
+    $associatedRecords = (
+      $this->batches_count
+      + $this->items_count
+      + $this->sales_count
+      + $this->repairs_count
+      + $this->layaways_count
+    );
+
+    return $associatedRecords > 0;
   }
 }
