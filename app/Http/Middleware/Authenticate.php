@@ -15,8 +15,10 @@ final readonly class Authenticate implements BeforeMiddleware
   #[Override]
   public function before(): void
   {
+    $redirectLogin = $this->auth->config('redirect.login');
+
     if (!$this->auth->user()) {
-      Flight::redirect('/ingresar');
+      Flight::redirect($redirectLogin);
 
       return;
     }
