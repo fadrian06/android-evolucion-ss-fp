@@ -128,36 +128,36 @@ button {
   color: var(--muted)
 }
 
-nav {
+.nav {
   display: grid;
   gap: 4px
 }
 
-nav a {
+.nav-item {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 11px 12px;
   border-radius: 9px;
   font-weight: 600;
-  color: #98a2b3
+  color: var(--muted-dark);
 }
 
-nav a span {
+.nav-icon {
   width: 18px;
   text-align: center;
-  font-size: 17px
+  font-size: 17px;
 }
 
-nav a:hover,
-nav .is-active {
+.nav-item:hover,
+.nav .is-active {
   background: #293447;
-  color: #fff
+  color: white;
 }
 
-nav .is-disabled {
+.nav .is-disabled {
   pointer-events: none;
-  opacity: .38
+  opacity: .38;
 }
 
 .profile {

@@ -28,7 +28,7 @@ $items = [
 
 ?>
 
-<nav>
+<nav class="nav">
   <?php foreach ($items as $item): ?>
     <?php
       $active = $path === '/'
@@ -44,19 +44,20 @@ $items = [
 
     <a
       class="
+        nav-item
         <?= $active ? 'is-active' : '' ?>
         <?= $disable ? 'is-disabled' : '' ?>
       "
       href="<?= $item['href'] ?>">
-      <span>
+      <span class="nav-icon">
         <?= $item['icon'] ?>
       </span>
       <?= $item['label'] ?>
     </a>
   <?php endforeach ?>
 
-  <a class="mobile-logout" href="./cerrar-sesion">
-    <span>↪</span>
+  <a class="nav-item mobile-logout" href="./cerrar-sesion">
+    <span class="nav-icon">↪</span>
     Salir
   </a>
 </nav>
