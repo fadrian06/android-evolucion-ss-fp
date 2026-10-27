@@ -27,4 +27,23 @@ use Leaf\Lingo;
       </div>
     <?php endforeach ?>
   <?php endforeach ?>
+
+  <template x-for="message in messages || []">
+    <div
+      x-data="{ leaving: false }"
+      x-init="
+        setTimeout(() => {
+          leaving = true;
+        }, 5000);
+      "
+      @transitionend="$el.remove()"
+      :class="{
+        'is-leaving': leaving,
+        <?php foreach (FlashKey::cases() as $key): ?>
+          '<?= $key->class() ?>': message.key === '<?= $key->key() ?>',
+        <?php endforeach ?>
+      }"
+      x-text="message.text">
+    </div>
+  </template>
 </div>
