@@ -22,7 +22,7 @@ return new readonly class implements Migration
           $blueprint->foreignIdFor($user::class)->constrained();
           $blueprint->string('name');
           $blueprint->enum('category', ['phone', 'accessory', 'spare_part']);
-          $blueprint->decimal('price', 14, 2);
+          $blueprint->decimal('price');
           $blueprint->unique([$user->getForeignKey(), 'name']);
         },
       );
