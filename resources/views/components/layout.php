@@ -17,10 +17,14 @@ use Leaf\Auth;
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
   <meta name="color-scheme" content="light dark">
+  <title>Orion · Gestión comercial</title>
   <base href="<?= str_replace('index.php', '', $_SERVER['SCRIPT_NAME']) ?>">
   <link rel="icon" href="./resources/images/favicon.svg">
   <link rel="stylesheet" href="./resources/styles/app.css">
-  <title>Orion · Gestión comercial</title>
+  <script
+    defer
+    src="https://cdn.jsdelivr.net/npm/alpinejs@3.17.5/dist/cdn.min.js">
+  </script>
 </head>
 <body>
   <?php Flight::render('components/toast-container') ?>
@@ -51,11 +55,6 @@ use Leaf\Auth;
         );
       });
     }, 5000);
-  </script>
-
-  <script
-    defer
-    src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js">
   </script>
 </body>
 </html>
