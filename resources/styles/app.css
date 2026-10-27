@@ -1,16 +1,43 @@
 :root {
   --bg-dark: #111827;
-  --bg: light-dark(#f5f7fb, var(--bg-dark));
-  --surface: light-dark(white, #1d2939);
-  --ink: light-dark(#182230, white);
-  --muted: light-dark(#667085, #98a2b3);
-  --line: light-dark(#e7eaf0, #344054);
-  --brand: #635bff;
+  --bg-light: #f5f7fb;
+  --bg: light-dark(var(--bg-light), var(--bg-dark));
+
+  --surface-dark: #1d2939;
+  --surface-light: white;
+  --surface: light-dark(var(--surface-light), var(--surface-dark));
+
+  --ink-dark: white;
+  --ink-light: #182230;
+  --ink: light-dark(var(--ink-light), var(--ink-dark));
+
+  --muted-dark: #98a2b3;
+  --muted-light: #667085;
+  --muted: light-dark(var(--muted-light), var(--muted-dark));
+
+  --line-dark: #344054;
+  --line-light: #e7eaf0;
+  --line: light-dark(var(--line-light), var(--line-dark));
+
   --brand-dark: #4e46d8;
-  --danger: light-dark(#d92d20, #fecdca);
-  --success: light-dark(#039855, #12b76a);
-  --warning: light-dark(#dc6803, #f79009);
-  --shadow: 0 12px 32px light-dark(#15203c12, #0000001a);
+  --brand-light: #635bff;
+  --brand: var(--brand-light);
+
+  --danger-dark: #fecdca;
+  --danger-light: #d92d20;
+  --danger: light-dark(var(--danger-light), var(--danger-dark));
+
+  --success-dark: #12b76a;
+  --success-light: #039855;
+  --success: light-dark(var(--success-light), var(--success-dark));
+
+  --warning-dark: #f79009;
+  --warning-light: #dc6803;
+  --warning: light-dark(var(--warning-light), var(--warning-dark));
+
+  --shadow-dark: #0000001a;
+  --shadow-light: #15203c12;
+  --shadow: 0 12px 32px light-dark(var(--shadow-light), var(--shadow-dark));
 }
 
 * {
