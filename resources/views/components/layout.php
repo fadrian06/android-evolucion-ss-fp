@@ -22,6 +22,22 @@ use Leaf\Auth;
     });
 
     <?php // TODO: Send error to backend for logging ?>
+  "
+  @offline.window="
+    messages.push({
+      key: '<?= FlashKey::Errors->key() ?>',
+      text: 'No hay conexión a internet. Algunas funciones pueden no estar disponibles.',
+    });
+
+    <?php // TODO: Disable some features that require internet connection ?>
+  "
+  @online.window="
+    messages.push({
+      key: '<?= FlashKey::Successes->key() ?>',
+      text: 'Conexión a internet restaurada. Todas las funciones están disponibles.',
+    });
+
+    <?php // TODO: Re-enable features that require internet connection ?>
   ">
 
 <head>

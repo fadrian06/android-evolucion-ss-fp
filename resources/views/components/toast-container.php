@@ -24,11 +24,14 @@ use Leaf\Lingo;
     <?php endforeach ?>
   <?php endforeach ?>
 
-  <template x-for="message in messages || []">
+  <template x-for="(message, index) in messages || []">
     <div
       x-data="{ leaving: false }"
       x-init="setTimeout(() => leaving = true, 5000)"
-      @transitionend="$el.remove()"
+      @transitionend="
+        $el.remove();
+        messages.splice(index, 1);
+      "
       :class="{
         'is-leaving': leaving,
         <?php foreach (FlashKey::cases() as $key): ?>
