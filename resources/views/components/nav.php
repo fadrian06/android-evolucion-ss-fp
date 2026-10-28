@@ -13,7 +13,7 @@ use Leaf\Auth;
  */
 
 $redirectGuest = $auth->config('redirect.guest');
-$path = Flight::request()->url;
+$path = explode('?', Flight::request()->url)[0];
 
 $items = [
   ['href' => ".$redirectGuest", 'label' => 'Inicio', 'icon' => '⌂'],
