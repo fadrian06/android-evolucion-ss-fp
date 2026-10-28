@@ -58,22 +58,27 @@ use Illuminate\Database\Eloquent\Collection;
   style="border:0;padding:0;width:min(520px,90vw)">
   <form class="panel stack" method="post" action="./negocios">
     <h2>Registrar nuevo local</h2>
+
     <div class="field">
       <label>Nombre</label>
       <input name="name" required placeholder="Nombre comercial">
     </div>
+
     <div class="field">
       <label>RIF</label>
       <input name="rif" required placeholder="J-00000000-0">
     </div>
+
     <div class="field">
       <label>Dirección</label>
       <input name="address" required placeholder="Dirección del local">
     </div>
+
     <div class="field">
       <label>Teléfono</label>
       <input name="phone" required placeholder="0412-0000000">
     </div>
+
     <div class="actions">
       <button class="btn btn-primary">Guardar local</button>
       <button
@@ -94,29 +99,20 @@ use Illuminate\Database\Eloquent\Collection;
           <?= strtoupper($item->name[0]) ?>
         </div>
         <div>
-          <span class="eyebrow">
-            LOCAL
-            <?= "#$item->id" ?>
-          </span>
-          <h2 style="margin:2px 0;font-size:18px">
-            <?= $item->name ?>
-          </h2>
+          <span class="eyebrow">LOCAL #<?= $item->id ?></span>
+          <h2 style="margin:2px 0;font-size:18px"><?= $item->name ?></h2>
         </div>
       </div>
+
       <div
         class="stack"
         style="gap:8px;margin-bottom:20px;color:var(--muted)">
         <span>
           <strong style="color:var(--ink)">RIF</strong>
-          ·
-          <?= $item->rif ?>
+          · <?= $item->rif ?>
         </span>
-        <span>
-          <?= $item->address ?>
-        </span>
-        <span>
-          <?= $item->phone ?>
-        </span>
+        <span><?= $item->address ?></span>
+        <span><?= $item->phone ?></span>
       </div>
       <div class="actions">
         <a
@@ -134,7 +130,8 @@ use Illuminate\Database\Eloquent\Collection;
             <button
               class="btn btn-danger btn-sm"
               type="button"
-              disabled style="cursor:not-allowed;opacity:.45;filter:grayscale(1)">
+              disabled
+              style="cursor:not-allowed;opacity:.45;filter:grayscale(1)">
               Eliminar
             </button>
           </span>
@@ -159,38 +156,28 @@ use Illuminate\Database\Eloquent\Collection;
       class="panel stack"
       method="post"
       action="./negocios/<?= $item->id ?>">
-      <h2>
-        Editar
-        <?= $item->name ?>
-      </h2>
+      <h2>Editar <?= $item->name ?></h2>
+
       <div class="field">
         <label>Nombre</label>
-        <input
-          name="name"
-          value="<?= $item->name ?>"
-          required>
+        <input name="name" value="<?= $item->name ?>" required>
       </div>
+
       <div class="field">
         <label>RIF</label>
-        <input
-          name="rif"
-          value="<?= $item->rif ?>"
-          required>
+        <input name="rif" value="<?= $item->rif ?>" required>
       </div>
+
       <div class="field">
         <label>Dirección</label>
-        <input
-          name="address"
-          value="<?= $item->address ?>"
-          required>
+        <input name="address" value="<?= $item->address ?>" required>
       </div>
+
       <div class="field">
         <label>Teléfono</label>
-        <input
-          name="phone"
-          value="<?= $item->phone ?>"
-          required>
+        <input name="phone" value="<?= $item->phone ?>" required>
       </div>
+
       <div class="actions">
         <button class="btn btn-primary">Guardar cambios</button>
         <button

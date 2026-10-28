@@ -63,22 +63,27 @@ use Illuminate\Database\Eloquent\Collection;
   style="border:0;padding:0;width:min(520px,90vw)">
   <form class="panel stack" method="post" action="./clientes">
     <h2>Registrar cliente</h2>
+
     <div class="field">
       <label>Nombre</label>
       <input name="name" required placeholder="Nombre completo">
     </div>
+
     <div class="field">
       <label>Cédula</label>
       <input name="id_card" required placeholder="V-00000000">
     </div>
+
     <div class="field">
       <label>Teléfono</label>
       <input name="phone" required placeholder="0412-0000000">
     </div>
+
     <div class="field">
       <label>Dirección</label>
       <input name="address" required placeholder="Dirección">
     </div>
+
     <div class="actions">
       <button class="btn btn-primary">Guardar cliente</button>
       <button
@@ -99,36 +104,29 @@ use Illuminate\Database\Eloquent\Collection;
           <?= strtoupper(substr($client->name, 0, 2)) ?>
         </div>
         <div>
-          <span class="eyebrow">
-            CLIENTE
-            <?= "#$client->id" ?>
-          </span>
-          <h2 style="margin:2px 0;font-size:18px">
-            <?= $client->name ?>
-          </h2>
+          <span class="eyebrow">CLIENTE <?= "#$client->id" ?></span>
+          <h2 style="margin:2px 0;font-size:18px"><?= $client->name ?></h2>
         </div>
       </div>
+
       <div
         class="stack"
         style="gap:8px;margin-bottom:20px;color:var(--muted)">
         <span>
           <strong style="color:var(--ink)">C.I.</strong>
-          ·
-          <?= $client->id_card ?>
+          · <?= $client->id_card ?>
         </span>
-        <span>
-          <?= $client->phone ?>
-        </span>
-        <span>
-          <?= $client->address ?>
-        </span>
+        <span><?= $client->phone ?></span>
+        <span><?= $client->address ?></span>
       </div>
+
       <div class="actions">
         <button
           class="btn btn-secondary btn-sm"
           onclick="document.querySelector('#edit-<?= $client->id ?>').showModal()">
           Editar
         </button>
+
         <?php if ($client->hasAssociatedRecords()): ?>
           <span class="disabled-client-action">
             <button
@@ -165,15 +163,11 @@ use Illuminate\Database\Eloquent\Collection;
       method="post"
       action="./clientes/<?= $client->id ?>">
       <h2>Editar cliente</h2>
+
       <?php foreach (['name' => 'Nombre', 'id_card' => 'Cédula', 'phone' => 'Teléfono', 'address' => 'Dirección'] as $key => $label): ?>
         <div class="field">
-          <label>
-            <?= $label ?>
-          </label>
-          <input
-            name="<?= $key ?>"
-            value="<?= $client->$key ?>"
-            required>
+          <label><?= $label ?></label>
+          <input name="<?= $key ?>" value="<?= $client->$key ?>" required>
         </div>
       <?php endforeach ?>
 

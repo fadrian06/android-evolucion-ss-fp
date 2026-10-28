@@ -27,15 +27,9 @@ declare(strict_types=1);
         direction: 'usd',
         rate: <?= json_encode($rate) ?>,
       }">
-      <span class="eyebrow">
-        TASA
-        <?= strtoupper($source) ?>
-      </span>
-      <h2>
-        Bs.
-        <?= number_format($rate, 2, ',', '.') ?>
-        / USD
-      </h2>
+      <span class="eyebrow">TASA <?= strtoupper($source) ?></span>
+      <h2>Bs. <?= number_format($rate, 2, ',', '.') ?> / USD</h2>
+
       <div class="stack">
         <div class="field">
           <label>Monto</label>
@@ -46,6 +40,7 @@ declare(strict_types=1);
             step="0.01"
             placeholder="0,00">
         </div>
+
         <div class="field">
           <label>Conversión</label>
           <select x-model="direction">
@@ -53,6 +48,7 @@ declare(strict_types=1);
             <option value="ves">Bolívares a dólares</option>
           </select>
         </div>
+
         <div class="metric card">
           <span>Resultado</span>
           <strong x-text="amount === '' ? '—' : (direction === 'usd' ? 'Bs. ' + (amount * rate).toFixed(2) : '$' + (amount / rate).toFixed(2))">
@@ -70,11 +66,7 @@ declare(strict_types=1);
     <?php if ($bcvRate !== null): ?>
       <p style="margin:0;color:var(--muted);font-size:12px">
         Referencia BCV actualizada:
-        <strong>
-          Bs.
-          <?= number_format($bcvRate, 2, ',', '.') ?>
-          / USD
-        </strong>
+        <strong>Bs. <?= number_format($bcvRate, 2, ',', '.') ?> / USD</strong>
       </p>
     <?php endif ?>
 
