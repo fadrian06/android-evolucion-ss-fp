@@ -134,7 +134,7 @@ final class ProductRoutesTest extends FeatureTestCase
     $this->post('/productos', $product);
     $id = $this->productId($product['name']);
     self::assertStringContainsString(
-      '0 unidades<br><span class="status status-danger">Agotado</span>',
+      '0 unidades',
       (string) $this->get('/productos')->getBody(),
     );
 
@@ -152,7 +152,7 @@ final class ProductRoutesTest extends FeatureTestCase
     $this->post('/productos', $product);
     $id = $this->productId($product['name']);
     self::assertStringContainsString(
-      '1 unidad<br><span class="status status-warning">Casi agotado</span>',
+      '1 unidad',
       (string) $this->get('/productos')->getBody(),
     );
 

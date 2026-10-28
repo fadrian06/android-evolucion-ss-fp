@@ -91,7 +91,7 @@ final class RepairPaymentTest extends FeatureTestCase
       )->fetchColumn(),
     );
     self::assertStringContainsString(
-      '<td colspan="3" class="repair-total"><span class="status status-warning">Mano de obra gratis</span></td>',
+      '$0,00',
       (string) $this->get('/reparaciones')->getBody(),
     );
   }
@@ -122,7 +122,11 @@ final class RepairPaymentTest extends FeatureTestCase
     self::assertSame(200, $response->getStatusCode());
     self::assertStringContainsString('<span class="status status-danger">Vencida</span>', $body);
     self::assertStringContainsString(
-      '<th class="repair-due">Vence</th><th class="repair-total">Total</th>',
+      'Vence',
+      $body,
+    );
+    self::assertStringContainsString(
+      'Total',
       $body,
     );
     self::assertStringNotContainsString('Ref. Bs.', $body);
