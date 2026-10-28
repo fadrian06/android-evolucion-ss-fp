@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property-read int $id
- * @property-read string $amount
+ * @property-read float $amount
  * @property-read string $method
- * @property-read null|string $exchange_rate
+ * @property-read null|float $exchange_rate
  */
 final class RepairPayment extends Model
 {

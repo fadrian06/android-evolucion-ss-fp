@@ -21,6 +21,7 @@ use Override;
  * @property-read Business $business
  * @property-read Client $client
  * @property-read Collection<int, RepairPayment> $payments
+ * @property-read float $price_ves
  */
 final class Repair extends Model
 {
