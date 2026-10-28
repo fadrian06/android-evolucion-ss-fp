@@ -17,6 +17,8 @@ use Override;
  * @property-read Collection<int, Batch> $batches
  * @property-read Collection<int, Item> $items
  * @property-read Collection<int, Layaway> $layaways
+ * @property-read int $items_count
+ * @property-read int $layaways_count
  */
 final class Product extends Model
 {
@@ -58,5 +60,12 @@ final class Product extends Model
     }
 
     return $stock;
+  }
+
+  public function hasAssociatedRecords(): bool
+  {
+    $associatedRecords = $this->items_count + $this->layaways_count;
+
+    return $associatedRecords > 0;
   }
 }
