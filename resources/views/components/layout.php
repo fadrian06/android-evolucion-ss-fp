@@ -9,14 +9,13 @@ use Leaf\Auth;
  * @var string $slot
  */
 
-$baseHref = str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
-
 ?>
 
 <!doctype html>
 <html x-data='{
   messages: [],
 }'>
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
@@ -25,7 +24,7 @@ $baseHref = str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
     <?= mb_convert_case($_ENV['APP_NAME'], MB_CASE_TITLE) ?>
     · Gestión comercial
   </title>
-  <base href="<?= $baseHref ?>">
+  <base href="<?= str_replace('index.php', '', $_SERVER['SCRIPT_NAME']) ?>">
   <link rel="icon" href="./resources/images/favicon.svg">
   <link
     rel="stylesheet"
@@ -36,6 +35,7 @@ $baseHref = str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
     src="https://cdn.jsdelivr.net/npm/alpinejs@3.17.5/dist/cdn.min.js">
   </script>
 </head>
+
 <body>
   <?php Flight::render('components/toast-container') ?>
 
@@ -43,14 +43,11 @@ $baseHref = str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
     <div class="app-shell">
       <?php Flight::render('components/sidebar') ?>
 
-      <main class="content">
-        <?= $slot ?>
-      </main>
+      <main class="content"><?= $slot ?></main>
     </div>
   <?php else: ?>
-    <main class="auth-shell">
-      <?= $slot ?>
-    </main>
+    <main class="auth-shell"><?= $slot ?></main>
   <?php endif ?>
 </body>
+
 </html>
