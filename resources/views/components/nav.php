@@ -31,9 +31,7 @@ $items = [
 <nav class="nav">
   <?php foreach ($items as $item): ?>
     <?php
-      $active = $path === '/'
-        ? $item['href'] === './'
-        : str_contains($item['href'], ltrim($path, '/'));
+      $active = $path === ltrim($item['href'], '.');
 
       $disable = !$business && $item['href'] !== './negocios'
         || !$exchangeRate && !in_array($item['href'], [
@@ -49,9 +47,7 @@ $items = [
         <?= $disable ? 'is-disabled' : '' ?>
       "
       href="<?= $item['href'] ?>">
-      <span class="nav-icon">
-        <?= $item['icon'] ?>
-      </span>
+      <span class="nav-icon"><?= $item['icon'] ?></span>
       <?= $item['label'] ?>
     </a>
   <?php endforeach ?>
