@@ -15,11 +15,7 @@ use Leaf\Lingo;
     <?php foreach (Flash::retrieve($key) as $message): ?>
       <div
         x-data="{ leaving: false }"
-        x-init="
-          setTimeout(() => {
-            leaving = true;
-          }, 5000);
-        "
+        x-init="setTimeout(() => leaving = true, 5000)"
         @transitionend="$el.remove()"
         class="<?= $key->class() ?>"
         :class="{ 'is-leaving': leaving }">
@@ -31,11 +27,7 @@ use Leaf\Lingo;
   <template x-for="message in messages || []">
     <div
       x-data="{ leaving: false }"
-      x-init="
-        setTimeout(() => {
-          leaving = true;
-        }, 5000);
-      "
+      x-init="setTimeout(() => leaving = true, 5000)"
       @transitionend="$el.remove()"
       :class="{
         'is-leaving': leaving,

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\FlashKey;
 use Leaf\Auth;
 
 /**
@@ -12,9 +13,16 @@ use Leaf\Auth;
 ?>
 
 <!doctype html>
-<html x-data='{
-  messages: [],
-}'>
+<html
+  x-data="{ messages: [] }"
+  @error.window="
+    messages.push({
+      key: '<?= FlashKey::Errors->key() ?>',
+      text: $event.error.message,
+    });
+
+    <?php // TODO: Send error to backend for logging ?>
+  ">
 
 <head>
   <meta charset="utf-8">
