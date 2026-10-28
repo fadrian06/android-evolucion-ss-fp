@@ -18,7 +18,6 @@ use App\Models\Business;
   </strong>
 
   <a href="./negocios" class="business-switcher-link">
-    <?= $business ? 'Cambiar local' : 'Seleccionar local' ?>
-    →
+    <?= $business ? 'Cambiar local' : 'Seleccionar local' ?> →
   </a>
 </div>
