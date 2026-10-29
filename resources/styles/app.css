@@ -460,7 +460,7 @@ button {
   min-height: 100vh;
   place-items: center;
   padding: 24px;
-  background: radial-gradient(circle at 20% 20%, #e4e2ff, transparent 30%), var(--bg);
+  background: radial-gradient(circle at 20% 20%, light-dark(#e4e2ff, #1d2939), transparent 30%), var(--bg);
   box-sizing: border-box;
 }
 
