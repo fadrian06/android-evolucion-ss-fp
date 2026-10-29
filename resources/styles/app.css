@@ -134,6 +134,7 @@ button {
   align-content: start;
   overflow-y: auto;
   scrollbar-width: thin;
+  padding-right: 4px;
 }
 
 .nav-item {
