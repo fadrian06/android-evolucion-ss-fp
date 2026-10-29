@@ -177,7 +177,6 @@ button {
 .profile-avatar {
   display: grid;
   place-items: center;
-  width: 30px;
   height: 30px;
   background: var(--brand);
   border-radius: 50%;
@@ -186,16 +185,13 @@ button {
 }
 
 .profile-email {
-  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .profile-logout {
   font-size: 11px;
   color: var(--sidebar-link);
-  white-space: nowrap;
 }
 
 .content {
