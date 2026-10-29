@@ -414,31 +414,6 @@ button {
   flex: 1;
 }
 
-.drawer {
-  margin-bottom: 20px
-}
-
-.drawer summary {
-  cursor: pointer;
-  list-style: none;
-  padding: 13px 16px;
-  font-weight: 800
-}
-
-.drawer summary::-webkit-details-marker {
-  display: none
-}
-
-.drawer[open] summary {
-  border-bottom: 1px solid var(--line)
-}
-
-.drawer .panel {
-  box-shadow: none;
-  border: 0;
-  border-radius: 0
-}
-
 .actions {
   display: flex;
   gap: 7px;
