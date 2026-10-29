@@ -240,11 +240,17 @@ use Illuminate\Database\Eloquent\Collection;
             <?php if ($stock === 0): ?>
               0 unidades
               <br>
-              <span class="status status-danger">Agotado</span>
+              <?php Flight::render('components/status', [
+                'variant' => 'danger',
+                'text' => 'Agotado',
+              ]) ?>
             <?php elseif ($stock === 1): ?>
               1 unidad
               <br>
-              <span class="status status-warning">Casi agotado</span>
+              <?php Flight::render('components/status', [
+                'variant' => 'warning',
+                'text' => 'Casi agotado',
+              ]) ?>
             <?php else: ?>
               <?= $stock ?> unidades
             <?php endif ?>

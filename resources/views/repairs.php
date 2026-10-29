@@ -283,13 +283,19 @@ use Illuminate\Database\Eloquent\Collection;
 
             <?php if ($repair->isOverdue()): ?>
               <br>
-              <span class="status status-danger">Vencida</span>
+              <?php Flight::render('components/status', [
+                'variant' => 'danger',
+                'text' => 'Vencida',
+              ]) ?>
             <?php endif ?>
           </td>
 
           <?php if ($repair->price === 0.0): ?>
             <td colspan="3" class="repair-total">
-              <span class="status status-warning">Mano de obra gratis</span>
+              <?php Flight::render('components/status', [
+                'variant' => 'warning',
+                'text' => 'Mano de obra gratis',
+              ]) ?>
             </td>
           <?php else: ?>
             <td class="repair-total">
@@ -300,7 +306,10 @@ use Illuminate\Database\Eloquent\Collection;
             </td>
             <td class="repair-remaining">
               <?php if ($remainingAmount === 0.0): ?>
-                <span class="status status-success">Pagado</span>
+                <?php Flight::render('components/status', [
+                  'variant' => 'success',
+                  'text' => 'Pagado',
+                ]) ?>
               <?php else: ?>
                 <strong>
                   $<?= number_format($remainingAmount, 2, ',', '.') ?>

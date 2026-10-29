@@ -330,14 +330,20 @@ use Illuminate\Database\Eloquent\Collection;
           </td>
           <td class="sale-paid">
             <?php if ($sale->getTotalPaid() === 0.0): ?>
-              <span class="status status-warning">Sin pagos</span>
+              <?php Flight::render('components/status', [
+                'variant' => 'warning',
+                'text' => 'Sin pagos',
+              ]) ?>
             <?php else: ?>
               $<?= number_format($sale->getTotalPaid(), 2, ',', '.') ?>
             <?php endif ?>
           </td>
           <td class="sale-remaining">
             <?php if ($remainingAmount === 0.0): ?>
-              <span class="status status-success">Pagado</span>
+              <?php Flight::render('components/status', [
+                'variant' => 'success',
+                'text' => 'Pagado',
+              ]) ?>
             <?php else: ?>
               $<?= number_format($remainingAmount, 2, ',', '.') ?>
             <?php endif ?>
@@ -351,7 +357,10 @@ use Illuminate\Database\Eloquent\Collection;
             </a>
 
             <?php if ($sale->cancelled_at): ?>
-              <span class="status status-danger">Anulada</span>
+              <?php Flight::render('components/status', [
+                'variant' => 'danger',
+                'text' => 'Anulada',
+              ]) ?>
             <?php endif ?>
 
             <?php if (!$sale->cancelled_at && $remainingAmount > 0): ?>

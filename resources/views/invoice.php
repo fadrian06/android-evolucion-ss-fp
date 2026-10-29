@@ -23,7 +23,10 @@ use App\Models\Sale;
       <p><?= $invoice->created_at->format('d/m/Y') ?></p>
 
       <?php if ($invoice->cancelled_at): ?>
-        <span class="status status-danger">ANULADA</span>
+        <?php Flight::render('components/status', [
+          'variant' => 'danger',
+          'text' => 'ANULADA',
+        ]) ?>
       <?php endif ?>
     </div>
   </header>

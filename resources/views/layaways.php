@@ -242,7 +242,10 @@ use Illuminate\Database\Eloquent\Collection;
           </td>
           <td class="layaway-remaining">
             <?php if ($remainingAmount === 0.0): ?>
-              <span class="status status-success">Pagado</span>
+              <?php Flight::render('components/status', [
+                'variant' => 'success',
+                'text' => 'Pagado',
+              ]) ?>
             <?php else: ?>
               <strong>
                 $<?= number_format($remainingAmount, 2, ',', '.') ?>
@@ -251,7 +254,10 @@ use Illuminate\Database\Eloquent\Collection;
           </td>
           <td class="actions">
             <?php if ($item->cancelled_at): ?>
-              <span class="status status-danger">Cancelado</span>
+              <?php Flight::render('components/status', [
+                'variant' => 'danger',
+                'text' => 'Cancelado',
+              ]) ?>
             <?php elseif ($remainingAmount > 0): ?>
               <button
                 type="button"
