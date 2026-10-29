@@ -473,12 +473,12 @@ button {
 .auth-card-title {
   margin: 15px 0 5px;
   font-size: 30px;
-  letter-spacing: -1px
+  letter-spacing: -1px;
 }
 
 .auth-card-subtitle {
   margin: 0 0 28px;
-  color: var(--muted)
+  color: var(--muted);
 }
 
 .auth-card-footer {
@@ -492,7 +492,7 @@ button {
 }
 
 .auth-card .btn {
-  width: 100%
+  width: 100%;
 }
 
 .brand-auth {
