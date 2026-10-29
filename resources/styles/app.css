@@ -283,12 +283,12 @@ button {
   padding: 20px
 }
 
-.metric strong {
+.metric-value {
   font-size: 25px;
   letter-spacing: -.5px
 }
 
-.metric span {
+.metric-label {
   display: block;
   color: var(--muted);
   font-size: 12px

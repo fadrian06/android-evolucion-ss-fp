@@ -48,8 +48,8 @@ declare(strict_types=1);
         </div>
 
         <div class="metric card">
-          <span>Resultado</span>
-          <strong x-text="amount === '' ? '—' : (direction === 'usd' ? 'Bs. ' + (amount * rate).toFixed(2) : '$' + (amount / rate).toFixed(2))">
+          <span class="metric-label">Resultado</span>
+          <strong class="metric-value" x-text="amount === '' ? '—' : (direction === 'usd' ? 'Bs. ' + (amount * rate).toFixed(2) : '$' + (amount / rate).toFixed(2))">
           </strong>
         </div>
       </div>
