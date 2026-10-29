@@ -10,13 +10,11 @@ declare(strict_types=1);
 
 ?>
 
-<header class="page-head">
-  <div>
-    <span class="eyebrow">HERRAMIENTA</span>
-    <h1>Calculadora</h1>
-    <p>Convierte con la cotización vigente.</p>
-  </div>
-</header>
+<?php Flight::render('components/page-head', [
+  'eyebrow' => 'HERRAMIENTA',
+  'title' => 'Calculadora',
+  'description' => 'Convierte con la cotización vigente.',
+]) ?>
 
 <div class="grid grid-2">
   <?php if ($rate !== null): ?>

@@ -148,21 +148,13 @@ use Illuminate\Database\Eloquent\Collection;
   }
 </style>
 
-<header class="page-head">
-  <div>
-    <span class="eyebrow">SERVICIO TÉCNICO</span>
-    <h1>Reparaciones</h1>
-    <p>
-      Registra el servicio acordado en USD y cobra cada abono con su método
-      real.
-    </p>
-  </div>
-  <button
-    class="btn btn-primary"
-    onclick="document.querySelector('#new-repair').showModal()">
-    + Nueva reparación
-  </button>
-</header>
+<?php Flight::render('components/page-head', [
+  'eyebrow' => 'SERVICIO TÉCNICO',
+  'title' => 'Reparaciones',
+  'description' => 'Registra el servicio acordado en USD y cobra cada abono con su método real.',
+  'buttonText' => '+ Nueva reparación',
+  'buttonAction' => "document.querySelector('#new-repair').showModal()",
+]) ?>
 
 <dialog class="card repair-modal" id="new-repair">
   <form

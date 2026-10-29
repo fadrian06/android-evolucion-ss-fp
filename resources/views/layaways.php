@@ -62,18 +62,13 @@ use Illuminate\Database\Eloquent\Collection;
   }
 </style>
 
-<header class="page-head">
-  <div>
-    <span class="eyebrow">RESERVAS</span>
-    <h1>Apartados</h1>
-    <p>Productos reservados, pagos parciales y stock protegido.</p>
-  </div>
-  <button
-    class="btn btn-primary"
-    onclick="document.querySelector('#new-layaway').showModal()">
-    + Nuevo apartado
-  </button>
-</header>
+<?php Flight::render('components/page-head', [
+  'eyebrow' => 'RESERVAS',
+  'title' => 'Apartados',
+  'description' => 'Productos reservados, pagos parciales y stock protegido.',
+  'buttonText' => '+ Nuevo apartado',
+  'buttonAction' => "document.querySelector('#new-layaway').showModal()",
+]) ?>
 
 <dialog class="card layaway-modal" id="new-layaway">
   <form class="panel stack" method="post" action="./apartados">

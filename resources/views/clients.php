@@ -36,18 +36,13 @@ use Illuminate\Database\Eloquent\Collection;
   }
 </style>
 
-<header class="page-head">
-  <div>
-    <span class="eyebrow">DIRECTORIO</span>
-    <h1>Clientes</h1>
-    <p>Información de contacto y ventas.</p>
-  </div>
-  <button
-    class="btn btn-primary"
-    onclick="document.querySelector('#new').showModal()">
-    + Nuevo cliente
-  </button>
-</header>
+<?php Flight::render('components/page-head', [
+  'eyebrow' => 'DIRECTORIO',
+  'title' => 'Clientes',
+  'description' => 'Información de contacto y ventas.',
+  'buttonText' => '+ Nuevo cliente',
+  'buttonAction' => "document.querySelector('#new').showModal()",
+]) ?>
 
 <div class="field" style="margin:0 0 20px">
   <label for="client-search">Buscar clientes</label>

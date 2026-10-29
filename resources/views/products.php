@@ -70,18 +70,13 @@ use Illuminate\Database\Eloquent\Collection;
   }
 </style>
 
-<header class="page-head">
-  <div>
-    <span class="eyebrow">INVENTARIO</span>
-    <h1>Productos</h1>
-    <p>Precios y existencias por local.</p>
-  </div>
-  <button
-    class="btn btn-primary"
-    onclick="document.querySelector('#new').showModal()">
-    + Añadir producto
-  </button>
-</header>
+<?php Flight::render('components/page-head', [
+  'eyebrow' => 'INVENTARIO',
+  'title' => 'Productos',
+  'description' => 'Precios y existencias por local.',
+  'buttonText' => '+ Añadir producto',
+  'buttonAction' => "document.querySelector('#new').showModal()",
+]) ?>
 
 <div class="grid grid-3" style="max-width:820px;margin:0 0 20px">
   <div class="field">

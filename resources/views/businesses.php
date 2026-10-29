@@ -39,18 +39,13 @@ use Illuminate\Database\Eloquent\Collection;
   }
 </style>
 
-<header class="page-head">
-  <div>
-    <span class="eyebrow">CONFIGURACIÓN</span>
-    <h1>Locales</h1>
-    <p>Administra los datos de tus puntos de venta.</p>
-  </div>
-  <button
-    class="btn btn-primary"
-    onclick="document.querySelector('#new').showModal()">
-    + Nuevo local
-  </button>
-</header>
+<?php Flight::render('components/page-head', [
+  'eyebrow' => 'CONFIGURACIÓN',
+  'title' => 'Locales',
+  'description' => 'Administra los datos de tus puntos de venta.',
+  'buttonText' => '+ Nuevo local',
+  'buttonAction' => "document.querySelector('#new').showModal()",
+]) ?>
 
 <dialog
   class="card"

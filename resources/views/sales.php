@@ -143,18 +143,13 @@ use Illuminate\Database\Eloquent\Collection;
   }
 </style>
 
-<header class="page-head">
-  <div>
-    <span class="eyebrow">VENTAS</span>
-    <h1>Ventas</h1>
-    <p>Comprobantes, cobros y estado de cada operación.</p>
-  </div>
-  <button
-    class="btn btn-primary"
-    onclick="document.querySelector('#new').showModal()">
-    + Nueva venta
-  </button>
-</header>
+<?php Flight::render('components/page-head', [
+  'eyebrow' => 'VENTAS',
+  'title' => 'Ventas',
+  'description' => 'Comprobantes, cobros y estado de cada operación.',
+  'buttonText' => '+ Nueva venta',
+  'buttonAction' => "document.querySelector('#new').showModal()",
+]) ?>
 
 <dialog class="card sale-modal" id="new">
   <form

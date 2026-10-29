@@ -1,10 +1,8 @@
-<header class="page-head">
-  <div>
-    <span class="eyebrow">PANEL PRINCIPAL</span>
-    <h1>Tu operación, bajo control.</h1>
-    <p>Accede rápidamente a las tareas diarias de tu local.</p>
-  </div>
-</header>
+<?php Flight::render('components/page-head', [
+  'eyebrow' => 'PANEL PRINCIPAL',
+  'title' => 'Tu operación, bajo control.',
+  'description' => 'Accede rápidamente a las tareas diarias de tu local.',
+]) ?>
 
 <section class="grid grid-3">
   <a class="card panel" href="./ventas">
