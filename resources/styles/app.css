@@ -172,8 +172,6 @@ button {
   grid-template-columns: 30px minmax(0, 1fr) auto;
   align-items: center;
   gap: 9px;
-  max-width: 100%;
-  overflow: hidden;
 }
 
 .profile-avatar {
@@ -599,6 +597,20 @@ button {
   display: none !important
 }
 
+.mobile-logout {
+  display: none;
+}
+
+.toast {
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.toast.is-leaving {
+  opacity: 0;
+  transform: translateX(16px);
+}
+
+
 @media (max-width: 820px) {
   .app-shell {
     display: block;
@@ -701,21 +713,4 @@ button {
     margin: 0;
     max-width: none
   }
-}
-
-.profile {
-  flex: 0 0 auto;
-}
-
-.mobile-logout {
-  display: none;
-}
-
-.toast {
-  transition: opacity 200ms ease, transform 200ms ease;
-}
-
-.toast.is-leaving {
-  opacity: 0;
-  transform: translateX(16px);
 }
