@@ -539,7 +539,7 @@ button {
 .brand-auth {
   font-size: 23px;
   font-weight: 800;
-  color: var(--brand)
+  color: var(--brand);
 }
 
 .receipt {
@@ -615,7 +615,6 @@ button {
 
   .business-switcher {
     margin: 0;
-    grid-column: 2
   }
 
   .nav {
