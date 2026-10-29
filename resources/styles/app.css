@@ -40,6 +40,7 @@
   --shadow: 0 12px 32px light-dark(var(--shadow-light), var(--shadow-dark));
 
   --sidebar-link: #a9a4ff;
+  --sidebar-font-color: #d0d5dd;
 }
 
 body {
@@ -77,7 +78,6 @@ button {
   padding: 28px 16px;
   box-sizing: border-box;
   background: var(--bg-dark);
-  color: #d0d5dd;
   display: flex;
   flex-direction: column;
 }
@@ -384,7 +384,7 @@ button {
 .field select,
 .field textarea {
   width: 100%;
-  border: 1px solid #d0d5dd;
+  border: 1px solid var(--sidebar-font-color);
   border-radius: 8px;
   padding: 10px 11px;
   box-sizing: border-box;
