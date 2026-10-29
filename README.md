@@ -1,5 +1,12 @@
 # Orion — Sistema de Gestión Comercial y Servicio Técnico
 
+[![Sitio Web](https://img.shields.io/badge/Sitio_Web-android--evolucion.42web.io-blue?style=flat-square&logo=googlechrome)](https://android-evolucion.42web.io)
+[![PHP Version](https://img.shields.io/badge/PHP-%3E%3D8.4-777BB4?style=flat-square&logo=php)](https://www.php.net/)
+[![Flight PHP](https://img.shields.io/badge/Flight_PHP-3.19-f38b00?style=flat-square)](https://flightphp.com/)
+[![Eloquent ORM](https://img.shields.io/badge/Eloquent-13.x-FF2D20?style=flat-square&logo=laravel)](https://laravel.com/)
+
+> 🌐 **Sitio Web / Demo:** [https://android-evolucion.42web.io](https://android-evolucion.42web.io)
+
 Sistema web ligero y moderno para la administración comercial, control de inventario, facturación de ventas, gestión de apartados y servicio técnico de telefonía y repuestos, con soporte multi-negocio y sincronización de tasa de cambio oficial (BCV).
 
 ---
