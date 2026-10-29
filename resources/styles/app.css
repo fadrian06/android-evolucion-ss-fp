@@ -437,6 +437,12 @@ button {
   border: 1px solid var(--line);
   box-shadow: var(--shadow);
   font-weight: 600;
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.toast.is-leaving {
+  opacity: 0;
+  transform: translateX(16px);
 }
 
 .toast--success {
@@ -540,7 +546,7 @@ button {
 .sale-builder {
   display: grid;
   grid-template-columns: 1fr 360px;
-  gap: 20px
+  gap: 20px;
 }
 
 .item-row {
@@ -550,26 +556,16 @@ button {
   padding: 15px;
   border: 1px solid var(--line);
   border-radius: 10px;
-  margin-bottom: 10px
+  margin-bottom: 10px;
 }
 
 .hidden {
-  display: none !important
+  display: none !important;
 }
 
 .mobile-logout {
   display: none;
 }
-
-.toast {
-  transition: opacity 200ms ease, transform 200ms ease;
-}
-
-.toast.is-leaving {
-  opacity: 0;
-  transform: translateX(16px);
-}
-
 
 @media (max-width: 820px) {
   .app-shell {
@@ -605,52 +601,52 @@ button {
   }
 
   .profile {
-    display: none
+    display: none;
   }
 
   .content {
-    padding: 24px 16px
+    padding: 24px 16px;
   }
 
   .grid-2,
   .grid-3,
   .sale-builder {
-    grid-template-columns: 1fr
+    grid-template-columns: 1fr;
   }
 
   .page-head {
-    align-items: start
+    align-items: start;
   }
 
   .data-table {
-    min-width: 760px
+    min-width: 760px;
   }
 
   .table-wrap {
-    overflow: auto
+    overflow: auto;
   }
 
   .receipt {
     margin: 0;
-    padding: 24px 16px
+    padding: 24px 16px;
   }
 
   .receipt-head {
-    display: block
+    display: block;
   }
 
   .item-row {
-    grid-template-columns: 1fr 1fr
+    grid-template-columns: 1fr 1fr;
   }
 
   .toasts {
     left: 14px;
     right: 14px;
-    bottom: 14px
+    bottom: 14px;
   }
 
   .toast {
-    max-width: none
+    max-width: none;
   }
 }
 
@@ -659,18 +655,18 @@ button {
   .sidebar,
   .toasts,
   .d-print-none {
-    display: none !important
+    display: none !important;
   }
 
   .content {
     padding: 0;
-    max-width: none
+    max-width: none;
   }
 
   .receipt {
     box-shadow: none;
     border: 0;
     margin: 0;
-    max-width: none
+    max-width: none;
   }
 }
