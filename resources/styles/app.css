@@ -504,7 +504,7 @@ button {
 .receipt {
   max-width: 840px;
   margin: 30px auto;
-  padding: 42px
+  padding: 42px;
 }
 
 .receipt-head {
@@ -512,29 +512,29 @@ button {
   justify-content: space-between;
   gap: 20px;
   padding-bottom: 25px;
-  border-bottom: 2px solid var(--ink)
+  border-bottom: 2px solid var(--ink);
 }
 
 .receipt h1 {
   margin: 0;
-  font-size: 28px
+  font-size: 28px;
 }
 
 .receipt-meta {
   display: grid;
   grid-template-columns: 150px 1fr;
   gap: 7px;
-  margin: 28px 0
+  margin: 28px 0;
 }
 
 .receipt-meta dt {
   font-size: 12px;
   font-weight: 800;
-  color: var(--muted)
+  color: var(--muted);
 }
 
 .receipt-meta dd {
-  margin: 0
+  margin: 0;
 }
 
 .sale-builder {
