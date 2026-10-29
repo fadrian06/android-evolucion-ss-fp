@@ -162,15 +162,10 @@ use Illuminate\Database\Eloquent\Collection;
     method="post"
     action="./reparaciones"
     id="repair-form">
-    <div class="toolbar" style="margin:-22px -22px 6px">
-      <h2>Registrar reparación</h2>
-      <button
-        type="button"
-        class="btn btn-secondary btn-sm"
-        onclick="this.closest('dialog').close()">
-        Cancelar
-      </button>
-    </div>
+    <?php Flight::render('components/toolbar', [
+      'title' => 'Registrar reparación',
+      'inDialog' => true,
+    ]) ?>
 
     <div class="grid grid-2">
       <div class="field">
@@ -258,9 +253,9 @@ use Illuminate\Database\Eloquent\Collection;
 </dialog>
 
 <section class="card table-wrap">
-  <div class="toolbar">
-    <h2><?= $repairs->count() ?> reparaciones</h2>
-  </div>
+  <?php Flight::render('components/toolbar', [
+    'title' => "{$repairs->count()} reparaciones",
+  ]) ?>
 
   <table class="data-table">
     <thead>
@@ -343,15 +338,10 @@ use Illuminate\Database\Eloquent\Collection;
       class="panel stack"
       method="post"
       action="./reparaciones/<?= $repair->id ?>/pagar">
-      <div class="toolbar" style="margin:-22px -22px 6px">
-        <h2>Registrar pago</h2>
-        <button
-          type="button"
-          class="btn btn-secondary btn-sm"
-          onclick="this.closest('dialog').close()">
-          Cancelar
-        </button>
-      </div>
+      <?php Flight::render('components/toolbar', [
+        'title' => 'Registrar pago',
+        'inDialog' => true,
+      ]) ?>
 
       <p style="margin:0;color:var(--muted)">
         Pago pendiente:

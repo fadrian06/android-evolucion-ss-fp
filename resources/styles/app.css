@@ -241,7 +241,7 @@ button {
 .btn-secondary {
   border: 1px solid var(--line);
   background: white;
-  color: #344054
+  color: #344054;
 }
 
 .btn-danger {
@@ -299,10 +299,10 @@ button {
   align-items: center;
   gap: 10px;
   padding: 16px 20px;
-  border-bottom: 1px solid var(--line)
+  border-bottom: 1px solid var(--line);
 }
 
-.toolbar h2 {
+.toolbar-title {
   font-size: 16px;
   margin: 0;
   flex: 1

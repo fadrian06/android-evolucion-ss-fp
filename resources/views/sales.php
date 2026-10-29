@@ -158,15 +158,10 @@ use Illuminate\Database\Eloquent\Collection;
     class="panel sale-builder"
     id="sale-form">
     <section class="stack">
-      <div class="toolbar" style="margin:-22px -22px 6px">
-        <h2>Crear comprobante</h2>
-        <button
-          type="button"
-          class="btn btn-secondary btn-sm"
-          onclick="this.closest('dialog').close()">
-          Cancelar
-        </button>
-      </div>
+      <?php Flight::render('components/toolbar', [
+        'title' => 'Crear comprobante',
+        'inDialog' => true,
+      ]) ?>
 
       <div class="field">
         <label>Cliente</label>
@@ -298,9 +293,9 @@ use Illuminate\Database\Eloquent\Collection;
 </dialog>
 
 <section class="card table-wrap">
-  <div class="toolbar">
-    <h2><?= $sales->count() ?> comprobantes</h2>
-  </div>
+  <?php Flight::render('components/toolbar', [
+    'title' => "{$sales->count()} comprobantes",
+  ]) ?>
 
   <table class="data-table">
     <thead>
@@ -392,15 +387,10 @@ use Illuminate\Database\Eloquent\Collection;
       method="post"
       action="./ventas/<?= $sale->id ?>/pagar"
       class="panel stack">
-      <div class="toolbar" style="margin:-22px -22px 6px">
-        <h2>Registrar pago</h2>
-        <button
-          type="button"
-          class="btn btn-secondary btn-sm"
-          onclick="this.closest('dialog').close()">
-          Cancelar
-        </button>
-      </div>
+      <?php Flight::render('components/toolbar', [
+        'title' => 'Registrar pago',
+        'inDialog' => true,
+      ]) ?>
 
       <p style="margin:0;color:var(--muted)">
         Saldo pendiente:

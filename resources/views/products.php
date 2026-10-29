@@ -184,9 +184,9 @@ use Illuminate\Database\Eloquent\Collection;
 </dialog>
 
 <section class="card table-wrap">
-  <div class="toolbar">
-    <h2><?= $products->count() ?> productos</h2>
-  </div>
+  <?php Flight::render('components/toolbar', [
+    'title' => "{$products->count()} productos",
+  ]) ?>
 
   <table class="data-table">
     <thead>

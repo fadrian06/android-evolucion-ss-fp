@@ -72,15 +72,10 @@ use Illuminate\Database\Eloquent\Collection;
 
 <dialog class="card layaway-modal" id="new-layaway">
   <form class="panel stack" method="post" action="./apartados">
-    <div class="toolbar" style="margin:-22px -22px 6px">
-      <h2>Nuevo apartado</h2>
-      <button
-        type="button"
-        class="btn btn-secondary btn-sm"
-        onclick="this.closest('dialog').close()">
-        Cancelar
-      </button>
-    </div>
+    <?php Flight::render('components/toolbar', [
+      'title' => 'Nuevo apartado',
+      'inDialog' => true,
+    ]) ?>
 
     <div class="grid grid-2">
       <div class="field">
@@ -287,15 +282,10 @@ use Illuminate\Database\Eloquent\Collection;
       class="panel stack"
       method="post"
       action="./apartados/<?= $item->id ?>/pagar">
-      <div class="toolbar" style="margin:-22px -22px 6px">
-        <h2>Registrar pago</h2>
-        <button
-          type="button"
-          class="btn btn-secondary btn-sm"
-          onclick="this.closest('dialog').close()">
-          Cancelar
-        </button>
-      </div>
+      <?php Flight::render('components/toolbar', [
+        'title' => 'Registrar pago',
+        'inDialog' => true,
+      ]) ?>
 
       <p style="margin:0;color:var(--muted)">
         Pago pendiente:
