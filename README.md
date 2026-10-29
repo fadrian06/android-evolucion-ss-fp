@@ -1,166 +1,169 @@
-# Orion — Sistema de Gestión Comercial y Servicio Técnico
+# Orion — Retail Management & Technical Service System
 
-[![Sitio Web](https://img.shields.io/badge/Sitio_Web-android--evolucion.42web.io-blue?style=flat-square&logo=googlechrome)](https://android-evolucion.42web.io)
+[![Website](https://img.shields.io/badge/Website-android--evolucion.42web.io-blue?style=flat-square&logo=googlechrome)](https://android-evolucion.42web.io)
 [![PHP Version](https://img.shields.io/badge/PHP-%3E%3D8.4-777BB4?style=flat-square&logo=php)](https://www.php.net/)
 [![Flight PHP](https://img.shields.io/badge/Flight_PHP-3.19-f38b00?style=flat-square)](https://flightphp.com/)
 [![Eloquent ORM](https://img.shields.io/badge/Eloquent-13.x-FF2D20?style=flat-square&logo=laravel)](https://laravel.com/)
+[![Versión en Español](https://img.shields.io/badge/Idioma-Espa%C3%B1ol-informational?style=flat-square)](LEAME.md)
 
-> 🌐 **Sitio Web / Demo:** [https://android-evolucion.42web.io](https://android-evolucion.42web.io)
+> 🌐 **Website / Live Demo:** [https://android-evolucion.42web.io](https://android-evolucion.42web.io)  
+> 📖 **Language:** English | [Versión en español](LEAME.md)
 
-Sistema web ligero y moderno para la administración comercial, control de inventario, facturación de ventas, gestión de apartados y servicio técnico de telefonía y repuestos, con soporte multi-negocio y sincronización de tasa de cambio oficial (BCV).
-
----
-
-## 🚀 Características Principales
-
-- **Gestión Multi-Negocio / Sucursales**:
-  - Permite a cada usuario administrar múltiples tiendas o sucursales de forma independiente.
-  - Conmutador rápido de sucursal activa en la barra superior.
-  - Registro de información fiscal (RIF), dirección y teléfono por cada sede.
-
-- **Cotización Diaria y Tasa BCV**:
-  - Integración automática con API externa para obtener la tasa oficial del Banco Central de Venezuela (BCV).
-  - Middleware de control que garantiza que la cotización del día esté confirmada antes de registrar ventas u operaciones.
-  - Posibilidad de definir cotizaciones personalizadas por usuario.
-  - Calculadora de conversión rápida USD/VES integrada.
-
-- **Control de Inventario y Productos**:
-  - Clasificación por categorías: Teléfonos (`phone`), Accesorios (`accessory`) y Repuestos (`spare_part`).
-  - Soporte para seriales e identificadores de telefonía: **IMEI 1**, **IMEI 2** y códigos de lote.
-  - Control de existencias por sucursal mediante lotes (`batches`).
-  - Fijación de precios en divisas (USD) y cálculo automático en moneda nacional (VES).
-
-- **Ventas y Facturación**:
-  - Carrito y registro de ventas multilínea.
-  - Soporte de múltiples métodos de pago combinados:
-    - Efectivo en USD
-    - Efectivo en Bolívares (VES)
-    - Punto de Venta (Tarjeta de Débito/Crédito)
-    - Transferencia bancaria / Pago Móvil
-  - Generación de comprobante / ticket de venta imprimible (`invoice`).
-  - Anulación de ventas con reversión automática del inventario.
-
-- **Módulo de Apartados (Layaways)**:
-  - Reserva de productos con abonos iniciales y pagos en cuotas sucesivas.
-  - Seguimiento del saldo pendiente, estado y liquidación o cancelación.
-
-- **Servicio Técnico y Reparaciones**:
-  - Registro de órdenes de reparación de dispositivos (marca, modelo, cliente, motivo de ingreso, falla y costo estimado).
-  - Control de pagos y abonos parciales a órdenes de servicio.
-  - Comprobante de recepción y entrega de equipo técnico (`repair-receipt`).
-
-- **Gestión de Clientes**:
-  - Directorio centralizado de clientes con documento de identidad (C.I. / RIF), teléfono, correo y dirección física.
-
-- **Interfaz y Experiencia de Usuario**:
-  - Diseño responsivo y moderno tipo panel de administración (Dashboard).
-  - Soporte para **Modo Oscuro** y **Modo Claro** automático con `light-dark()` de CSS.
-  - Mensajes de confirmación y alertas mediante notificaciones flotantes (*toasts*).
-  - Sin dependencias pesadas de JavaScript o bundlers (HTML5 semántico, CSS moderno y Vanilla JS).
+A lightweight and modern web system designed for retail management, inventory control, sales invoicing, layaway plans, and mobile phone/spare parts technical repair services. Features multi-store branch support and real-time synchronization with Venezuela's official Central Bank (BCV) exchange rate.
 
 ---
 
-## 🛠️ Stack Tecnológico
+## 🚀 Key Features
 
-| Capa | Tecnología | Descripción |
+- **Multi-Store & Branch Management**:
+  - Allows users to manage multiple store locations or branches independently from a single account.
+  - Fast branch switcher located in the top navigation bar.
+  - Independent tax ID (RIF), physical address, and contact numbers per store location.
+
+- **Daily Exchange Rate & Official BCV Sync**:
+  - Automated integration with external API to retrieve official Central Bank of Venezuela (BCV) exchange rates.
+  - Strict middleware enforcement ensuring the daily exchange rate is reviewed and set before registering any sales or financial operations.
+  - Custom daily exchange rate adjustments per user.
+  - Built-in USD/VES quick currency converter.
+
+- **Inventory & Product Catalog**:
+  - Categorization into Phones (`phone`), Accessories (`accessory`), and Spare Parts (`spare_part`).
+  - Serial tracking for mobile devices: **IMEI 1**, **IMEI 2**, and batch codes.
+  - Multi-location stock allocation using store batches (`batches`).
+  - Native USD base pricing with real-time conversion into local currency (VES).
+
+- **Sales & Point of Sale (POS)**:
+  - Multi-line shopping cart and checkout.
+  - Split and combined payment methods supported:
+    - USD Cash
+    - Bolívares (VES) Cash
+    - Debit/Credit Card (POS Terminal)
+    - Bank Transfer / Mobile Payment (*Pago Móvil*)
+  - Printable sales receipt / invoice generation (`invoice`).
+  - Sale cancellation with automatic stock restoration.
+
+- **Layaway Plans**:
+  - Product reservation with initial down payments and subsequent installment tracking.
+  - Real-time balance calculation, settlement status, and cancellation flow.
+
+- **Technical Service & Repairs**:
+  - Work order registration for device maintenance and repairs (brand, model, customer, intake condition, failure description, and estimated cost).
+  - Installment payments and financial tracking for active repairs.
+  - Technical intake and delivery printable receipt (`repair-receipt`).
+
+- **Customer Management**:
+  - Centralized customer directory recording national ID / Tax ID, phone numbers, email, and address.
+
+- **User Interface & Experience**:
+  - Clean and responsive dashboard layout.
+  - Automatic **Dark Mode** and **Light Mode** powered by modern CSS `light-dark()`.
+  - Non-intrusive floating toast notifications for user actions and feedback.
+  - Zero heavy frontend dependencies (semantic HTML5, modern CSS, and lightweight Vanilla JS).
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology | Description |
 | :--- | :--- | :--- |
-| **Lenguaje** | PHP 8.4+ | Tipado estricto (`declare(strict_types=1);`), atributos nativos, promotores de propiedades |
-| **Enrutador / Framework** | [Flight PHP](https://flightphp.com/) (^3.19) | Micro-framework ligero, rápido y flexible para rutas web y API |
-| **ORM / Base de Datos** | [Illuminate Database](https://laravel.com/) (^13.38) | Eloquent ORM de Laravel para modelos, relaciones y migraciones de base de datos |
-| **Autenticación** | [Leaf Auth](https://leafphp.dev/) (^5.1) | Manejo de sesiones y autenticación segura con Bcrypt |
-| **Internacionalización** | [Leaf Lingo](https://leafphp.dev/) (^5.0) | Traducciones y localización en español |
-| **Peticiones HTTP** | [Guzzle](https://docs.guzzlephp.org/) (^8.3) | Cliente HTTP para consumir la API de cotizaciones y pruebas de integración |
-| **Variables de Entorno** | [Symfony Dotenv](https://symfony.com/doc/current/components/dotenv.html) (^8.1) | Carga y parseo seguro de configuración `.env` |
-| **Base de Datos** | SQLite (por defecto) / MySQL | Almacenamiento local ligero en SQLite con opción de conexión a MariaDB/MySQL |
-| **Pruebas** | [PHPUnit](https://phpunit.de/) (^13.4) | Suite completa de pruebas unitarias y de integración HTTP |
+| **Language** | PHP 8.4+ | Strict typing (`declare(strict_types=1);`), native attributes, constructor property promotion |
+| **Router / Framework** | [Flight PHP](https://flightphp.com/) (^3.19) | Fast, lightweight, and extensible micro-framework for web routes and REST APIs |
+| **ORM / Database Layer** | [Illuminate Database](https://laravel.com/) (^13.38) | Laravel Eloquent ORM for models, relationships, and automated database schema builders |
+| **Authentication** | [Leaf Auth](https://leafphp.dev/) (^5.1) | Session-based authentication and secure password hashing with Bcrypt |
+| **Localization** | [Leaf Lingo](https://leafphp.dev/) (^5.0) | Multi-language translation support |
+| **HTTP Client** | [Guzzle](https://docs.guzzlephp.org/) (^8.3) | HTTP client for external BCV exchange rate API consumption and integration testing |
+| **Environment Configuration** | [Symfony Dotenv](https://symfony.com/doc/current/components/dotenv.html) (^8.1) | Secure parsing and loading of `.env` configuration files |
+| **Database** | SQLite (Default) / MySQL | Zero-config local SQLite database with out-of-the-box MariaDB/MySQL support |
+| **Testing** | [PHPUnit](https://phpunit.de/) (^13.4) | Unit and HTTP feature integration test suite |
 
 ---
 
-## 📁 Estructura del Proyecto
+## 📁 Project Structure
 
 ```text
 android-evolucion-ss-fp/
 ├── app/
 │   ├── Http/
-│   │   ├── Controllers/          # Controladores de recursos y de acción única (__invoke)
+│   │   ├── Controllers/          # Resource controllers and single-action controllers (__invoke)
 │   │   └── Middleware/           # Middlewares (Auth, BusinessSelected, ExchangeRate, etc.)
-│   ├── Models/                   # Modelos de Eloquent (User, Business, Product, Sale, Repair...)
-│   ├── Services/                 # Lógica externa (BcvExchangeRate, DailyExchangeRate)
-│   ├── Support/                  # Clases auxiliares y enumeradores (PaymentMethod, PaymentDetails)
-│   ├── Flash.php                 # Utilidades de mensajes flash
-│   ├── FlashKey.php              # Claves de sesión flash
-│   └── Migration.php             # Contrato de interfaz para migraciones
+│   ├── Models/                   # Eloquent models (User, Business, Product, Sale, Repair...)
+│   ├── Services/                 # External service layers (BcvExchangeRate, DailyExchangeRate)
+│   ├── Support/                  # Value objects and helpers (PaymentMethod, PaymentDetails)
+│   ├── Flash.php                 # Flash message helpers
+│   ├── FlashKey.php              # Session flash keys
+│   └── Migration.php             # Contract interface for database migrations
 ├── database/
-│   ├── migrations/               # Migraciones de esquema ejecutadas automáticamente
-│   └── database.sqlite           # Base de datos local SQLite (creada en el primer arranque)
+│   ├── migrations/               # Database migrations executed on application boot
+│   └── database.sqlite           # Local SQLite database file (auto-created on first run)
 ├── lang/
-│   └── es.yml                    # Archivo de mensajes y traducciones al español
+│   └── es.yml                    # Localization messages
 ├── resources/
-│   ├── images/                   # Favicon y assets estáticos
+│   ├── images/                   # Favicons and static image assets
 │   ├── styles/
-│   │   └── app.css               # Estilos CSS modernos con variables y temas
-│   └── views/                    # Vistas PHP y componentes reutilizables
-│       ├── components/           # Componentes modulares (layout, nav, sidebar, toast, etc.)
-│       ├── dashboard.php         # Panel principal
-│       ├── sales.php             # Módulo de ventas
-│       ├── invoice.php           # Factura / Comprobante de venta
-│       ├── products.php          # Módulo de inventario y productos
-│       ├── repairs.php           # Módulo de servicio técnico
-│       ├── repair-receipt.php    # Comprobante de reparación
-│       ├── layaways.php          # Módulo de apartados
-│       ├── clients.php           # Directorio de clientes
-│       ├── businesses.php        # Gestión de negocios/sucursales
-│       └── calculator.php        # Calculadora y ajuste de cotización
+│   │   └── app.css               # Modern CSS with custom properties and theme tokens
+│   └── views/                    # PHP templates and reusable components
+│       ├── components/           # UI components (layout, nav, sidebar, toast, etc.)
+│       ├── dashboard.php         # Main dashboard view
+│       ├── sales.php             # Sales registration and history
+│       ├── invoice.php           # Printable sales invoice
+│       ├── products.php          # Inventory and product management
+│       ├── repairs.php           # Technical repair service view
+│       ├── repair-receipt.php    # Technical repair intake and delivery receipt
+│       ├── layaways.php          # Layaway management
+│       ├── clients.php           # Customer directory
+│       ├── businesses.php        # Store locations and business management
+│       └── calculator.php        # Exchange rate configuration and converter
 ├── routes/
-│   ├── web.php                   # Rutas de la aplicación web y vistas
-│   └── api.php                   # Rutas API REST (e.g. consulta de tasa BCV)
+│   ├── web.php                   # Web application endpoints and view controllers
+│   └── api.php                   # REST API routes (e.g. BCV rate fetching)
 ├── tests/
-│   ├── Feature/                  # Pruebas funcionales e integración HTTP con Guzzle
-│   └── Unit/                     # Pruebas unitarias
-├── .env.example                  # Plantilla de variables de entorno
-├── .htaccess                     # Reglas de reescritura para servidor Apache
-├── composer.json                 # Dependencias y autoloading PSR-4
-├── index.php                     # Punto de entrada de la aplicación y contenedor de DI
-└── phpunit.xml.dist              # Configuración del ejecutor de pruebas PHPUnit
+│   ├── Feature/                  # HTTP feature integration tests using Guzzle
+│   └── Unit/                     # Unit tests
+├── .env.example                  # Environment configuration template
+├── .htaccess                     # URL rewrite rules for Apache web servers
+├── composer.json                 # Project dependencies and PSR-4 autoloading definitions
+├── index.php                     # Application entry point and Dependency Injection container
+├── LEAME.md                      # Spanish documentation
+└── phpunit.xml.dist              # PHPUnit test runner configuration
 ```
 
 ---
 
-## ⚙️ Requisitos del Entorno
+## ⚙️ System Requirements
 
-1. **PHP**: Versión **8.4 o superior**.
-2. **Extensiones de PHP requeridas**:
+1. **PHP**: Version **8.4 or higher**.
+2. **PHP Extensions**:
    - `pdo`
-   - `pdo_sqlite` (o `pdo_mysql` si se usa base de datos MySQL)
+   - `pdo_sqlite` (or `pdo_mysql` when running MySQL/MariaDB)
    - `curl`
    - `mbstring`
    - `openssl`
-3. **Composer**: Para instalación y gestión de dependencias.
-4. **Servidor Web**: Apache (mediante XAMPP u otro entorno con `mod_rewrite` habilitado) o el servidor embebido de PHP para desarrollo local.
+3. **Composer**: Dependency manager for PHP.
+4. **Web Server**: Apache (with `mod_rewrite` enabled) via XAMPP/WAMP/LAMP or the built-in PHP development server.
 
 ---
 
-## 📥 Instalación y Puesta en Marcha
+## 📥 Installation & Setup
 
-### 1. Clonar el repositorio
+### 1. Clone the repository
 ```bash
 git clone https://github.com/fadrian06/android-evolucion-ss-fp.git
 cd android-evolucion-ss-fp
 ```
 
-### 2. Instalar dependencias de PHP
-Ejecuta Composer para descargar las librerías:
+### 2. Install PHP dependencies
+Install packages via Composer:
 ```bash
 composer install
 ```
 
-### 3. Configuración de Variables de Entorno
-Copia el archivo `.env.example` a `.env` (el sistema creará una copia automáticamente en la primera ejecución si no existe):
+### 3. Configure environment variables
+Copy the `.env.example` file to `.env` (the application will also create this automatically if not present):
 ```bash
 cp .env.example .env
 ```
 
-Configura tus credenciales y parámetros en el archivo `.env`:
+Adjust your configuration values in `.env`:
 ```ini
 APP_NAME=Orion
 
@@ -169,7 +172,7 @@ LOCALES_STRATEGY=header
 
 BCRYPT_ROUNDS=12
 
-# Conexión a Base de Datos (SQLite por defecto)
+# Database configuration (SQLite by default)
 DB_CONNECTION=sqlite
 DB_CHARSET=utf8
 DB_HOST=127.0.0.1
@@ -180,109 +183,109 @@ DB_PASSWORD=
 
 SESSION_LIFETIME=120
 
-# Llave de API para obtener la cotización del BCV desde DolarVzla
-# Obtén tu API key gratuita en: https://dolarvzla.com/settings
-DOLARVZLA_KEY=tu_api_key_aqui
+# API key for retrieving BCV exchange rates via DolarVzla
+# Get your free API key at: https://dolarvzla.com/settings
+DOLARVZLA_KEY=your_api_key_here
 ```
 
-### 4. Base de Datos y Migraciones
-No es necesario ejecutar comandos manuales de migración:
-- El archivo `index.php` verifica y crea automáticamente el archivo `database/database.sqlite` si no existe.
-- Todas las migraciones ubicadas en `database/migrations/` se ejecutan automáticamente de forma incremental al arrancar la aplicación.
+### 4. Database Initialization & Migraciones
+No manual database setup commands are required:
+- When starting the application, `index.php` checks for `database/database.sqlite` and creates it automatically if missing.
+- All database migration files in `database/migrations/` run automatically on boot.
 
-### 5. Iniciar la Aplicación
+### 5. Running the Application
 
-#### Opción A: Servidor integrado de PHP (Recomendado para desarrollo rápido)
+#### Option A: Built-in PHP Development Server (Quickest)
 ```bash
 php -S localhost:8000 index.php
 ```
-Accede desde tu navegador web a: `http://localhost:8000`
+Open your browser and navigate to: `http://localhost:8000`
 
-#### Opción B: Con XAMPP / Apache
-1. Asegúrate de que el proyecto se encuentra en la carpeta `htdocs` de XAMPP (por ejemplo, `C:\xampp\htdocs\android-evolucion-ss-fp`).
-2. Comprueba que el módulo `mod_rewrite` esté activo en Apache (`httpd.conf`).
-3. Inicia Apache desde el panel de control de XAMPP.
-4. Si configuras un VirtualHost o accedes a través de `http://localhost/android-evolucion-ss-fp`, el archivo `.htaccess` redirigirá todas las peticiones a `index.php`.
+#### Option B: Apache / XAMPP
+1. Move or clone the project directory into your web root (e.g., `C:\xampp\htdocs\android-evolucion-ss-fp`).
+2. Verify that Apache's `mod_rewrite` module is enabled in `httpd.conf`.
+3. Start the Apache server from the XAMPP Control Panel.
+4. Access the application directly via `http://localhost/android-evolucion-ss-fp`. The `.htaccess` file will route incoming requests to `index.php`.
 
 ---
 
-## 🧪 Pruebas Automatizadas
+## 🧪 Running Automated Tests
 
-El proyecto cuenta con una batería de pruebas de integración con **PHPUnit**:
+Run the test suite using **PHPUnit**:
 
 ```bash
 vendor/bin/phpunit
 ```
 
 > [!NOTE]
-> Las pruebas funcionales (`tests/Feature/`) utilizan Guzzle para enviar peticiones HTTP reales a `http://localhost`. Para ejecutarlas con éxito, asegúrate de tener el servidor web local activo y escuchando en el puerto configurado.
+> The functional feature tests (`tests/Feature/`) use Guzzle to perform live HTTP requests against `http://localhost`. Ensure your local web server is running and listening on port 80 before executing the feature suite.
 
 ---
 
-## 🗺️ Mapa de Rutas Principales
+## 🗺️ Main Application Routes
 
-### Autenticación y Acceso
-- `GET /ingresar` — Pantalla de inicio de sesión.
-- `POST /ingresar` — Autenticar usuario.
-- `GET /registrarse` — Registro de nuevo usuario administrador.
-- `POST /registrarse` — Crear cuenta de usuario.
-- `GET /cerrar-sesion` — Finalizar sesión.
+### Authentication & Access
+- `GET /ingresar` — Login page.
+- `POST /ingresar` — Authenticate user.
+- `GET /registrarse` — Admin registration page.
+- `POST /registrarse` — Register new user account.
+- `GET /cerrar-sesion` — Logout session.
 
-### Negocios / Sucursales
-- `GET /negocios` — Listado de negocios registrados.
-- `POST /negocios` — Crear nueva sucursal.
-- `POST /negocios/@id` — Actualizar información de la sucursal.
-- `GET /negocios/@id/seleccionar` — Establecer sucursal activa.
-- `GET /negocios/@id/eliminar` — Eliminar sucursal.
+### Store & Branch Management
+- `GET /negocios` — View registered business locations.
+- `POST /negocios` — Register new location.
+- `POST /negocios/@id` — Update location information.
+- `GET /negocios/@id/seleccionar` — Select active store branch.
+- `GET /negocios/@id/eliminar` — Delete location.
 
-### Operación Diaria y Cotizaciones
-- `GET /` — Panel de control principal (Dashboard).
-- `GET /calculadora` — Calculadora de conversión y ajuste de cotización del día.
-- `POST /calculadora/cotizacion` — Guardar tasa personalizada del día.
-- `GET /api/bcv/exchange-rate` — Endpoint JSON para consultar la cotización actual del BCV.
+### Daily Operations & Exchange Rates
+- `GET /` — Main overview dashboard.
+- `GET /calculadora` — Currency converter and daily exchange rate setup.
+- `POST /calculadora/cotizacion` — Save custom exchange rate for the day.
+- `GET /api/bcv/exchange-rate` — REST API endpoint returning current BCV exchange rates.
 
-### Inventario y Productos
-- `GET /productos` — Catálogo de productos y stock disponible.
-- `POST /productos` — Registrar nuevo producto o entrada de lote.
-- `POST /productos/@id` — Actualizar datos del producto.
-- `GET /productos/@id/eliminar` — Dar de baja producto.
+### Products & Inventory
+- `GET /productos` — Product catalog and branch stock inventory.
+- `POST /productos` — Create product and add stock batches.
+- `POST /productos/@id` — Update product details.
+- `GET /productos/@id/eliminar` — Remove product.
 
-### Clientes
-- `GET /clientes` — Directorio de clientes.
-- `POST /clientes` — Crear nuevo cliente.
-- `POST /clientes/@id` — Modificar datos del cliente.
-- `GET /clientes/@id/eliminar` — Eliminar cliente.
+### Customers
+- `GET /clientes` — Customer directory.
+- `POST /clientes` — Create new customer.
+- `POST /clientes/@id` — Update customer profile.
+- `GET /clientes/@id/eliminar` — Delete customer.
 
-### Ventas y Facturación
-- `GET /ventas` — Módulo de registro y listado de ventas.
-- `POST /ventas` — Procesar y registrar venta con sus métodos de pago.
-- `GET /ventas/@id` — Ver comprobante de venta (`invoice`).
-- `POST /ventas/@id/pagar` — Registrar pago complementario.
-- `POST /ventas/@id/anular` — Anular venta y restituir inventario.
+### Sales & POS Invoicing
+- `GET /ventas` — Sales register and transactions list.
+- `POST /ventas` — Process sale with split payment details.
+- `GET /ventas/@id` — Display printable invoice receipt (`invoice`).
+- `POST /ventas/@id/pagar` — Add subsequent payment to a sale.
+- `POST /ventas/@id/anular` — Cancel sale and restore inventory stock.
 
-### Apartados (Reservas)
-- `GET /apartados` — Listado de apartados activos e históricos.
-- `POST /apartados` — Crear nuevo apartado con abono inicial.
-- `POST /apartados/@id/pagar` — Registrar abono a un apartado.
-- `POST /apartados/@id/cancelar` — Cancelar apartado.
+### Layaway Plans
+- `GET /apartados` — List active and historical layaway agreements.
+- `POST /apartados` — Create layaway with initial deposit.
+- `POST /apartados/@id/pagar` — Register installment payment.
+- `POST /apartados/@id/cancelar` — Cancel layaway.
 
-### Servicio Técnico (Reparaciones)
-- `GET /reparaciones` — Listado de órdenes de servicio.
-- `POST /reparaciones` — Crear orden de reparación.
-- `GET /reparaciones/@id` — Ver comprobante de recepción y entrega de equipo (`repair-receipt`).
-- `POST /reparaciones/@id/pagar` — Registrar abono o pago final de la reparación.
-
----
-
-## 🔒 Seguridad y Buenas Prácticas
-
-- **Contraseñas**: Hasheadas mediante Bcrypt con costo configurable (`BCRYPT_ROUNDS`).
-- **Inyección SQL**: Consultas preparadas y parametrizadas mediante el ORM Eloquent y PDO.
-- **Validación de Cotización**: Protección por middleware que impide transacciones desactualizadas frente a la fluctuación cambiaria.
-- **Aislamiento Multi-tienda**: Integridad referencial que asocia estrictamente inventario, comprobantes y movimientos a la sucursal activa y al usuario autenticado.
+### Technical Service (Repairs)
+- `GET /reparaciones` — Technical service work order list.
+- `POST /reparaciones` — Create repair order.
+- `GET /reparaciones/@id` — Display printable repair intake & delivery receipt (`repair-receipt`).
+- `POST /reparaciones/@id/pagar` — Register payment towards a repair ticket.
 
 ---
 
-## 📄 Licencia
+## 🔒 Security & Best Practices
 
-Este proyecto es software privado desarrollado para la administración comercial y técnica de locales comerciales. Todos los derechos reservados.
+- **Password Security**: Passwords hashed with Bcrypt and configurable cost factor (`BCRYPT_ROUNDS`).
+- **SQL Injection Prevention**: Parameterized and prepared queries managed through Eloquent ORM and PDO.
+- **Exchange Rate Protection**: Middleware safeguards that prevent financial transactions when the day's exchange rate has not been confirmed.
+- **Store-level Isolation**: Foreign key constraints enforce strict isolation of products, invoices, and stock batches per user and active business branch.
+
+---
+
+## 📄 License
+
+Proprietary software developed for commercial and technical retail management. All rights reserved.
