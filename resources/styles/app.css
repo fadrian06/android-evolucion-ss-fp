@@ -79,6 +79,7 @@ button {
   background: var(--bg-dark);
   display: flex;
   flex-direction: column;
+  color: var(--sidebar-font-color);
 }
 
 .brand {
@@ -234,24 +235,24 @@ button {
 }
 
 .btn-primary:hover {
-  background: var(--brand-dark)
+  background: var(--brand-dark);
 }
 
 .btn-secondary {
   border: 1px solid var(--line);
-  background: #fff;
+  background: white;
   color: #344054
 }
 
 .btn-danger {
-  background: #fff;
-  color: var(--danger);
-  border: 1px solid #fecdca
+  background: white;
+  color: var(--danger-light);
+  border: 1px solid var(--danger-dark);
 }
 
 .btn-sm {
   padding: 7px 10px;
-  font-size: 12px
+  font-size: 12px;
 }
 
 .card {
