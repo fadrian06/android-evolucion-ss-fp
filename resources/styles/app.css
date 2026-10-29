@@ -426,33 +426,33 @@ button {
   right: 22px;
   bottom: 22px;
   display: grid;
-  gap: 8px
+  gap: 8px;
 }
 
 .toast {
   max-width: 360px;
   padding: 12px 15px;
   border-radius: 10px;
-  background: #fff;
+  background: light-dark(white, var(--surface-dark));
   border: 1px solid var(--line);
   box-shadow: var(--shadow);
-  font-weight: 600
+  font-weight: 600;
 }
 
 .toast--success {
-  border-left: 4px solid var(--success)
+  border-left: 4px solid var(--success);
 }
 
 .toast--error {
-  border-left: 4px solid var(--danger)
+  border-left: 4px solid var(--danger);
 }
 
 .toast--warning {
-  border-left: 4px solid var(--warning)
+  border-left: 4px solid var(--warning);
 }
 
 .toast--note {
-  border-left: 4px solid var(--brand)
+  border-left: 4px solid var(--brand);
 }
 
 .auth-shell {
