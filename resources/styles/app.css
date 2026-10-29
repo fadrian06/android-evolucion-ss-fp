@@ -280,18 +280,18 @@ button {
 }
 
 .metric {
-  padding: 20px
+  padding: 20px;
 }
 
 .metric-value {
   font-size: 25px;
-  letter-spacing: -.5px
+  letter-spacing: -.5px;
 }
 
 .metric-label {
   display: block;
   color: var(--muted);
-  font-size: 12px
+  font-size: 12px;
 }
 
 .toolbar {
@@ -305,12 +305,12 @@ button {
 .toolbar-title {
   font-size: 16px;
   margin: 0;
-  flex: 1
+  flex: 1;
 }
 
 .data-table {
   width: 100%;
-  border-collapse: collapse
+  border-collapse: collapse;
 }
 
 .data-table th {
@@ -321,17 +321,16 @@ button {
   color: var(--muted);
   font-weight: 700;
   padding: 13px 20px;
-  background: #fcfcfd
+  background: light-dark(#fcfcfd, var(--surface-dark));
 }
 
 .data-table td {
   padding: 15px 20px;
   border-top: 1px solid var(--line);
-  vertical-align: middle
 }
 
 .data-table tr:hover td {
-  background: #fafbff
+  background: light-dark(#fafbff, var(--surface-dark));
 }
 
 .status {
