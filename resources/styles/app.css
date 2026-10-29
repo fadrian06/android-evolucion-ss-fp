@@ -417,13 +417,7 @@ button {
 .actions {
   display: flex;
   gap: 7px;
-  flex-wrap: wrap
-}
-
-.empty {
-  padding: 48px 20px;
-  text-align: center;
-  color: var(--muted)
+  flex-wrap: wrap;
 }
 
 .toasts {
