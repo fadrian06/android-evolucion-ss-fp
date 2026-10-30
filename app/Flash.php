@@ -8,6 +8,7 @@ use Leaf\Flash as LeafFlash;
 
 final readonly class Flash
 {
+  /** @return string[] */
   public static function retrieve(FlashKey $key): array
   {
     return (array) LeafFlash::display($key->key());

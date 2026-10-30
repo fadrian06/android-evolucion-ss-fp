@@ -1,3 +1,9 @@
+<?php
+
+declare(strict_types=1);
+
+?>
+
 <aside class="sidebar">
   <?php Flight::render('components/brand') ?>
   <?php Flight::render('components/business-switcher') ?>
