@@ -23,10 +23,7 @@ if (!file_exists($envFilePath = __DIR__ . '/.env')) {
 
 new Dotenv()->load("$envFilePath.example", $envFilePath);
 
-if (
-  $_ENV['DB_CONNECTION'] === 'sqlite'
-  && !file_exists($_ENV['DB_DATABASE'])
-) {
+if ($_ENV['DB_CONNECTION'] === 'sqlite' && !file_exists($_ENV['DB_DATABASE'])) {
   touch($_ENV['DB_DATABASE']);
 }
 
@@ -54,7 +51,7 @@ $container->singleton(
     $manager->bootEloquent();
 
     return $manager;
-  }
+  },
 );
 
 $container->singleton(
@@ -67,35 +64,32 @@ $container->singleton(
   static fn(): PDO => $container->get(Manager::class)::connection()->getPdo(),
 );
 
-$container->singleton(
-  Auth::class,
-  static function () use ($container): Auth {
-    $auth = new Auth;
-    $user = new User;
+$container->singleton(Auth::class, static function () use ($container): Auth {
+  $auth = new Auth;
+  $user = new User;
 
-    $auth->config([
-      'id.key' => $user->getKeyName(),
-      'db.table' => $user->getTable(),
-      'timestamps' => false,
-      'password.encode' => static fn(
-        #[SensitiveParameter]
-        string $password,
-      ): string => Password::hash($password, Password::BCRYPT, [
-        'cost' => $_ENV['BCRYPT_ROUNDS'],
-      ]),
-      'password.verify' => Password::verify(...),
-      'unique' => ['email'],
-      'session' => true,
-      'session.lifetime' => (int) $_ENV['SESSION_LIFETIME'],
-      'redirect.login' => '/ingresar',
-      'redirect.guest' => '/',
-    ]);
+  $auth->config([
+    'id.key' => $user->getKeyName(),
+    'db.table' => $user->getTable(),
+    'timestamps' => false,
+    'password.encode' => static fn(
+      #[SensitiveParameter]
+      string $password,
+    ): string => (string) Password::hash($password, Password::BCRYPT, [
+      'cost' => $_ENV['BCRYPT_ROUNDS'],
+    ]),
+    'password.verify' => Password::verify(...),
+    'unique' => ['email'],
+    'session' => true,
+    'session.lifetime' => (int) $_ENV['SESSION_LIFETIME'],
+    'redirect.login' => '/ingresar',
+    'redirect.guest' => '/',
+  ]);
 
-    $auth->dbConnection($container->get(PDO::class));
+  $auth->dbConnection($container->get(PDO::class));
 
-    return $auth;
-  },
-);
+  return $auth;
+});
 
 $container->singleton(Lingo::class, static function (): Lingo {
   $lingo = new Lingo;
@@ -112,38 +106,41 @@ $container->singleton(Lingo::class, static function (): Lingo {
 $container->singleton(Form::class, static function (): Form {
   $form = new Form;
 
-  // TODO: Add form rules
+  $form->rule('password', '/^.+$/', '{Field} must be a valid password');
 
   return $form;
 });
 
-$container->singleton(
-  User::class,
-  static function () use ($container): User {
-    return User::query()->findOrFail($container->get(Auth::class)->id());
-  },
-);
+$container->singleton(User::class, static function () use ($container): User {
+  $auth = $container->get(Auth::class);
+  $id = $auth->id();
+
+  return User::query()->findOrFail($id);
+});
 
 $container->singleton(
   Business::class,
   static function () use ($container): ?Business {
-    return $container
-      ->get(User::class)
-      ->businesses
-      ->find(Session::get('business_id'));
+    $id = (int) Session::get('business_id');
+
+    return $container->get(User::class)->businesses->find($id);
   },
 );
 
-foreach (glob(__DIR__ . '/database/migrations/*.php') as $migrationFile) {
-  $migration = require_once $migrationFile;
+$migrationsFiles = (array) glob(__DIR__ . '/database/migrations/*.php');
+
+foreach (array_filter($migrationsFiles) as $migrationFile) {
+  $migration = (object) require_once $migrationFile;
 
   if ($migration instanceof Migration) {
     $container->call($migration->up(...));
   }
 }
 
-foreach (glob(__DIR__ . '/routes/*.php') as $routes) {
-  require_once $routes;
+$routesFiles = (array) glob(__DIR__ . '/routes/*.php');
+
+foreach (array_filter($routesFiles) as $routesFile) {
+  require_once $routesFile;
 }
 
 Flight::set('flight.handle_errors', false);
@@ -152,5 +149,9 @@ Flight::view()->preserveVars = false;
 Flight::view()->set('auth', $container->get(Auth::class));
 Flight::view()->set('lingo', $container->get(Lingo::class));
 Flight::view()->set('business', null);
-Flight::registerContainerHandler($container->get(...));
+
+Flight::registerContainerHandler(
+  static fn(string $id): object => (object) $container->get($id),
+);
+
 Flight::start();
