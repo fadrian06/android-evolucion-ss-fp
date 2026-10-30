@@ -6,7 +6,7 @@ use Leaf\Auth;
 
 /** @var Auth $auth */
 
-$redirectGuest = $auth->config('redirect.guest');
+$redirectGuest = (string) $auth->config('redirect.guest');
 
 ?>
 

@@ -31,13 +31,17 @@ $items = [
 <nav class="nav">
   <?php foreach ($items as $item): ?>
     <?php
-      $active = $path === ltrim($item['href'], '.');
 
-      $disable = !$business && $item['href'] !== './negocios'
-        || !$exchangeRate && !in_array($item['href'], [
-          './negocios',
-          './calculadora',
-        ]);
+    $active = $path === ltrim($item['href'], '.');
+
+    $disable =
+      !$business && $item['href'] !== './negocios'
+      || !$exchangeRate
+      && !in_array($item['href'], [
+        './negocios',
+        './calculadora',
+      ]);
+
     ?>
 
     <a

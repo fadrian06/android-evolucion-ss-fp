@@ -10,6 +10,9 @@ declare(strict_types=1);
  * @var ?string $buttonAction
  */
 
+$buttonText ??= null;
+$buttonAction ??= null;
+
 ?>
 
 <header class="page-head">
@@ -19,7 +22,7 @@ declare(strict_types=1);
     <p class="page-head-description"><?= $description ?></p>
   </div>
 
-  <?php if (isset($buttonText) && isset($buttonAction)): ?>
+  <?php if ($buttonText && $buttonAction): ?>
     <button
       class="btn btn-primary"
       onclick="<?= $buttonAction ?>">

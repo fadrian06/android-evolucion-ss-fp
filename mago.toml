@@ -14,10 +14,14 @@ includes = ["vendor"]
 [linter.rules]
 braced-string-interpolation.enabled = false
 no-ini-set.enabled = false
+no-shorthand-ternary.enabled = false
+tagged-todo.enabled = false
+literal-named-argument.enabled = false
+no-else-clause.enabled = false
+strict-behavior.enabled = false
 
 [formatter]
 tab-width = 2
 print-width = 80
 preserve-breaking-argument-list = true
 parentheses-in-new-expression = false
-end-of-line = "auto"
