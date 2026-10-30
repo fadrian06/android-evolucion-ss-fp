@@ -16,7 +16,8 @@
   },
   "require-dev": {
     "symfony/var-dumper": "^8.1",
-    "phpunit/phpunit": "^13.4"
+    "phpunit/phpunit": "^13.4",
+    "carthage-software/mago": "^1.59"
   },
   "autoload-dev": {
     "psr-4": {
