@@ -94,7 +94,10 @@ use Illuminate\Database\Eloquent\Collection;
           <?= strtoupper($item->name[0]) ?>
         </div>
         <div>
-          <span class="eyebrow">LOCAL #<?= $item->id ?></span>
+          <?php Flight::render('components/eyebrow', [
+            'text' => "LOCAL #$item->id",
+          ]) ?>
+
           <h2 style="margin:2px 0;font-size:18px"><?= $item->name ?></h2>
         </div>
       </div>

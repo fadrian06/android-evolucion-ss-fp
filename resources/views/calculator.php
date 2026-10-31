@@ -5,7 +5,7 @@ declare(strict_types=1);
 /**
  * @var ?float $rate
  * @var ?float $bcvRate
- * @var ?string $source
+ * @var string $source
  */
 
 ?>
@@ -25,7 +25,10 @@ declare(strict_types=1);
         direction: 'usd',
         rate: <?= json_encode($rate) ?>,
       }">
-      <span class="eyebrow">TASA <?= strtoupper($source) ?></span>
+      <?php Flight::render('components/eyebrow', [
+        'text' => 'TASA ' . strtoupper($source),
+      ]) ?>
+
       <h2>Bs. <?= number_format($rate, 2, ',', '.') ?> / USD</h2>
 
       <div class="stack">
@@ -57,7 +60,8 @@ declare(strict_types=1);
   <?php endif ?>
 
   <section class="card panel">
-    <span class="eyebrow">ADMINISTRACIÓN</span>
+    <?php Flight::render('components/eyebrow', ['text' => 'ADMINISTRACIÓN']) ?>
+
     <h2>Cotización personalizada</h2>
     <p>Esta tasa es necesaria para generar comprobantes hoy.</p>
 

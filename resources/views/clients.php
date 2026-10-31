@@ -99,7 +99,10 @@ use Illuminate\Database\Eloquent\Collection;
           <?= strtoupper(substr($client->name, 0, 2)) ?>
         </div>
         <div>
-          <span class="eyebrow">CLIENTE <?= "#$client->id" ?></span>
+          <?php Flight::render('components/eyebrow', [
+            'text' => "CLIENTE #$client->id",
+          ]) ?>
+
           <h2 style="margin:2px 0;font-size:18px"><?= $client->name ?></h2>
         </div>
       </div>

@@ -10,7 +10,7 @@ use App\Models\Business;
 
 <div class="business-switcher">
   <?php if ($business): ?>
-    <span class="eyebrow">LOCAL ACTIVO</span>
+    <?php Flight::render('components/eyebrow', ['text' => 'LOCAL ACTIVO']) ?>
   <?php endif ?>
 
   <strong class="business-switcher-name">

@@ -17,7 +17,8 @@ $buttonAction ??= null;
 
 <header class="page-head">
   <div>
-    <span class="eyebrow"><?= $eyebrow ?></span>
+    <?php Flight::render('components/eyebrow', ['text' => $eyebrow]) ?>
+
     <h1 class="page-head-title"><?= $title ?></h1>
     <p class="page-head-description"><?= $description ?></p>
   </div>

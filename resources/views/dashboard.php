@@ -1,3 +1,9 @@
+<?php
+
+declare(strict_types=1);
+
+?>
+
 <?php Flight::render('components/page-head', [
   'eyebrow' => 'PANEL PRINCIPAL',
   'title' => 'Tu operación, bajo control.',
@@ -6,21 +12,24 @@
 
 <section class="grid grid-3">
   <a class="card panel" href="./ventas">
-    <span class="eyebrow">VENTAS</span>
+    <?php Flight::render('components/eyebrow', ['text' => 'VENTAS']) ?>
+
     <h2>Registrar venta</h2>
     <p>Registra productos, administra pagos y consulta comprobantes.</p>
     <strong style="color:var(--brand)">Ir a ventas →</strong>
   </a>
 
   <a class="card panel" href="./productos">
-    <span class="eyebrow">INVENTARIO</span>
+    <?php Flight::render('components/eyebrow', ['text' => 'INVENTARIO']) ?>
+
     <h2>Ver inventario</h2>
     <p>Actualiza precios, categorías y existencias por local.</p>
     <strong style="color:var(--brand)">Ir a inventario →</strong>
   </a>
 
   <a class="card panel" href="./reparaciones">
-    <span class="eyebrow">SERVICIO</span>
+    <?php Flight::render('components/eyebrow', ['text' => 'SERVICIO']) ?>
+
     <h2>Nueva reparación</h2>
     <p>Registra equipos en servicio y sus comprobantes.</p>
     <strong style="color:var(--brand)">Ir a reparaciones →</strong>
@@ -28,7 +37,8 @@
 </section>
 
 <section class="card panel" style="margin-top:20px">
-  <span class="eyebrow">ANTES DE VENDER</span>
+  <?php Flight::render('components/eyebrow', ['text' => 'ANTES DE VENDER']) ?>
+
   <h2>Verifica tu cotización diaria</h2>
   <p>
     La cotización personalizada define el valor en bolívares que quedará

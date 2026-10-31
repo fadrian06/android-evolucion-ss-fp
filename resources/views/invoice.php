@@ -20,7 +20,8 @@ use App\Models\Sale;
       </p>
     </div>
     <div>
-      <span class="eyebrow">COMPROBANTE</span>
+      <?php Flight::render('components/eyebrow', ['text' => 'COMPROBANTE']) ?>
+
       <p><?= $invoice->created_at->format('d/m/Y') ?></p>
 
       <?php if ($invoice->cancelled_at): ?>
