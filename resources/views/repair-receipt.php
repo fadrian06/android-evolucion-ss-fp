@@ -12,7 +12,8 @@ use App\Support\PaymentMethod;
 <section class="receipt">
   <header class="receipt-head">
     <div>
-      <span class="brand-auth"><?= strtolower($_ENV['APP_NAME']) ?></span>
+      <?php Flight::render('components/brand-auth') ?>
+
       <h1><?= $repair->business->name ?></h1>
       <p>
         <?= $repair->business->rif ?>

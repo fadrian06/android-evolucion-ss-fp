@@ -1,5 +1,12 @@
+<?php
+
+declare(strict_types=1);
+
+?>
+
 <section class="auth-card card">
-  <div class="brand-auth"><?= strtolower($_ENV['APP_NAME']) ?></div>
+  <?php Flight::render('components/brand-auth') ?>
+
   <h1 class="auth-card-title">Bienvenido de vuelta</h1>
   <p class="auth-card-subtitle">Inicia sesión para gestionar tu local.</p>
 

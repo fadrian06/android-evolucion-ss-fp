@@ -11,7 +11,8 @@ use App\Models\Sale;
 <section class="receipt">
   <header class="receipt-head">
     <div>
-      <span class="brand-auth"><?= strtolower($_ENV['APP_NAME']) ?></span>
+      <?php Flight::render('components/brand-auth') ?>
+
       <h1><?= $invoice->business->name ?></h1>
       <p>
         <?= $invoice->business->rif ?> <br>
