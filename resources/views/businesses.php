@@ -12,33 +12,6 @@ use Illuminate\Database\Eloquent\Collection;
 
 ?>
 
-<style>
-  .disabled-action {
-    position: relative;
-    display: inline-flex
-  }
-
-  .disabled-action:hover:after {
-    content: 'No se puede eliminar un local con registros asociados';
-    position: absolute;
-    z-index: 10;
-    bottom: calc(100% + 8px);
-    left: 50%;
-    width: max-content;
-    max-width: 220px;
-    padding: 8px 10px;
-    border-radius: 8px;
-    background: #182230;
-    color: #fff;
-    font-size: 11px;
-    font-weight: 600;
-    line-height: 1.35;
-    text-align: center;
-    box-shadow: var(--shadow);
-    transform: translateX(-50%)
-  }
-</style>
-
 <?php Flight::render('components/page-head', [
   'eyebrow' => 'CONFIGURACIÓN',
   'title' => 'Locales',
@@ -86,36 +59,35 @@ use Illuminate\Database\Eloquent\Collection;
 <section class="grid grid-3">
   <?php foreach ($businesses as $item): ?>
     <article class="card panel">
-      <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px">
-        <div style="display:grid;place-items:center;width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#635bff,#9e77ed);color:#fff;font-size:22px;font-weight:800">
-          <?= strtoupper($item->name[0]) ?>
-        </div>
+      <header class="card-header">
+        <div class="card-avatar"><?= strtoupper($item->name[0]) ?></div>
         <div>
           <?php Flight::render('components/eyebrow', [
             'text' => "LOCAL #$item->id",
           ]) ?>
 
-          <h2 style="margin:2px 0;font-size:18px"><?= $item->name ?></h2>
+          <h2 class="card-title"><?= $item->name ?></h2>
         </div>
-      </div>
+      </header>
 
-      <div
-        class="stack"
-        style="gap:8px;margin-bottom:20px;color:var(--muted)">
+      <div class="stack card-body">
         <span>
-          <strong style="color:var(--ink)">RIF</strong>
+          <strong class="card-eyebrow">RIF</strong>
           · <?= $item->rif ?>
         </span>
         <span><?= $item->address ?></span>
         <span><?= $item->phone ?></span>
       </div>
-      <div class="actions">
+
+      <footer class="actions">
         <?php Flight::render('components/btn', [
           'text' => $business?->id === $item->id
             ? 'Local activo'
             : 'Seleccionar',
           'href' => "./negocios/$item->id/seleccionar",
           'small' => true,
+          'disabled' => $business?->id === $item->id,
+          'title' => 'No puedes seleccionar el local que ya está activo',
         ]) ?>
 
         <?php Flight::render('components/btn', [
@@ -125,25 +97,23 @@ use Illuminate\Database\Eloquent\Collection;
           'onclick' => "\$refs.edit$item->id?.showModal()",
         ]) ?>
 
-        <?php if ($item->hasAssociatedRecords()): ?>
-          <span class="disabled-action">
-            <?php Flight::render('components/btn', [
-              'text' => 'Eliminar',
-              'variant' => 'danger',
-              'small' => true,
-              'disabled' => true,
-              'style' => 'cursor:not-allowed;opacity:.45;filter:grayscale(1)',
-            ]) ?>
-          </span>
-        <?php else: ?>
+        <?php if ($item->canBeDeleted()): ?>
           <?php Flight::render('components/btn', [
             'text' => 'Eliminar',
             'variant' => 'danger',
             'small' => true,
             'href' => "./negocios/$item->id/eliminar",
           ]) ?>
+        <?php else: ?>
+          <?php Flight::render('components/btn', [
+            'text' => 'Eliminar',
+            'variant' => 'danger',
+            'small' => true,
+            'disabled' => true,
+            'title' => 'No se puede eliminar un local con registros asociados',
+          ]) ?>
         <?php endif ?>
-      </div>
+      </footer>
     </article>
   <?php endforeach ?>
 </section>

@@ -60,7 +60,7 @@ final class Business extends Model
     return $this->hasMany(Layaway::class);
   }
 
-  public function hasAssociatedRecords(): bool
+  public function canBeDeleted(): bool
   {
     $associatedRecords = (
       $this->batches_count
@@ -70,6 +70,6 @@ final class Business extends Model
       + $this->layaways_count
     );
 
-    return $associatedRecords > 0;
+    return !$associatedRecords;
   }
 }

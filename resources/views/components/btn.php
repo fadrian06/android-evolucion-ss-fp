@@ -7,13 +7,14 @@ declare(strict_types=1);
  * @var 'primary'|'secondary'|'danger' $variant
  * @var ?string $href
  * @var ?string $onclick
- * @var string $type
- * @var bool $disabled
- * @var bool $small
+ * @var ?string $type
+ * @var ?bool $disabled
+ * @var ?bool $small
  * @var ?string $id
  * @var ?string $style
- * @var string $class
+ * @var ?string $class
  * @var ?string $target
+ * @var ?string $title
  */
 
 $variant ??= 'primary';
@@ -26,6 +27,7 @@ $id ??= null;
 $style ??= null;
 $class ??= '';
 $target ??= null;
+$title ??= null;
 
 $classes = ['btn', "btn-$variant"];
 
@@ -44,11 +46,12 @@ $classAttr = implode(' ', $classes);
 <?php if ($href): ?>
   <a
     class="<?= $classAttr ?>"
-    href="<?= $href ?>"
+    <?= $disabled ? 'aria-disabled' : "href='$href'" ?>
     <?= $target ? "target='$target'" : '' ?>
     <?= $id ? "id='$id'" : '' ?>
     <?= $onclick ? "@click='$onclick'" : '' ?>
-    <?= $style ? "style='$style'" : '' ?>>
+    <?= $style ? "style='$style'" : '' ?>
+    <?= $title ? "title='$title'" : '' ?>>
     <?= $text ?>
   </a>
 <?php else: ?>
@@ -58,7 +61,8 @@ $classAttr = implode(' ', $classes);
     <?= $disabled ? 'disabled' : '' ?>
     <?= $id ? "id='$id'" : '' ?>
     <?= $onclick ? "@click='$onclick'" : '' ?>
-    <?= $style ? "style='$style'" : '' ?>>
+    <?= $style ? "style='$style'" : '' ?>
+    <?= $title ? "title='$title'" : '' ?>>
     <?= $text ?>
   </button>
 <?php endif ?>
