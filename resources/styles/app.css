@@ -378,7 +378,7 @@ button {
 .field select,
 .field textarea {
   width: 100%;
-  border: 1px solid var(--sidebar-font-color);
+  border: 1px solid light-dark(var(--sidebar-font-color), var(--line-dark));
   border-radius: 8px;
   padding: 10px 11px;
   box-sizing: border-box;
