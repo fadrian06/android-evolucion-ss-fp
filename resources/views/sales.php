@@ -240,7 +240,7 @@ use Illuminate\Database\Eloquent\Collection;
       ]) ?>
     </section>
 
-    <aside class="card panel stack" id="payments">
+    <section class="card panel stack" id="payments">
       <h2 style="margin:0">
         Pago inicial
         <small style="color:var(--muted);font-weight:400">(opcional)</small>
@@ -279,7 +279,7 @@ use Illuminate\Database\Eloquent\Collection;
         'type' => 'button',
         'id' => 'add-payment',
       ]) ?>
-    </aside>
+    </section>
 
     <div class="actions">
       <?php Flight::render('components/btn', [
