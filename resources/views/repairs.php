@@ -68,9 +68,9 @@ use Illuminate\Database\Eloquent\Collection;
     width: 100%;
     min-height: 42px;
     padding: 10px 36px 10px 11px;
-    border: 1px solid #d0d5dd;
+    border: 1px solid light-dark(#d0d5dd, #3e3e3e);
     border-radius: 8px;
-    background: #fff;
+    background: transparent;
     color: var(--ink);
     text-align: left;
     position: relative
@@ -92,7 +92,7 @@ use Illuminate\Database\Eloquent\Collection;
     padding: 8px;
     border: 1px solid var(--line);
     border-radius: 10px;
-    background: #fff;
+    background: light-dark(white, var(--surface-dark));
     box-shadow: var(--shadow)
   }
 

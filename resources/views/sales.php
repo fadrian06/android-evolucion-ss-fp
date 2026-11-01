@@ -40,10 +40,9 @@ use Illuminate\Database\Eloquent\Collection;
     width: 100%;
     min-height: 42px;
     padding: 10px 36px 10px 11px;
-    border: 1px solid #d0d5dd;
+    border: 1px solid light-dark(#d0d5dd, #4b5563);
     border-radius: 8px;
-    background: #fff;
-    color: #182230;
+    background: transparent;
     text-align: left;
     position: relative;
   }
@@ -70,7 +69,7 @@ use Illuminate\Database\Eloquent\Collection;
     padding: 8px;
     border: 1px solid var(--line);
     border-radius: 10px;
-    background: #fff;
+    background: light-dark(#fff, #1f2937);
     box-shadow: var(--shadow);
   }
 
