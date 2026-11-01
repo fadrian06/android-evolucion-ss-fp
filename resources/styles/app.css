@@ -326,26 +326,26 @@ dialog {
 .data-table {
   width: 100%;
   border-collapse: collapse;
-}
 
-.data-table th {
-  font-size: 11px;
-  text-align: left;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--muted);
-  font-weight: 700;
-  padding: 13px 20px;
-  background: light-dark(#fcfcfd, var(--surface-dark));
-}
+  th {
+    font-size: 11px;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    font-weight: 700;
+    padding: 13px 20px;
+    background: light-dark(#fcfcfd, var(--surface-dark));
+  }
 
-.data-table td {
-  padding: 15px 20px;
-  border-top: 1px solid var(--line);
-}
+  td {
+    padding: 15px 20px;
+    border-top: 1px solid var(--line);
+  }
 
-.data-table tr:hover td {
-  background: light-dark(#fafbff, var(--surface-dark));
+  tr:hover td {
+    background: light-dark(#fafbff, var(--surface-dark));
+  }
 }
 
 .status {
