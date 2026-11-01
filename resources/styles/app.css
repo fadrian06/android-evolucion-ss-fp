@@ -94,12 +94,12 @@ button {
   padding: 28px 16px;
   box-sizing: border-box;
   background: var(--bg-dark);
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  gap: 26px;
   color: var(--sidebar-font-color);
 
   .business-switcher {
-    margin: 34px 0 26px;
+    margin: 8px 0 0;
   }
 }
 
