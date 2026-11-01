@@ -234,10 +234,10 @@ button {
 .btn-primary {
   background: var(--brand);
   color: white;
-}
 
-.btn-primary:hover {
-  background: var(--brand-dark);
+  &:hover {
+    background: var(--brand-dark);
+  }
 }
 
 .btn-secondary {
