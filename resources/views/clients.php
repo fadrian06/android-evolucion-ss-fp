@@ -127,7 +127,7 @@ $labels = [
           'text' => 'Editar',
           'variant' => 'secondary',
           'small' => true,
-          'onclick' => "\$refs.edit$client->id.showModal()",
+          'onclick' => "\$refs.edit$client->id?.showModal()",
         ]) ?>
 
         <?php if ($client->hasAssociatedRecords()): ?>

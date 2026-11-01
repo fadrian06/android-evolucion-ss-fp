@@ -266,7 +266,7 @@ use Illuminate\Database\Eloquent\Collection;
                 <?php Flight::render('components/btn', [
                   'text' => 'Registrar pago',
                   'small' => true,
-                  'onclick' => "\$refs.pay$item->id.showModal()",
+                  'onclick' => "\$refs.pay$item->id?.showModal()",
                 ]) ?>
 
                 <form

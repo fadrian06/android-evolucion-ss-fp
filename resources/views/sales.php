@@ -141,7 +141,7 @@ use Illuminate\Database\Eloquent\Collection;
   'title' => 'Ventas',
   'description' => 'Comprobantes, cobros y estado de cada operación.',
   'buttonText' => '+ Nueva venta',
-  'buttonAction' => '$refs.new.showModal()',
+  'buttonAction' => '$refs.new?.showModal()',
 ]) ?>
 
 <dialog class="card sale-modal" x-ref="new">
@@ -383,7 +383,7 @@ use Illuminate\Database\Eloquent\Collection;
                   'variant' => 'primary',
                   'small' => true,
                   'type' => 'button',
-                  'onclick' => "\$refs.pay$sale->id.showModal()",
+                  'onclick' => "\$refs.pay$sale->id?.showModal()",
                 ]) ?>
               <?php endif ?>
             </div>

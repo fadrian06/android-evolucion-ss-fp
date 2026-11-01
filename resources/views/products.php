@@ -81,7 +81,7 @@ $labels = [
   'title' => 'Productos',
   'description' => 'Precios y existencias por local.',
   'buttonText' => '+ Añadir producto',
-  'buttonAction' => '$refs.new.showModal()',
+  'buttonAction' => '$refs.new?.showModal()',
 ]) ?>
 
 <div class="grid grid-3" style="max-width:820px;margin:0 0 20px">
@@ -265,7 +265,7 @@ $labels = [
                 'text' => 'Editar',
                 'variant' => 'secondary',
                 'small' => true,
-                'onclick' => "\$refs.edit$product->id.showModal()",
+                'onclick' => "\$refs.edit$product->id?.showModal()",
               ]) ?>
 
               <?php if ($product->hasAssociatedRecords()): ?>

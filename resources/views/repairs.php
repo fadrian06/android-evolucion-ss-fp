@@ -154,7 +154,7 @@ use Illuminate\Database\Eloquent\Collection;
   'title' => 'Reparaciones',
   'description' => 'Registra el servicio acordado en USD y cobra cada abono con su método real.',
   'buttonText' => '+ Nueva reparación',
-  'buttonAction' => '$refs.new.showModal()',
+  'buttonAction' => '$refs.new?.showModal()',
 ]) ?>
 
 <dialog class="card repair-modal" x-ref="new">
@@ -336,7 +336,7 @@ use Illuminate\Database\Eloquent\Collection;
                 <?php Flight::render('components/btn', [
                   'text' => 'Registrar pago',
                   'small' => true,
-                  'onclick' => "\$refs.pay$repair->id.showModal()",
+                  'onclick' => "\$refs.pay$repair->id?.showModal()",
                 ]) ?>
               <?php endif ?>
             </div>
