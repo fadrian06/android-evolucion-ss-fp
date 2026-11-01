@@ -13,6 +13,12 @@ use Illuminate\Database\Eloquent\Collection;
  * @var ?ExchangeRate $customRate
  */
 
+$labels = [
+  'phone' => 'Teléfono',
+  'accessory' => 'Accesorio',
+  'spare_part' => 'Repuesto',
+];
+
 ?>
 
 <style>
@@ -75,7 +81,7 @@ use Illuminate\Database\Eloquent\Collection;
   'title' => 'Productos',
   'description' => 'Precios y existencias por local.',
   'buttonText' => '+ Añadir producto',
-  'buttonAction' => 'document.querySelector(`#new`).showModal()',
+  'buttonAction' => '$refs.new.showModal()',
 ]) ?>
 
 <div class="grid grid-3" style="max-width:820px;margin:0 0 20px">
@@ -125,7 +131,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 <dialog
   class="card"
-  id="new"
+  x-ref="new"
   style="border:0;padding:0;width:min(760px,90vw)">
   <form class="panel stack" method="post" action="./productos">
     <h2>Añadir producto</h2>
@@ -180,7 +186,7 @@ use Illuminate\Database\Eloquent\Collection;
       <?php Flight::render('components/btn', [
         'text' => 'Cancelar',
         'variant' => 'secondary',
-        'onclick' => 'this.closest(`dialog`).close()',
+        'onclick' => '$refs.new.close()',
       ]) ?>
     </div>
   </form>
@@ -210,7 +216,7 @@ use Illuminate\Database\Eloquent\Collection;
         $priceVes = $customRate
           ? $product->price * (float) $customRate->rate
           : null;
-        ?>
+      ?>
         <tr
           data-category="<?= $product->category ?>"
           data-stock="<?= $stock ?>">
@@ -224,9 +230,7 @@ use Illuminate\Database\Eloquent\Collection;
           <td>
             <strong><?= $product->name ?></strong>
           </td>
-          <td class="product-category">
-            <?= ['phone' => 'Teléfono', 'accessory' => 'Accesorio', 'spare_part' => 'Repuesto'][$product->category] ?>
-          </td>
+          <td class="product-category"><?= $labels[$product->category] ?></td>
           <td class="product-price">
             <?php if ($priceVes !== null): ?>
               <span
@@ -264,7 +268,7 @@ use Illuminate\Database\Eloquent\Collection;
                 'text' => 'Editar',
                 'variant' => 'secondary',
                 'small' => true,
-                'onclick' => "document.querySelector(`#edit-$product->id`).showModal()",
+                'onclick' => "\$refs.edit$product->id.showModal()",
               ]) ?>
 
               <?php if ($product->hasAssociatedRecords()): ?>
@@ -295,7 +299,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 <?php foreach ($products as $product): ?>
   <dialog
-    id="edit-<?= $product->id ?>"
+    x-ref="edit<?= $product->id ?>"
     class="card"
     style="border:0;padding:0;width:min(700px,90vw)">
     <form
@@ -367,7 +371,7 @@ use Illuminate\Database\Eloquent\Collection;
         <?php Flight::render('components/btn', [
           'text' => 'Cancelar',
           'variant' => 'secondary',
-          'onclick' => 'this.closest(`dialog`).close()',
+          'onclick' => "\$refs.edit$product->id.close()",
         ]) ?>
       </div>
     </form>
