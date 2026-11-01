@@ -266,7 +266,7 @@ use Illuminate\Database\Eloquent\Collection;
                 <?php Flight::render('components/btn', [
                   'text' => 'Registrar pago',
                   'small' => true,
-                  'onclick' => "document.querySelector(`#pay-$item->id`).showModal()",
+                  'onclick' => "\$refs.pay$item->id.showModal()",
                 ]) ?>
 
                 <form
@@ -277,7 +277,11 @@ use Illuminate\Database\Eloquent\Collection;
                     'variant' => 'danger',
                     'small' => true,
                     'type' => 'submit',
-                    'onclick' => 'return confirm(`¿Cancelar apartado y restaurar el stock?`)',
+                    'onclick' => '
+                      if (!confirm(`¿Cancelar apartado y restaurar el stock?`)) {
+                        $event.preventDefault();
+                      }
+                    ',
                   ]) ?>
                 </form>
               <?php endif ?>
@@ -289,60 +293,63 @@ use Illuminate\Database\Eloquent\Collection;
   </table>
 </section>
 
-<?php foreach ($layaways as $item): if (!$item->cancelled_at && $item->getRemainingAmount() > 0): ?>
-  <dialog class="card layaway-modal" id="pay-<?= $item->id ?>">
-    <form
-      class="panel stack"
-      method="post"
-      action="./apartados/<?= $item->id ?>/pagar">
-      <?php Flight::render('components/toolbar', [
-        'title' => 'Registrar pago',
-        'inDialog' => true,
-      ]) ?>
+<?php foreach ($layaways as $item): ?>
+  <?php if (!$item->cancelled_at && $item->getRemainingAmount() > 0): ?>
+    <dialog class="card layaway-modal" x-ref="pay<?= $item->id ?>">
+      <form
+        class="panel stack"
+        method="post"
+        action="./apartados/<?= $item->id ?>/pagar">
+        <?php Flight::render('components/toolbar', [
+          'title' => 'Registrar pago',
+          'inDialog' => true,
+        ]) ?>
 
-      <p style="margin:0;color:var(--muted)">
-        Pago pendiente:
-        <strong>
-          $<?= number_format($item->getRemainingAmount(), 2, ',', '.') ?>
-        </strong>
-      </p>
+        <p style="margin:0;color:var(--muted)">
+          Pago pendiente:
+          <strong>
+            $<?= number_format($item->getRemainingAmount(), 2, ',', '.') ?>
+          </strong>
+        </p>
 
-      <div class="grid grid-2">
-        <div class="field">
-          <label>Monto recibido</label>
-          <input
-            name="amount"
-            type="number"
-            min=".01"
-            step=".01"
-            required
-            placeholder="0.00">
+        <div class="grid grid-2">
+          <div class="field">
+            <label>Monto recibido</label>
+            <input
+              name="amount"
+              type="number"
+              min=".01"
+              step=".01"
+              required
+              placeholder="0.00">
+          </div>
+
+          <div class="field">
+            <label>Método</label>
+            <select name="method" class="layaway-payment-method" required>
+              <option value="Efectivo USD">Efectivo USD</option>
+              <option value="Efectivo Bs.">Efectivo Bs.</option>
+              <option value="Punto">Punto</option>
+              <option value="Transferencia">Transferencia</option>
+            </select>
+          </div>
         </div>
 
-        <div class="field">
-          <label>Método</label>
-          <select name="method" class="layaway-payment-method" required>
-            <option value="Efectivo USD">Efectivo USD</option>
-            <option value="Efectivo Bs.">Efectivo Bs.</option>
-            <option value="Punto">Punto</option>
-            <option value="Transferencia">Transferencia</option>
-          </select></div>
-      </div>
+        <p style="margin:0;color:var(--muted)">
+          Los pagos en Bs. guardan la cotización personalizada vigente como
+          referencia histórica.
+        </p>
 
-      <p style="margin:0;color:var(--muted)">
-        Los pagos en Bs. guardan la cotización personalizada vigente como
-        referencia histórica.
-      </p>
-
-      <div class="actions">
-        <?php Flight::render('components/btn', [
-          'text' => 'Guardar pago',
-          'type' => 'submit',
-        ]) ?>
-      </div>
-    </form>
-  </dialog>
-<?php endif; endforeach ?>
+        <div class="actions">
+          <?php Flight::render('components/btn', [
+            'text' => 'Guardar pago',
+            'type' => 'submit',
+          ]) ?>
+        </div>
+      </form>
+    </dialog>
+  <?php endif ?>
+<?php endforeach ?>
 
 <script>
   const layawayProduct = document.querySelector('#layaway-product'),
