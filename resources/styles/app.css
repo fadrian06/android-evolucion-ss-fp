@@ -230,10 +230,8 @@ button {
   padding: 42px 52px;
   box-sizing: border-box;
   margin-block: auto;
-
-  .page-head {
-    margin-bottom: 28px;
-  }
+  display: grid;
+  gap: 28px;
 }
 
 .btn {
