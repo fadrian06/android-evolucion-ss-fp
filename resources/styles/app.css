@@ -592,7 +592,7 @@ dialog {
 }
 
 .hidden {
-  display: none !important;
+  display: none;
 }
 
 .mobile-logout {
@@ -675,7 +675,7 @@ dialog {
   .sidebar,
   .toasts,
   .d-print-none {
-    display: none !important;
+    display: none;
   }
 
   .content {
