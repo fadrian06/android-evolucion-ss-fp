@@ -92,4 +92,24 @@ final class Sale extends Model
 
     return round($total, 2);
   }
+
+  public function hasPayments(): bool
+  {
+    return $this->getTotalPaid() > 0;
+  }
+
+  public function isFullyPaid(): bool
+  {
+    return !$this->getRemainingAmount();
+  }
+
+  public function isCancelled(): bool
+  {
+    return $this->cancelled_at !== null;
+  }
+
+  public function canBePaid(): bool
+  {
+    return !$this->isFullyPaid() && !$this->isCancelled();
+  }
 }

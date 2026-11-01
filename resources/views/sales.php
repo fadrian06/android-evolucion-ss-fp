@@ -18,9 +18,11 @@ use Illuminate\Database\Eloquent\Collection;
 
 ?>
 
-<?php if ($invoiceId): foreach (explode(',', $invoiceId) as $id): ?>
-  <script>open('./ventas/<?= $id ?>', '_blank')</script>
-<?php endforeach; endif ?>
+<?php if ($invoiceId): ?>
+  <?php foreach (explode(',', $invoiceId) as $id): ?>
+    <script>open('./ventas/<?= $id ?>', '_blank')</script>
+  <?php endforeach ?>
+<?php endif ?>
 
 <style>
   .select-search {
@@ -324,7 +326,7 @@ use Illuminate\Database\Eloquent\Collection;
             $<?= number_format($sale->getTotal(), 2, ',', '.') ?>
           </td>
           <td class="sale-paid">
-            <?php if ($sale->getTotalPaid() === 0.0): ?>
+            <?php if (!$sale->hasPayments()): ?>
               <?php Flight::render('components/status', [
                 'variant' => 'warning',
                 'text' => 'Sin pagos',
@@ -334,7 +336,7 @@ use Illuminate\Database\Eloquent\Collection;
             <?php endif ?>
           </td>
           <td class="sale-remaining">
-            <?php if ($sale->getRemainingAmount() === 0.0): ?>
+            <?php if ($sale->isFullyPaid()): ?>
               <?php Flight::render('components/status', [
                 'variant' => 'success',
                 'text' => 'Pagado',
@@ -353,24 +355,12 @@ use Illuminate\Database\Eloquent\Collection;
                 'href' => "./ventas/<?= $sale->id ?>",
               ]) ?>
 
-              <?php if ($sale->cancelled_at): ?>
+              <?php if ($sale->isCancelled()): ?>
                 <?php Flight::render('components/status', [
                   'variant' => 'danger',
                   'text' => 'Anulada',
                 ]) ?>
-              <?php endif ?>
-
-              <?php if (!$sale->cancelled_at && $sale->getRemainingAmount() > 0): ?>
-                <?php Flight::render('components/btn', [
-                  'text' => 'Cobrar',
-                  'variant' => 'primary',
-                  'small' => true,
-                  'type' => 'button',
-                  'onclick' => "document.querySelector(`#pay-sale-$sale->id`).showModal()",
-                ]) ?>
-              <?php endif ?>
-
-              <?php if (!$sale->cancelled_at): ?>
+              <?php else: ?>
                 <form
                   method="post"
                   action="./ventas/<?= $sale->id ?>/anular">
@@ -382,6 +372,16 @@ use Illuminate\Database\Eloquent\Collection;
                   ]) ?>
                 </form>
               <?php endif ?>
+
+              <?php if ($sale->canBePaid()): ?>
+                <?php Flight::render('components/btn', [
+                  'text' => 'Cobrar',
+                  'variant' => 'primary',
+                  'small' => true,
+                  'type' => 'button',
+                  'onclick' => "document.querySelector(`#pay-sale-$sale->id`).showModal()",
+                ]) ?>
+              <?php endif ?>
             </div>
           </td>
         </tr>
@@ -390,59 +390,61 @@ use Illuminate\Database\Eloquent\Collection;
   </table>
 </section>
 
-<?php foreach ($sales as $sale): if (!$sale->cancelled_at && $sale->getRemainingAmount() > 0): ?>
-  <dialog class="card sale-modal" id="pay-sale-<?= $sale->id ?>">
-    <form
-      method="post"
-      action="./ventas/<?= $sale->id ?>/pagar"
-      class="panel stack">
-      <?php Flight::render('components/toolbar', [
-        'title' => 'Registrar pago',
-        'inDialog' => true,
-      ]) ?>
-
-      <p style="margin:0;color:var(--muted)">
-        Saldo pendiente:
-        <strong>
-          $<?= number_format($sale->getRemainingAmount(), 2, ',', '.') ?>
-        </strong>
-      </p>
-
-      <div class="grid grid-2">
-        <div class="field">
-          <label>Monto recibido</label>
-          <input
-            name="amount"
-            type="number"
-            min=".01"
-            step=".01"
-            required
-            placeholder="0.00">
-        </div>
-
-        <div class="field">
-          <label>Método</label>
-          <select name="method" required>
-            <option value="Efectivo USD">Efectivo USD</option>
-            <option value="Efectivo Bs.">Efectivo Bs.</option>
-            <option value="Punto">Punto</option>
-            <option value="Transferencia">Transferencia</option>
-          </select>
-        </div>
-      </div>
-
-      <p style="margin:0;color:var(--muted);font-size:12px">
-        Los pagos en Bs. almacenan la cotización personalizada vigente.
-      </p>
-
-      <div class="actions">
-        <?php Flight::render('components/btn', [
-          'text' => 'Guardar pago',
+<?php foreach ($sales as $sale): ?>
+  <?php if ($sale->canBePaid()): ?>
+    <dialog class="card sale-modal" id="pay-sale-<?= $sale->id ?>">
+      <form
+        method="post"
+        action="./ventas/<?= $sale->id ?>/pagar"
+        class="panel stack">
+        <?php Flight::render('components/toolbar', [
+          'title' => 'Registrar pago',
+          'inDialog' => true,
         ]) ?>
-      </div>
-    </form>
-  </dialog>
-<?php endif; endforeach ?>
+
+        <p style="margin:0;color:var(--muted)">
+          Saldo pendiente:
+          <strong>
+            $<?= number_format($sale->getRemainingAmount(), 2, ',', '.') ?>
+          </strong>
+        </p>
+
+        <div class="grid grid-2">
+          <div class="field">
+            <label>Monto recibido</label>
+            <input
+              name="amount"
+              type="number"
+              min=".01"
+              step=".01"
+              required
+              placeholder="0.00">
+          </div>
+
+          <div class="field">
+            <label>Método</label>
+            <select name="method" required>
+              <option value="Efectivo USD">Efectivo USD</option>
+              <option value="Efectivo Bs.">Efectivo Bs.</option>
+              <option value="Punto">Punto</option>
+              <option value="Transferencia">Transferencia</option>
+            </select>
+          </div>
+        </div>
+
+        <p style="margin:0;color:var(--muted);font-size:12px">
+          Los pagos en Bs. almacenan la cotización personalizada vigente.
+        </p>
+
+        <div class="actions">
+          <?php Flight::render('components/btn', [
+            'text' => 'Guardar pago',
+          ]) ?>
+        </div>
+      </form>
+    </dialog>
+  <?php endif ?>
+<?php endforeach ?>
 
 <script>
   const items = document.querySelector('#items');
@@ -452,6 +454,7 @@ use Illuminate\Database\Eloquent\Collection;
 
   function enhanceSelect(select) {
     if (select.dataset.enhanced) return;
+
     select.dataset.enhanced = 'true';
 
     const wrapper = document.createElement('div');

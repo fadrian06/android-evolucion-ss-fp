@@ -368,6 +368,7 @@ dialog {
 
 .status {
   display: inline-flex;
+  align-items: center;
   border-radius: 20px;
   padding: 3px 9px;
   font-size: 11px;
