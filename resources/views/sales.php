@@ -308,9 +308,7 @@ use Illuminate\Database\Eloquent\Collection;
     </thead>
 
     <tbody>
-      <?php foreach ($sales as $sale):
-        $remainingAmount = $sale->getRemainingAmount();
-      ?>
+      <?php foreach ($sales as $sale): ?>
         <tr>
           <td><?= $sale->created_at->format('d/m/Y') ?></td>
           <td><?= $sale->client->name ?></td>
@@ -336,13 +334,13 @@ use Illuminate\Database\Eloquent\Collection;
             <?php endif ?>
           </td>
           <td class="sale-remaining">
-            <?php if ($remainingAmount === 0.0): ?>
+            <?php if ($sale->getRemainingAmount() === 0.0): ?>
               <?php Flight::render('components/status', [
                 'variant' => 'success',
                 'text' => 'Pagado',
               ]) ?>
             <?php else: ?>
-              $<?= number_format($remainingAmount, 2, ',', '.') ?>
+              $<?= number_format($sale->getRemainingAmount(), 2, ',', '.') ?>
             <?php endif ?>
           </td>
           <td>
@@ -362,7 +360,7 @@ use Illuminate\Database\Eloquent\Collection;
                 ]) ?>
               <?php endif ?>
 
-              <?php if (!$sale->cancelled_at && $remainingAmount > 0): ?>
+              <?php if (!$sale->cancelled_at && $sale->getRemainingAmount() > 0): ?>
                 <?php Flight::render('components/btn', [
                   'text' => 'Cobrar',
                   'variant' => 'primary',
