@@ -586,10 +586,10 @@ dialog {
     display: grid;
     grid-template-columns: auto 1fr;
     gap: 10px;
-  }
 
-  .business-switcher {
-    margin: 0;
+    .business-switcher {
+      margin: 0;
+    }
   }
 
   .nav {
