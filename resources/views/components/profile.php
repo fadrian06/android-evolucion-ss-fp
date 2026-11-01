@@ -10,8 +10,8 @@ $email = (string) $auth->user()?->email;
 
 ?>
 
-<a class="profile" href="./cerrar-sesion">
+<div class="profile">
   <span class="profile-avatar"><?= strtoupper($email[0]) ?></span>
   <small class="profile-email"><?= $email ?></small>
-  <b class="profile-logout">Salir</b>
-</a>
+  <a class="profile-logout" href="./cerrar-sesion">Salir</a>
+</div>

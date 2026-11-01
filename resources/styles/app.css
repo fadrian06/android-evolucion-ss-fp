@@ -85,6 +85,10 @@ button {
 .business-switcher-link {
   font-size: 12px;
   color: var(--sidebar-link);
+
+  &:hover {
+    color: var(--sidebar-font-color);
+  }
 }
 
 .profile {
@@ -112,6 +116,10 @@ button {
 .profile-logout {
   font-size: 11px;
   color: var(--sidebar-link);
+
+  &:hover {
+    color: var(--sidebar-font-color);
+  }
 }
 
 .sidebar {
