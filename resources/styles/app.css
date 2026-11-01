@@ -472,8 +472,7 @@ dialog {
   background:
     radial-gradient(circle at 20% 20%,
       light-dark(#e4e2ff, #1d2939),
-      transparent 30%),
-    var(--bg);
+      transparent 30%);
   box-sizing: border-box;
 }
 
