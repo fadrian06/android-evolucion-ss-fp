@@ -77,12 +77,9 @@ button {
   border: 1px solid var(--line-dark);
   border-radius: 12px;
   background: var(--surface-dark);
-}
-
-.business-switcher-name {
-  display: block;
   color: white;
-  margin: 3px 0;
+  display: grid;
+  gap: 6px;
 }
 
 .business-switcher-link {
