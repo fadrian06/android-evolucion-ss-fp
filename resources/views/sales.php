@@ -355,44 +355,46 @@ use Illuminate\Database\Eloquent\Collection;
               $<?= number_format($remainingAmount, 2, ',', '.') ?>
             <?php endif ?>
           </td>
-          <td class="actions">
-            <?php Flight::render('components/btn', [
-              'text' => 'Comprobante',
-              'variant' => 'secondary',
-              'small' => true,
-              'target' => '_blank',
-              'href' => "./ventas/<?= $sale->id ?>",
-            ]) ?>
-
-            <?php if ($sale->cancelled_at): ?>
-              <?php Flight::render('components/status', [
-                'variant' => 'danger',
-                'text' => 'Anulada',
-              ]) ?>
-            <?php endif ?>
-
-            <?php if (!$sale->cancelled_at && $remainingAmount > 0): ?>
+          <td>
+            <div class="actions">
               <?php Flight::render('components/btn', [
-                'text' => 'Cobrar',
-                'variant' => 'primary',
+                'text' => 'Comprobante',
+                'variant' => 'secondary',
                 'small' => true,
-                'type' => 'button',
-                'onclick' => "document.querySelector(`#pay-sale-$sale->id`).showModal()",
+                'target' => '_blank',
+                'href' => "./ventas/<?= $sale->id ?>",
               ]) ?>
-            <?php endif ?>
 
-            <?php if (!$sale->cancelled_at): ?>
-              <form
-                method="post"
-                action="./ventas/<?= $sale->id ?>/anular">
-                <?php Flight::render('components/btn', [
-                  'text' => 'Anular',
+              <?php if ($sale->cancelled_at): ?>
+                <?php Flight::render('components/status', [
                   'variant' => 'danger',
-                  'small' => true,
-                  'onclick' => 'return confirm(`¿Anular y restaurar stock?`)',
+                  'text' => 'Anulada',
                 ]) ?>
-              </form>
-            <?php endif ?>
+              <?php endif ?>
+
+              <?php if (!$sale->cancelled_at && $remainingAmount > 0): ?>
+                <?php Flight::render('components/btn', [
+                  'text' => 'Cobrar',
+                  'variant' => 'primary',
+                  'small' => true,
+                  'type' => 'button',
+                  'onclick' => "document.querySelector(`#pay-sale-$sale->id`).showModal()",
+                ]) ?>
+              <?php endif ?>
+
+              <?php if (!$sale->cancelled_at): ?>
+                <form
+                  method="post"
+                  action="./ventas/<?= $sale->id ?>/anular">
+                  <?php Flight::render('components/btn', [
+                    'text' => 'Anular',
+                    'variant' => 'danger',
+                    'small' => true,
+                    'onclick' => 'return confirm(`¿Anular y restaurar stock?`)',
+                  ]) ?>
+                </form>
+              <?php endif ?>
+            </div>
           </td>
         </tr>
       <?php endforeach ?>

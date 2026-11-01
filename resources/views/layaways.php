@@ -255,31 +255,33 @@ use Illuminate\Database\Eloquent\Collection;
               </strong>
             <?php endif ?>
           </td>
-          <td class="actions">
-            <?php if ($item->cancelled_at): ?>
-              <?php Flight::render('components/status', [
-                'variant' => 'danger',
-                'text' => 'Cancelado',
-              ]) ?>
-            <?php elseif ($remainingAmount > 0): ?>
-              <?php Flight::render('components/btn', [
-                'text' => 'Registrar pago',
-                'small' => true,
-                'onclick' => "document.querySelector(`#pay-$item->id`).showModal()",
-              ]) ?>
-
-              <form
-                method="post"
-                action="./apartados/<?= $item->id ?>/cancelar">
-                <?php Flight::render('components/btn', [
-                  'text' => 'Cancelar',
+          <td>
+            <div class="actions">
+              <?php if ($item->cancelled_at): ?>
+                <?php Flight::render('components/status', [
                   'variant' => 'danger',
-                  'small' => true,
-                  'type' => 'submit',
-                  'onclick' => 'return confirm(`¿Cancelar apartado y restaurar el stock?`)',
+                  'text' => 'Cancelado',
                 ]) ?>
-              </form>
-            <?php endif ?>
+              <?php elseif ($remainingAmount > 0): ?>
+                <?php Flight::render('components/btn', [
+                  'text' => 'Registrar pago',
+                  'small' => true,
+                  'onclick' => "document.querySelector(`#pay-$item->id`).showModal()",
+                ]) ?>
+
+                <form
+                  method="post"
+                  action="./apartados/<?= $item->id ?>/cancelar">
+                  <?php Flight::render('components/btn', [
+                    'text' => 'Cancelar',
+                    'variant' => 'danger',
+                    'small' => true,
+                    'type' => 'submit',
+                    'onclick' => 'return confirm(`¿Cancelar apartado y restaurar el stock?`)',
+                  ]) ?>
+                </form>
+              <?php endif ?>
+            </div>
           </td>
         </tr>
       <?php endforeach ?>

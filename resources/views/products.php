@@ -258,32 +258,34 @@ use Illuminate\Database\Eloquent\Collection;
               <?= $stock ?> unidades
             <?php endif ?>
           </td>
-          <td class="actions">
-            <?php Flight::render('components/btn', [
-              'text' => 'Editar',
-              'variant' => 'secondary',
-              'small' => true,
-              'onclick' => "document.querySelector(`#edit-$product->id`).showModal()",
-            ]) ?>
+          <td>
+            <div class="actions">
+              <?php Flight::render('components/btn', [
+                'text' => 'Editar',
+                'variant' => 'secondary',
+                'small' => true,
+                'onclick' => "document.querySelector(`#edit-$product->id`).showModal()",
+              ]) ?>
 
-            <?php if ($product->hasAssociatedRecords()): ?>
-              <span class="disabled-product-action">
+              <?php if ($product->hasAssociatedRecords()): ?>
+                <span class="disabled-product-action">
+                  <?php Flight::render('components/btn', [
+                    'text' => 'Eliminar',
+                    'variant' => 'danger',
+                    'small' => true,
+                    'disabled' => true,
+                    'style' => 'cursor:not-allowed;opacity:.45;filter:grayscale(1)',
+                  ]) ?>
+                </span>
+              <?php else: ?>
                 <?php Flight::render('components/btn', [
                   'text' => 'Eliminar',
                   'variant' => 'danger',
                   'small' => true,
-                  'disabled' => true,
-                  'style' => 'cursor:not-allowed;opacity:.45;filter:grayscale(1)',
+                  'href' => "./productos/$product->id/eliminar",
                 ]) ?>
-              </span>
-            <?php else: ?>
-              <?php Flight::render('components/btn', [
-                'text' => 'Eliminar',
-                'variant' => 'danger',
-                'small' => true,
-                'href' => "./productos/$product->id/eliminar",
-              ]) ?>
-            <?php endif ?>
+              <?php endif ?>
+            </div>
           </td>
         </tr>
       <?php endforeach ?>

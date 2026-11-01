@@ -321,22 +321,24 @@ use Illuminate\Database\Eloquent\Collection;
             </td>
           <?php endif ?>
 
-          <td class="actions">
-            <?php Flight::render('components/btn', [
-              'text' => 'Comprobante',
-              'variant' => 'secondary',
-              'small' => true,
-              'target' => '_blank',
-              'href' => "./reparaciones/$repair->id",
-            ]) ?>
-
-            <?php if ($remainingAmount > 0): ?>
+          <td>
+            <div class="actions">
               <?php Flight::render('components/btn', [
-                'text' => 'Registrar pago',
+                'text' => 'Comprobante',
+                'variant' => 'secondary',
                 'small' => true,
-                'onclick' => "document.querySelector(`#pay-$repair->id`).showModal()",
+                'target' => '_blank',
+                'href' => "./reparaciones/$repair->id",
               ]) ?>
-            <?php endif ?>
+
+              <?php if ($remainingAmount > 0): ?>
+                <?php Flight::render('components/btn', [
+                  'text' => 'Registrar pago',
+                  'small' => true,
+                  'onclick' => "document.querySelector(`#pay-$repair->id`).showModal()",
+                ]) ?>
+              <?php endif ?>
+            </div>
           </td>
         </tr>
       <?php endforeach ?>
