@@ -495,7 +495,8 @@ dialog {
 }
 
 .auth-card {
-  width: min(100%, 420px);
+  width: 100%;
+  max-width: 420px;
   padding: 36px;
   box-sizing: border-box;
 
