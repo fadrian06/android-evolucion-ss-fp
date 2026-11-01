@@ -48,7 +48,7 @@ $labels = [
   'title' => 'Clientes',
   'description' => 'Información de contacto y ventas.',
   'buttonText' => '+ Nuevo cliente',
-  'buttonAction' => 'document.querySelector(`#new`).showModal()',
+  'buttonAction' => '$refs.new.showModal()',
 ]) ?>
 
 <div class="field" style="margin:0 0 20px">
@@ -59,7 +59,7 @@ $labels = [
     placeholder="Nombre, cédula, teléfono o dirección">
 </div>
 
-<dialog class="card card-small" id="new">
+<dialog class="card card-small" x-ref="new">
   <form class="panel stack" method="post" action="./clientes">
     <h2>Registrar cliente</h2>
 
@@ -92,7 +92,7 @@ $labels = [
       <?php Flight::render('components/btn', [
         'text' => 'Cancelar',
         'variant' => 'secondary',
-        'onclick' => 'this.closest(`dialog`).close()',
+        'onclick' => '$refs.new.close()',
       ]) ?>
     </div>
   </form>
@@ -130,7 +130,7 @@ $labels = [
           'text' => 'Editar',
           'variant' => 'secondary',
           'small' => true,
-          'onclick' => "document.querySelector(`#edit-$client->id`).showModal()",
+          'onclick' => "\$refs.edit$client->id.showModal()",
         ]) ?>
 
         <?php if ($client->hasAssociatedRecords()): ?>
@@ -161,7 +161,7 @@ $labels = [
 </script>
 
 <?php foreach ($clients as $client): ?>
-  <dialog id="edit-<?= $client->id ?>" class="card card-small">
+  <dialog class="card card-small" x-ref="edit<?= $client->id ?>">
     <form
       class="panel stack"
       method="post"
@@ -184,7 +184,7 @@ $labels = [
         <?php Flight::render('components/btn', [
           'text' => 'Cancelar',
           'variant' => 'secondary',
-          'onclick' => 'this.closest(`dialog`).close()',
+          'onclick' => "\$refs.edit$client->id.close()",
         ]) ?>
       </div>
     </form>
