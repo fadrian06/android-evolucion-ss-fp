@@ -7,6 +7,13 @@ use Illuminate\Database\Eloquent\Collection;
 
 /** @var Collection<int, Client> $clients */
 
+$labels = [
+  'name' => 'Nombre',
+  'id_card' => 'Cédula',
+  'phone' => 'Teléfono',
+  'address' => 'Dirección',
+];
+
 ?>
 
 <style>
@@ -52,10 +59,7 @@ use Illuminate\Database\Eloquent\Collection;
     placeholder="Nombre, cédula, teléfono o dirección">
 </div>
 
-<dialog
-  class="card"
-  id="new"
-  style="border:0;padding:0;width:min(520px,90vw)">
+<dialog class="card card-small" id="new">
   <form class="panel stack" method="post" action="./clientes">
     <h2>Registrar cliente</h2>
 
@@ -157,17 +161,14 @@ use Illuminate\Database\Eloquent\Collection;
 </script>
 
 <?php foreach ($clients as $client): ?>
-  <dialog
-    id="edit-<?= $client->id ?>"
-    class="card"
-    style="border:0;padding:0;width:min(520px,90vw)">
+  <dialog id="edit-<?= $client->id ?>" class="card card-small">
     <form
       class="panel stack"
       method="post"
       action="./clientes/<?= $client->id ?>">
       <h2>Editar cliente</h2>
 
-      <?php foreach (['name' => 'Nombre', 'id_card' => 'Cédula', 'phone' => 'Teléfono', 'address' => 'Dirección'] as $key => $label): ?>
+      <?php foreach ($labels as $key => $label): ?>
         <div class="field">
           <label><?= $label ?></label>
           <input name="<?= $key ?>" value="<?= $client->$key ?>" required>

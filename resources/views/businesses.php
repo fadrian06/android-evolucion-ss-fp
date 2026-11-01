@@ -47,10 +47,7 @@ use Illuminate\Database\Eloquent\Collection;
   'buttonAction' => 'document.querySelector(`#new`).showModal()',
 ]) ?>
 
-<dialog
-  class="card"
-  id="new"
-  style="border:0;padding:0;width:min(520px,90vw)">
+<dialog class="card card-small" id="new">
   <form class="panel stack" method="post" action="./negocios">
     <h2>Registrar nuevo local</h2>
 
@@ -155,10 +152,7 @@ use Illuminate\Database\Eloquent\Collection;
 </section>
 
 <?php foreach ($businesses as $item): ?>
-  <dialog
-    id="edit-<?= $item->id ?>"
-    class="card"
-    style="border:0;padding:0;width:min(520px,90vw)">
+  <dialog id="edit-<?= $item->id ?>" class="card card-small">
     <form
       class="panel stack"
       method="post"

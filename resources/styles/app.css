@@ -295,6 +295,10 @@ dialog {
   box-shadow: var(--shadow);
 }
 
+.card-small {
+  width: min(520px, 90vw);
+}
+
 .panel {
   padding: 22px;
 }
