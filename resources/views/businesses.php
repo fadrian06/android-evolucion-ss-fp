@@ -49,7 +49,10 @@ use Illuminate\Database\Eloquent\Collection;
 
 <dialog class="card card-small" x-ref="new">
   <form class="panel stack" method="post" action="./negocios">
-    <h2>Registrar nuevo local</h2>
+    <?php Flight::render('components/toolbar', [
+      'title' => 'Registrar nuevo local',
+      'inDialog' => true,
+    ]) ?>
 
     <div class="field">
       <label>Nombre</label>
@@ -75,12 +78,6 @@ use Illuminate\Database\Eloquent\Collection;
       <?php Flight::render('components/btn', [
         'text' => 'Guardar local',
         'type' => 'submit',
-      ]) ?>
-
-      <?php Flight::render('components/btn', [
-        'text' => 'Cancelar',
-        'variant' => 'secondary',
-        'onclick' => '$el.closest(`dialog`).close()',
       ]) ?>
     </div>
   </form>
@@ -157,7 +154,10 @@ use Illuminate\Database\Eloquent\Collection;
       class="panel stack"
       method="post"
       action="./negocios/<?= $item->id ?>">
-      <h2>Editar <?= $item->name ?></h2>
+      <?php Flight::render('components/toolbar', [
+        'title' => "Editar $item->name",
+        'inDialog' => true,
+      ]) ?>
 
       <div class="field">
         <label>Nombre</label>
@@ -183,12 +183,6 @@ use Illuminate\Database\Eloquent\Collection;
         <?php Flight::render('components/btn', [
           'text' => 'Guardar cambios',
           'type' => 'submit',
-        ]) ?>
-
-        <?php Flight::render('components/btn', [
-          'text' => 'Cancelar',
-          'variant' => 'secondary',
-          'onclick' => '$el.closest(`dialog`).close()',
         ]) ?>
       </div>
     </form>

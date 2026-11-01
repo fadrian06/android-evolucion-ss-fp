@@ -134,7 +134,10 @@ $labels = [
   x-ref="new"
   style="border:0;padding:0;width:min(760px,90vw)">
   <form class="panel stack" method="post" action="./productos">
-    <h2>Añadir producto</h2>
+    <?php Flight::render('components/toolbar', [
+      'title' => 'Añadir producto',
+      'inDialog' => true,
+    ]) ?>
 
     <div class="grid grid-3">
       <div class="field">
@@ -181,12 +184,6 @@ $labels = [
       <?php Flight::render('components/btn', [
         'text' => 'Guardar producto',
         'type' => 'submit',
-      ]) ?>
-
-      <?php Flight::render('components/btn', [
-        'text' => 'Cancelar',
-        'variant' => 'secondary',
-        'onclick' => '$refs.new.close()',
       ]) ?>
     </div>
   </form>
@@ -306,7 +303,10 @@ $labels = [
       method="post"
       action="./productos/<?= $product->id ?>"
       class="panel stack">
-      <h2>Editar producto</h2>
+      <?php Flight::render('components/toolbar', [
+        'title' => 'Editar producto',
+        'inDialog' => true,
+      ]) ?>
 
       <div class="grid grid-3">
         <div class="field">
@@ -366,12 +366,6 @@ $labels = [
         <?php Flight::render('components/btn', [
           'text' => 'Guardar',
           'type' => 'submit',
-        ]) ?>
-
-        <?php Flight::render('components/btn', [
-          'text' => 'Cancelar',
-          'variant' => 'secondary',
-          'onclick' => "\$refs.edit$product->id.close()",
         ]) ?>
       </div>
     </form>

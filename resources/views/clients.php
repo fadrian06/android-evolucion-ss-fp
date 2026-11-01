@@ -61,7 +61,10 @@ $labels = [
 
 <dialog class="card card-small" x-ref="new">
   <form class="panel stack" method="post" action="./clientes">
-    <h2>Registrar cliente</h2>
+    <?php Flight::render('components/toolbar', [
+      'title' => 'Registrar cliente',
+      'inDialog' => true,
+    ]) ?>
 
     <div class="field">
       <label>Nombre</label>
@@ -87,12 +90,6 @@ $labels = [
       <?php Flight::render('components/btn', [
         'text' => 'Guardar cliente',
         'type' => 'submit',
-      ]) ?>
-
-      <?php Flight::render('components/btn', [
-        'text' => 'Cancelar',
-        'variant' => 'secondary',
-        'onclick' => '$refs.new?.close()',
       ]) ?>
     </div>
   </form>
@@ -166,7 +163,10 @@ $labels = [
       class="panel stack"
       method="post"
       action="./clientes/<?= $client->id ?>">
-      <h2>Editar cliente</h2>
+      <?php Flight::render('components/toolbar', [
+        'title' => 'Editar cliente',
+        'inDialog' => true,
+      ]) ?>
 
       <?php foreach ($labels as $key => $label): ?>
         <div class="field">
@@ -179,12 +179,6 @@ $labels = [
         <?php Flight::render('components/btn', [
           'text' => 'Guardar',
           'type' => 'submit',
-        ]) ?>
-
-        <?php Flight::render('components/btn', [
-          'text' => 'Cancelar',
-          'variant' => 'secondary',
-          'onclick' => "\$refs.edit$client->id.close()",
         ]) ?>
       </div>
     </form>
