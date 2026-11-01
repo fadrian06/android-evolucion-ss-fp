@@ -44,10 +44,10 @@ use Illuminate\Database\Eloquent\Collection;
   'title' => 'Locales',
   'description' => 'Administra los datos de tus puntos de venta.',
   'buttonText' => '+ Nuevo local',
-  'buttonAction' => 'document.querySelector(`#new`).showModal()',
+  'buttonAction' => '$refs.new.showModal()',
 ]) ?>
 
-<dialog class="card card-small" id="new">
+<dialog class="card card-small" x-ref="new">
   <form class="panel stack" method="post" action="./negocios">
     <h2>Registrar nuevo local</h2>
 
@@ -80,7 +80,7 @@ use Illuminate\Database\Eloquent\Collection;
       <?php Flight::render('components/btn', [
         'text' => 'Cancelar',
         'variant' => 'secondary',
-        'onclick' => 'this.closest(`dialog`).close()',
+        'onclick' => '$refs.new.close()',
       ]) ?>
     </div>
   </form>
@@ -125,7 +125,7 @@ use Illuminate\Database\Eloquent\Collection;
           'text' => 'Editar',
           'variant' => 'secondary',
           'small' => true,
-          'onclick' => "document.querySelector(`#edit-$item->id`).showModal()",
+          'onclick' => "\$refs.edit$item->id.showModal()",
         ]) ?>
 
         <?php if ($item->hasAssociatedRecords()): ?>
@@ -152,7 +152,7 @@ use Illuminate\Database\Eloquent\Collection;
 </section>
 
 <?php foreach ($businesses as $item): ?>
-  <dialog id="edit-<?= $item->id ?>" class="card card-small">
+  <dialog class="card card-small" x-ref="edit<?= $item->id ?>">
     <form
       class="panel stack"
       method="post"
@@ -188,7 +188,7 @@ use Illuminate\Database\Eloquent\Collection;
         <?php Flight::render('components/btn', [
           'text' => 'Cancelar',
           'variant' => 'secondary',
-          'onclick' => 'this.closest(`dialog`).close()',
+          'onclick' => "\$refs.edit$item->id.close()",
         ]) ?>
       </div>
     </form>

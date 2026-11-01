@@ -45,20 +45,20 @@ $classAttr = implode(' ', $classes);
   <a
     class="<?= $classAttr ?>"
     href="<?= $href ?>"
-    <?= $target ? "target='$target' " : '' ?>
-    <?= $id ? "id='$id' " : '' ?>
-    <?= $onclick ? "onclick='$onclick' " : '' ?>
-    <?= $style ? "style='$style' " : '' ?>>
+    <?= $target ? "target='$target'" : '' ?>
+    <?= $id ? "id='$id'" : '' ?>
+    <?= $onclick ? "@click='$onclick'" : '' ?>
+    <?= $style ? "style='$style'" : '' ?>>
     <?= $text ?>
   </a>
 <?php else: ?>
   <button
     type="<?= $type ?>"
     class="<?= $classAttr ?>"
-    <?= $disabled ? 'disabled ' : '' ?>
-    <?= $id ? "id='$id' " : '' ?>
-    <?= $onclick ? "onclick='$onclick' " : '' ?>
-    <?= $style ? "style='$style' " : '' ?>>
+    <?= $disabled ? 'disabled' : '' ?>
+    <?= $id ? "id='$id'" : '' ?>
+    <?= $onclick ? "@click='$onclick'" : '' ?>
+    <?= $style ? "style='$style'" : '' ?>>
     <?= $text ?>
   </button>
 <?php endif ?>
