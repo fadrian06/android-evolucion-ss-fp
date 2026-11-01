@@ -141,10 +141,10 @@ use Illuminate\Database\Eloquent\Collection;
   'title' => 'Ventas',
   'description' => 'Comprobantes, cobros y estado de cada operación.',
   'buttonText' => '+ Nueva venta',
-  'buttonAction' => 'document.querySelector(`#new`).showModal()',
+  'buttonAction' => '$refs.new.showModal()',
 ]) ?>
 
-<dialog class="card sale-modal" id="new">
+<dialog class="card sale-modal" x-ref="new">
   <form
     method="post"
     action="./ventas"
@@ -368,7 +368,11 @@ use Illuminate\Database\Eloquent\Collection;
                     'text' => 'Anular',
                     'variant' => 'danger',
                     'small' => true,
-                    'onclick' => 'return confirm(`¿Anular y restaurar stock?`)',
+                    'onclick' => '
+                      if (!confirm(`¿Anular y restaurar stock?`)) {
+                        $event.preventDefault();
+                      }
+                    ',
                   ]) ?>
                 </form>
               <?php endif ?>
@@ -379,7 +383,7 @@ use Illuminate\Database\Eloquent\Collection;
                   'variant' => 'primary',
                   'small' => true,
                   'type' => 'button',
-                  'onclick' => "document.querySelector(`#pay-sale-$sale->id`).showModal()",
+                  'onclick' => "\$refs.pay$sale->id.showModal()",
                 ]) ?>
               <?php endif ?>
             </div>
@@ -392,7 +396,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 <?php foreach ($sales as $sale): ?>
   <?php if ($sale->canBePaid()): ?>
-    <dialog class="card sale-modal" id="pay-sale-<?= $sale->id ?>">
+    <dialog class="card sale-modal" x-ref="pay<?= $sale->id ?>">
       <form
         method="post"
         action="./ventas/<?= $sale->id ?>/pagar"
