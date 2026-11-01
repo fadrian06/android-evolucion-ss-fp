@@ -19,10 +19,10 @@ enum FlashKey
   public function class(): string
   {
     return 'toast ' . match ($this) {
-      self::Errors => 'toast--error',
-      self::Warnings => 'toast--warning',
-      self::Successes => 'toast--success',
-      self::Notes => 'toast--note',
+      self::Errors => 'toast-error',
+      self::Warnings => 'toast-warning',
+      self::Successes => 'toast-success',
+      self::Notes => 'toast-note',
     };
   }
 }

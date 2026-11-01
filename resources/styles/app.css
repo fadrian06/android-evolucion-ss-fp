@@ -466,19 +466,19 @@ dialog {
   }
 }
 
-.toast--success {
+.toast-success {
   border-left: 4px solid var(--success);
 }
 
-.toast--error {
+.toast-error {
   border-left: 4px solid var(--danger);
 }
 
-.toast--warning {
+.toast-warning {
   border-left: 4px solid var(--warning);
 }
 
-.toast--note {
+.toast-note {
   border-left: 4px solid var(--brand);
 }
 
