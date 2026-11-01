@@ -596,6 +596,15 @@ dialog {
     display: block;
   }
 
+  .nav {
+    display: flex;
+    padding-bottom: 14px;
+  }
+
+  .nav-item {
+    white-space: nowrap;
+  }
+
   .sidebar {
     position: static;
     height: auto;
@@ -613,16 +622,10 @@ dialog {
     .profile {
       display: none;
     }
-  }
 
-  .nav {
-    display: flex;
-    grid-column: 1 / -1;
-    padding-bottom: 14px;
-  }
-
-  .nav-item {
-    white-space: nowrap;
+    .nav {
+      grid-column: 1 / -1;
+    }
   }
 
   .mobile-logout {
