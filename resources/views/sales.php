@@ -127,14 +127,6 @@ use Illuminate\Database\Eloquent\Collection;
     background: rgb(17 24 39 / 55%);
   }
 
-  .sale-modal .sale-builder {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .sale-modal .item-row {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .data-table .sale-total,
   .data-table .sale-paid,
   .data-table .sale-remaining {
