@@ -229,7 +229,7 @@ button {
   max-width: 1500px;
   padding: 42px 52px;
   box-sizing: border-box;
-  margin: auto;
+  margin-block: auto;
 
   .page-head {
     margin-bottom: 28px;
