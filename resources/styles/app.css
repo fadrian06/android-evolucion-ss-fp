@@ -256,12 +256,20 @@ button {
   border: 1px solid var(--line);
   background: white;
   color: var(--line-dark);
+
+  &:hover {
+    background: #f9fafb;
+  }
 }
 
 .btn-danger {
   background: white;
   color: var(--danger-light);
   border: 1px solid var(--danger-dark);
+
+  &:hover {
+    background: #fef3f2;
+  }
 }
 
 .btn-sm {
