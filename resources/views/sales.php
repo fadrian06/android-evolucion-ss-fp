@@ -570,16 +570,11 @@ use Illuminate\Database\Eloquent\Collection;
 
   function syncSaleForm() {
     const products = document.querySelectorAll('.product');
-    const phone = [...products].some(select => select.selectedOptions[0]?.dataset.category === 'phone');
 
     products.forEach(product => {
       updateIdentifiers(product);
       filterBusinesses(product);
     });
-
-    const payments = document.querySelector('#payments');
-    payments.classList.toggle('hidden', phone);
-    payments.querySelectorAll('input,select').forEach(input => input.disabled = phone);
   }
 
   document.querySelectorAll('.searchable-select').forEach(enhanceSelect);
