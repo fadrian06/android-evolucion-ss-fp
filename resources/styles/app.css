@@ -518,6 +518,11 @@ dialog {
   max-width: 840px;
   margin: 30px auto;
   padding: 42px;
+
+  h1 {
+    margin: 0;
+    font-size: 28px;
+  }
 }
 
 .receipt-head {
@@ -528,26 +533,21 @@ dialog {
   border-bottom: 2px solid var(--ink);
 }
 
-.receipt h1 {
-  margin: 0;
-  font-size: 28px;
-}
-
 .receipt-meta {
   display: grid;
   grid-template-columns: 150px 1fr;
   gap: 7px;
   margin: 28px 0;
-}
 
-.receipt-meta dt {
-  font-size: 12px;
-  font-weight: 800;
-  color: var(--muted);
-}
+  dt {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--muted);
+  }
 
-.receipt-meta dd {
-  margin: 0;
+  dd {
+    margin: 0;
+  }
 }
 
 .sale-builder {
