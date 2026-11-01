@@ -144,7 +144,7 @@ button {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 11px 12px;
+  padding: 12px;
   border-radius: 9px;
   font-weight: 600;
   color: var(--muted-dark);
