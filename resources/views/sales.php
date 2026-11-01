@@ -175,13 +175,11 @@ use Illuminate\Database\Eloquent\Collection;
               class="product searchable-select">
               <option value="">Seleccionar producto</option>
 
-              <?php foreach ($products as $product):
-                $availableBusinesses = $product->batches->filter(fn($batch) => $batch->stock > 0)->pluck('business_id')->implode(',');
-              ?>
+              <?php foreach ($products as $product): ?>
                 <option
                   value="<?= $product->id ?>"
                   data-category="<?= $product->category ?>"
-                  data-businesses="<?= $availableBusinesses ?>">
+                  data-businesses="<?= $product->getBusinessIdsWithStock() ?>">
                   <?= $product->name ?> · $<?= $product->price ?>
                 </option>
               <?php endforeach ?>

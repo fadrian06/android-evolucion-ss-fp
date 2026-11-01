@@ -68,4 +68,12 @@ final class Product extends Model
 
     return $associatedRecords > 0;
   }
+
+  public function getBusinessIdsWithStock(): string
+  {
+    return $this->batches
+      ->filter(static fn(Batch $batch) => $batch->stock > 0)
+      ->pluck('business_id')
+      ->implode(',');
+  }
 }
