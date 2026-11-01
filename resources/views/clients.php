@@ -48,7 +48,7 @@ $labels = [
   'title' => 'Clientes',
   'description' => 'Información de contacto y ventas.',
   'buttonText' => '+ Nuevo cliente',
-  'buttonAction' => '$refs.new.showModal()',
+  'buttonAction' => '$refs.new?.showModal()',
 ]) ?>
 
 <div class="field" style="margin:0 0 20px">
@@ -92,7 +92,7 @@ $labels = [
       <?php Flight::render('components/btn', [
         'text' => 'Cancelar',
         'variant' => 'secondary',
-        'onclick' => '$refs.new.close()',
+        'onclick' => '$refs.new?.close()',
       ]) ?>
     </div>
   </form>

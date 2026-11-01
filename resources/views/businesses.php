@@ -44,7 +44,7 @@ use Illuminate\Database\Eloquent\Collection;
   'title' => 'Locales',
   'description' => 'Administra los datos de tus puntos de venta.',
   'buttonText' => '+ Nuevo local',
-  'buttonAction' => '$refs.new.showModal()',
+  'buttonAction' => '$refs.new?.showModal()',
 ]) ?>
 
 <dialog class="card card-small" x-ref="new">
@@ -80,7 +80,7 @@ use Illuminate\Database\Eloquent\Collection;
       <?php Flight::render('components/btn', [
         'text' => 'Cancelar',
         'variant' => 'secondary',
-        'onclick' => '$refs.new.close()',
+        'onclick' => '$el.closest(`dialog`).close()',
       ]) ?>
     </div>
   </form>
@@ -125,7 +125,7 @@ use Illuminate\Database\Eloquent\Collection;
           'text' => 'Editar',
           'variant' => 'secondary',
           'small' => true,
-          'onclick' => "\$refs.edit$item->id.showModal()",
+          'onclick' => "\$refs.edit$item->id?.showModal()",
         ]) ?>
 
         <?php if ($item->hasAssociatedRecords()): ?>
@@ -188,7 +188,7 @@ use Illuminate\Database\Eloquent\Collection;
         <?php Flight::render('components/btn', [
           'text' => 'Cancelar',
           'variant' => 'secondary',
-          'onclick' => "\$refs.edit$item->id.close()",
+          'onclick' => '$el.closest(`dialog`).close()',
         ]) ?>
       </div>
     </form>
