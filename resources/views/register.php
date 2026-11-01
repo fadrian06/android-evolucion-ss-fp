@@ -31,7 +31,10 @@ declare(strict_types=1);
         placeholder="Crea una contraseña">
     </div>
 
-    <button class="btn btn-primary">Crear cuenta</button>
+    <?php Flight::render('components/btn', [
+      'text' => 'Crear cuenta',
+      'type' => 'submit',
+    ]) ?>
   </form>
 
   <p class="auth-card-subtitle auth-card-footer">

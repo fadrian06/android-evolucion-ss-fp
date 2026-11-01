@@ -15,11 +15,11 @@ $inDialog ??= false;
   <h2 class="toolbar-title"><?= $title ?></h2>
 
   <?php if ($inDialog): ?>
-    <button
-      type="button"
-      class="btn btn-secondary btn-sm"
-      onclick="this.closest('dialog').close()">
-      Cancelar
-    </button>
+    <?php Flight::render('components/btn', [
+      'text' => 'Cancelar',
+      'variant' => 'secondary',
+      'small' => true,
+      'onclick' => 'this.closest(`dialog`).close()',
+    ]) ?>
   <?php endif ?>
 </div>

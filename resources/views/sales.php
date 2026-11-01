@@ -148,7 +148,7 @@ use Illuminate\Database\Eloquent\Collection;
   'title' => 'Ventas',
   'description' => 'Comprobantes, cobros y estado de cada operación.',
   'buttonText' => '+ Nueva venta',
-  'buttonAction' => "document.querySelector('#new').showModal()",
+  'buttonAction' => 'document.querySelector(`#new`).showModal()',
 ]) ?>
 
 <dialog class="card sale-modal" id="new">
@@ -243,9 +243,12 @@ use Illuminate\Database\Eloquent\Collection;
         </div>
       </div>
 
-      <button type="button" class="btn btn-secondary" id="add-item">
-        + Añadir producto
-      </button>
+      <?php Flight::render('components/btn', [
+        'text' => '+ Añadir producto',
+        'variant' => 'secondary',
+        'type' => 'button',
+        'id' => 'add-item',
+      ]) ?>
     </section>
 
     <aside class="card panel stack" id="payments">
@@ -281,13 +284,18 @@ use Illuminate\Database\Eloquent\Collection;
         </div>
       </div>
 
-      <button type="button" class="btn btn-secondary" id="add-payment">
-        + Añadir pago
-      </button>
+      <?php Flight::render('components/btn', [
+        'text' => '+ Añadir pago',
+        'variant' => 'secondary',
+        'type' => 'button',
+        'id' => 'add-payment',
+      ]) ?>
     </aside>
 
     <div class="actions">
-      <button class="btn btn-primary">Generar comprobante</button>
+      <?php Flight::render('components/btn', [
+        'text' => 'Generar comprobante',
+      ]) ?>
     </div>
   </form>
 </dialog>
@@ -349,12 +357,13 @@ use Illuminate\Database\Eloquent\Collection;
             <?php endif ?>
           </td>
           <td class="actions">
-            <a
-              class="btn btn-secondary btn-sm"
-              target="_blank"
-              href="./ventas/<?= $sale->id ?>">
-              Comprobante
-            </a>
+            <?php Flight::render('components/btn', [
+              'text' => 'Comprobante',
+              'variant' => 'secondary',
+              'small' => true,
+              'target' => '_blank',
+              'href' => "./ventas/<?= $sale->id ?>",
+            ]) ?>
 
             <?php if ($sale->cancelled_at): ?>
               <?php Flight::render('components/status', [
@@ -364,23 +373,25 @@ use Illuminate\Database\Eloquent\Collection;
             <?php endif ?>
 
             <?php if (!$sale->cancelled_at && $remainingAmount > 0): ?>
-              <button
-                type="button"
-                class="btn btn-primary btn-sm"
-                onclick="document.querySelector('#pay-sale-<?= $sale->id ?>').showModal()">
-                Cobrar
-              </button>
+              <?php Flight::render('components/btn', [
+                'text' => 'Cobrar',
+                'variant' => 'primary',
+                'small' => true,
+                'type' => 'button',
+                'onclick' => "document.querySelector(`#pay-sale-$sale->id`).showModal()",
+              ]) ?>
             <?php endif ?>
 
             <?php if (!$sale->cancelled_at): ?>
               <form
                 method="post"
                 action="./ventas/<?= $sale->id ?>/anular">
-                <button
-                  class="btn btn-danger btn-sm"
-                  onclick="return confirm('¿Anular y restaurar stock?')">
-                  Anular
-                </button>
+                <?php Flight::render('components/btn', [
+                  'text' => 'Anular',
+                  'variant' => 'danger',
+                  'small' => true,
+                  'onclick' => 'return confirm(`¿Anular y restaurar stock?`)',
+                ]) ?>
               </form>
             <?php endif ?>
           </td>
@@ -436,7 +447,9 @@ use Illuminate\Database\Eloquent\Collection;
       </p>
 
       <div class="actions">
-        <button class="btn btn-primary">Guardar pago</button>
+        <?php Flight::render('components/btn', [
+          'text' => 'Guardar pago',
+        ]) ?>
       </div>
     </form>
   </dialog>
@@ -597,7 +610,13 @@ use Illuminate\Database\Eloquent\Collection;
 
     payment.insertAdjacentHTML(
       'beforeend',
-      '<button type="button" class="btn btn-danger btn-sm remove-payment">Quitar pago</button>'
+      `<?php Flight::render('components/btn', [
+        'type' => 'button',
+        'variant' => 'danger',
+        'small' => true,
+        'class' => 'remove-payment',
+        'text' => 'Quitar pago',
+      ]); ?>`
     );
 
     payment.querySelectorAll('.searchable-select').forEach(enhanceSelect);

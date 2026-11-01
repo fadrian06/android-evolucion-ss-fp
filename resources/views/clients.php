@@ -41,7 +41,7 @@ use Illuminate\Database\Eloquent\Collection;
   'title' => 'Clientes',
   'description' => 'Información de contacto y ventas.',
   'buttonText' => '+ Nuevo cliente',
-  'buttonAction' => "document.querySelector('#new').showModal()",
+  'buttonAction' => 'document.querySelector(`#new`).showModal()',
 ]) ?>
 
 <div class="field" style="margin:0 0 20px">
@@ -80,13 +80,16 @@ use Illuminate\Database\Eloquent\Collection;
     </div>
 
     <div class="actions">
-      <button class="btn btn-primary">Guardar cliente</button>
-      <button
-        type="button"
-        class="btn btn-secondary"
-        onclick="this.closest('dialog').close()">
-        Cancelar
-      </button>
+      <?php Flight::render('components/btn', [
+        'text' => 'Guardar cliente',
+        'type' => 'submit',
+      ]) ?>
+
+      <?php Flight::render('components/btn', [
+        'text' => 'Cancelar',
+        'variant' => 'secondary',
+        'onclick' => 'this.closest(`dialog`).close()',
+      ]) ?>
     </div>
   </form>
 </dialog>
@@ -119,28 +122,30 @@ use Illuminate\Database\Eloquent\Collection;
       </div>
 
       <div class="actions">
-        <button
-          class="btn btn-secondary btn-sm"
-          onclick="document.querySelector('#edit-<?= $client->id ?>').showModal()">
-          Editar
-        </button>
+        <?php Flight::render('components/btn', [
+          'text' => 'Editar',
+          'variant' => 'secondary',
+          'small' => true,
+          'onclick' => "document.querySelector(`#edit-$client->id`).showModal()",
+        ]) ?>
 
         <?php if ($client->hasAssociatedRecords()): ?>
           <span class="disabled-client-action">
-            <button
-              class="btn btn-danger btn-sm"
-              type="button"
-              disabled
-              style="cursor:not-allowed;opacity:.45;filter:grayscale(1)">
-              Eliminar
-            </button>
+            <?php Flight::render('components/btn', [
+              'text' => 'Eliminar',
+              'variant' => 'danger',
+              'small' => true,
+              'disabled' => true,
+              'style' => 'cursor:not-allowed;opacity:.45;filter:grayscale(1)',
+            ]) ?>
           </span>
         <?php else: ?>
-          <a
-            class="btn btn-danger btn-sm"
-            href="./clientes/<?= $client->id ?>/eliminar">
-            Eliminar
-          </a>
+          <?php Flight::render('components/btn', [
+            'text' => 'Eliminar',
+            'variant' => 'danger',
+            'small' => true,
+            'href' => "./clientes/$client->id/eliminar",
+          ]) ?>
         <?php endif ?>
       </div>
     </article>
@@ -170,13 +175,16 @@ use Illuminate\Database\Eloquent\Collection;
       <?php endforeach ?>
 
       <div class="actions">
-        <button class="btn btn-primary">Guardar</button>
-        <button
-          type="button"
-          class="btn btn-secondary"
-          onclick="this.closest('dialog').close()">
-          Cancelar
-        </button>
+        <?php Flight::render('components/btn', [
+          'text' => 'Guardar',
+          'type' => 'submit',
+        ]) ?>
+
+        <?php Flight::render('components/btn', [
+          'text' => 'Cancelar',
+          'variant' => 'secondary',
+          'onclick' => 'this.closest(`dialog`).close()',
+        ]) ?>
       </div>
     </form>
   </dialog>

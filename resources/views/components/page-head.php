@@ -24,10 +24,9 @@ $buttonAction ??= null;
   </div>
 
   <?php if ($buttonText && $buttonAction): ?>
-    <button
-      class="btn btn-primary"
-      onclick="<?= $buttonAction ?>">
-      <?= $buttonText ?>
-    </button>
+    <?php Flight::render('components/btn', [
+      'text' => $buttonText,
+      'onclick' => $buttonAction,
+    ]) ?>
   <?php endif ?>
 </header>

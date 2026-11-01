@@ -44,5 +44,9 @@ declare(strict_types=1);
     La cotización personalizada define el valor en bolívares que quedará
     guardado en cada comprobante.
   </p>
-  <a class="btn btn-primary" href="./calculadora">Abrir calculadora</a>
+
+  <?php Flight::render('components/btn', [
+    'text' => 'Abrir calculadora',
+    'href' => './calculadora',
+  ]) ?>
 </section>

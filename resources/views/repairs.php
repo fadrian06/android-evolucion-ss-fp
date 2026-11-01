@@ -153,7 +153,7 @@ use Illuminate\Database\Eloquent\Collection;
   'title' => 'Reparaciones',
   'description' => 'Registra el servicio acordado en USD y cobra cada abono con su método real.',
   'buttonText' => '+ Nueva reparación',
-  'buttonAction' => "document.querySelector('#new-repair').showModal()",
+  'buttonAction' => 'document.querySelector(`#new-repair`).showModal()',
 ]) ?>
 
 <dialog class="card repair-modal" id="new-repair">
@@ -238,16 +238,19 @@ use Illuminate\Database\Eloquent\Collection;
         </div>
       </div>
 
-      <button
-        type="button"
-        class="btn btn-secondary btn-sm"
-        id="add-initial-payment">
-        + Añadir otro pago
-      </button>
+      <?php Flight::render('components/btn', [
+        'text' => '+ Añadir otro pago',
+        'variant' => 'secondary',
+        'small' => true,
+        'id' => 'add-initial-payment',
+      ]) ?>
     </section>
 
     <div class="actions">
-      <button class="btn btn-primary">Registrar reparación</button>
+      <?php Flight::render('components/btn', [
+        'text' => 'Registrar reparación',
+        'type' => 'submit',
+      ]) ?>
     </div>
   </form>
 </dialog>
@@ -271,7 +274,7 @@ use Illuminate\Database\Eloquent\Collection;
     <tbody>
       <?php foreach ($repairs as $repair):
         $remainingAmount = $repair->getRemainingAmount();
-      ?>
+        ?>
         <tr>
           <td>
             <strong><?= $repair->client->name ?></strong>
@@ -319,20 +322,20 @@ use Illuminate\Database\Eloquent\Collection;
           <?php endif ?>
 
           <td class="actions">
-            <a
-              class="btn btn-secondary btn-sm"
-              target="_blank"
-              href="./reparaciones/<?= $repair->id ?>">
-              Comprobante
-            </a>
+            <?php Flight::render('components/btn', [
+              'text' => 'Comprobante',
+              'variant' => 'secondary',
+              'small' => true,
+              'target' => '_blank',
+              'href' => "./reparaciones/$repair->id",
+            ]) ?>
 
             <?php if ($remainingAmount > 0): ?>
-              <button
-                type="button"
-                class="btn btn-primary btn-sm"
-                onclick="document.querySelector('#pay-<?= $repair->id ?>').showModal()">
-                Registrar pago
-              </button>
+              <?php Flight::render('components/btn', [
+                'text' => 'Registrar pago',
+                'small' => true,
+                'onclick' => "document.querySelector(`#pay-$repair->id`).showModal()",
+              ]) ?>
             <?php endif ?>
           </td>
         </tr>
@@ -388,7 +391,10 @@ use Illuminate\Database\Eloquent\Collection;
       </p>
 
       <div class="actions">
-        <button class="btn btn-primary">Guardar pago</button>
+        <?php Flight::render('components/btn', [
+          'text' => 'Guardar pago',
+          'type' => 'submit',
+        ]) ?>
       </div>
     </form>
   </dialog>
@@ -403,7 +409,13 @@ use Illuminate\Database\Eloquent\Collection;
 
     initialPayments.lastElementChild.insertAdjacentHTML(
       'beforeend',
-      '<button type="button" class="btn btn-danger btn-sm remove-payment">Quitar pago</button>'
+      `<?php Flight::render('components/btn', [
+        'type' => 'button',
+        'variant' => 'danger',
+        'small' => true,
+        'class' => 'remove-payment',
+        'text' => 'Quitar pago',
+      ]); ?>`
     )
   };
 

@@ -44,7 +44,7 @@ use Illuminate\Database\Eloquent\Collection;
   'title' => 'Locales',
   'description' => 'Administra los datos de tus puntos de venta.',
   'buttonText' => '+ Nuevo local',
-  'buttonAction' => "document.querySelector('#new').showModal()",
+  'buttonAction' => 'document.querySelector(`#new`).showModal()',
 ]) ?>
 
 <dialog
@@ -75,13 +75,16 @@ use Illuminate\Database\Eloquent\Collection;
     </div>
 
     <div class="actions">
-      <button class="btn btn-primary">Guardar local</button>
-      <button
-        type="button"
-        class="btn btn-secondary"
-        onclick="this.closest('dialog').close()">
-        Cancelar
-      </button>
+      <?php Flight::render('components/btn', [
+        'text' => 'Guardar local',
+        'type' => 'submit',
+      ]) ?>
+
+      <?php Flight::render('components/btn', [
+        'text' => 'Cancelar',
+        'variant' => 'secondary',
+        'onclick' => 'this.closest(`dialog`).close()',
+      ]) ?>
     </div>
   </form>
 </dialog>
@@ -113,32 +116,38 @@ use Illuminate\Database\Eloquent\Collection;
         <span><?= $item->phone ?></span>
       </div>
       <div class="actions">
-        <a
-          class="btn btn-primary btn-sm"
-          href="./negocios/<?= $item->id ?>/seleccionar">
-          <?= $business?->id === $item->id ? 'Local activo' : 'Seleccionar' ?>
-        </a>
-        <button
-          class="btn btn-secondary btn-sm"
-          onclick="document.querySelector('#edit-<?= $item->id ?>').showModal()">
-          Editar
-        </button>
+        <?php Flight::render('components/btn', [
+          'text' => $business?->id === $item->id
+            ? 'Local activo'
+            : 'Seleccionar',
+          'href' => "./negocios/$item->id/seleccionar",
+          'small' => true,
+        ]) ?>
+
+        <?php Flight::render('components/btn', [
+          'text' => 'Editar',
+          'variant' => 'secondary',
+          'small' => true,
+          'onclick' => "document.querySelector(`#edit-$item->id`).showModal()",
+        ]) ?>
+
         <?php if ($item->hasAssociatedRecords()): ?>
           <span class="disabled-action">
-            <button
-              class="btn btn-danger btn-sm"
-              type="button"
-              disabled
-              style="cursor:not-allowed;opacity:.45;filter:grayscale(1)">
-              Eliminar
-            </button>
+            <?php Flight::render('components/btn', [
+              'text' => 'Eliminar',
+              'variant' => 'danger',
+              'small' => true,
+              'disabled' => true,
+              'style' => 'cursor:not-allowed;opacity:.45;filter:grayscale(1)',
+            ]) ?>
           </span>
         <?php else: ?>
-          <a
-            class="btn btn-danger btn-sm"
-            href="./negocios/<?= $item->id ?>/eliminar">
-            Eliminar
-          </a>
+          <?php Flight::render('components/btn', [
+            'text' => 'Eliminar',
+            'variant' => 'danger',
+            'small' => true,
+            'href' => "./negocios/$item->id/eliminar",
+          ]) ?>
         <?php endif ?>
       </div>
     </article>
@@ -177,13 +186,16 @@ use Illuminate\Database\Eloquent\Collection;
       </div>
 
       <div class="actions">
-        <button class="btn btn-primary">Guardar cambios</button>
-        <button
-          type="button"
-          class="btn btn-secondary"
-          onclick="this.closest('dialog').close()">
-          Cancelar
-        </button>
+        <?php Flight::render('components/btn', [
+          'text' => 'Guardar cambios',
+          'type' => 'submit',
+        ]) ?>
+
+        <?php Flight::render('components/btn', [
+          'text' => 'Cancelar',
+          'variant' => 'secondary',
+          'onclick' => 'this.closest(`dialog`).close()',
+        ]) ?>
       </div>
     </form>
   </dialog>

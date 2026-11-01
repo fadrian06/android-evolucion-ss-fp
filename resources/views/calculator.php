@@ -84,7 +84,10 @@ declare(strict_types=1);
           required
           placeholder="Cotización">
       </div>
-      <button class="btn btn-primary">Guardar cotización</button>
+      <?php Flight::render('components/btn', [
+        'text' => 'Guardar cotización',
+        'type' => 'submit',
+      ]) ?>
     </form>
   </section>
 </div>

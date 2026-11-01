@@ -75,7 +75,7 @@ use Illuminate\Database\Eloquent\Collection;
   'title' => 'Productos',
   'description' => 'Precios y existencias por local.',
   'buttonText' => '+ Añadir producto',
-  'buttonAction' => "document.querySelector('#new').showModal()",
+  'buttonAction' => 'document.querySelector(`#new`).showModal()',
 ]) ?>
 
 <div class="grid grid-3" style="max-width:820px;margin:0 0 20px">
@@ -172,13 +172,16 @@ use Illuminate\Database\Eloquent\Collection;
     </div>
 
     <div class="actions">
-      <button class="btn btn-primary">Guardar producto</button>
-      <button
-        type="button"
-        class="btn btn-secondary"
-        onclick="this.closest('dialog').close()">
-        Cancelar
-      </button>
+      <?php Flight::render('components/btn', [
+        'text' => 'Guardar producto',
+        'type' => 'submit',
+      ]) ?>
+
+      <?php Flight::render('components/btn', [
+        'text' => 'Cancelar',
+        'variant' => 'secondary',
+        'onclick' => 'this.closest(`dialog`).close()',
+      ]) ?>
     </div>
   </form>
 </dialog>
@@ -205,9 +208,9 @@ use Illuminate\Database\Eloquent\Collection;
         $stock = $product->getStock();
 
         $priceVes = $customRate
-          ? $product->price * (float)$customRate->rate
+          ? $product->price * (float) $customRate->rate
           : null;
-      ?>
+        ?>
         <tr
           data-category="<?= $product->category ?>"
           data-stock="<?= $stock ?>">
@@ -256,28 +259,30 @@ use Illuminate\Database\Eloquent\Collection;
             <?php endif ?>
           </td>
           <td class="actions">
-            <button
-              class="btn btn-secondary btn-sm"
-              onclick="document.querySelector('#edit-<?= $product->id ?>').showModal()">
-              Editar
-            </button>
+            <?php Flight::render('components/btn', [
+              'text' => 'Editar',
+              'variant' => 'secondary',
+              'small' => true,
+              'onclick' => "document.querySelector(`#edit-$product->id`).showModal()",
+            ]) ?>
 
             <?php if ($product->hasAssociatedRecords()): ?>
               <span class="disabled-product-action">
-                <button
-                  class="btn btn-danger btn-sm"
-                  type="button"
-                  disabled
-                  style="cursor:not-allowed;opacity:.45;filter:grayscale(1)">
-                  Eliminar
-                </button>
+                <?php Flight::render('components/btn', [
+                  'text' => 'Eliminar',
+                  'variant' => 'danger',
+                  'small' => true,
+                  'disabled' => true,
+                  'style' => 'cursor:not-allowed;opacity:.45;filter:grayscale(1)',
+                ]) ?>
               </span>
             <?php else: ?>
-              <a
-                class="btn btn-danger btn-sm"
-                href="./productos/<?= $product->id ?>/eliminar">
-                Eliminar
-              </a>
+              <?php Flight::render('components/btn', [
+                'text' => 'Eliminar',
+                'variant' => 'danger',
+                'small' => true,
+                'href' => "./productos/$product->id/eliminar",
+              ]) ?>
             <?php endif ?>
           </td>
         </tr>
@@ -352,13 +357,16 @@ use Illuminate\Database\Eloquent\Collection;
       </div>
 
       <div class="actions">
-        <button class="btn btn-primary">Guardar</button>
-        <button
-          type="button"
-          class="btn btn-secondary"
-          onclick="this.closest('dialog').close()">
-          Cancelar
-        </button>
+        <?php Flight::render('components/btn', [
+          'text' => 'Guardar',
+          'type' => 'submit',
+        ]) ?>
+
+        <?php Flight::render('components/btn', [
+          'text' => 'Cancelar',
+          'variant' => 'secondary',
+          'onclick' => 'this.closest(`dialog`).close()',
+        ]) ?>
       </div>
     </form>
   </dialog>

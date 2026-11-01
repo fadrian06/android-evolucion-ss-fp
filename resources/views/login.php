@@ -31,7 +31,10 @@ declare(strict_types=1);
         placeholder="••••••••">
     </div>
 
-    <button class="btn btn-primary">Iniciar sesión</button>
+    <?php Flight::render('components/btn', [
+      'text' => 'Iniciar sesión',
+      'type' => 'submit',
+    ]) ?>
   </form>
 
   <p class="auth-card-subtitle auth-card-footer">

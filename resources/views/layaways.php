@@ -67,7 +67,7 @@ use Illuminate\Database\Eloquent\Collection;
   'title' => 'Apartados',
   'description' => 'Productos reservados, pagos parciales y stock protegido.',
   'buttonText' => '+ Nuevo apartado',
-  'buttonAction' => "document.querySelector('#new-layaway').showModal()",
+  'buttonAction' => 'document.querySelector(`#new-layaway`).showModal()',
 ]) ?>
 
 <dialog class="card layaway-modal" id="new-layaway">
@@ -164,18 +164,21 @@ use Illuminate\Database\Eloquent\Collection;
           </div>
         </div>
       </div>
-      <button
-        type="button"
-        class="btn btn-secondary btn-sm"
-        id="add-layaway-payment">
-        + Añadir pago
-      </button>
+
+      <?php Flight::render('components/btn', [
+        'text' => '+ Añadir pago',
+        'variant' => 'secondary',
+        'small' => true,
+        'id' => 'add-layaway-payment',
+      ]) ?>
     </section>
 
     <div class="actions">
-      <button class="btn btn-primary" style="width:100%">
-        Confirmar apartado
-      </button>
+      <?php Flight::render('components/btn', [
+        'text' => 'Confirmar apartado',
+        'type' => 'submit',
+        'style' => 'width:100%',
+      ]) ?>
     </div>
   </form>
 </dialog>
@@ -222,7 +225,7 @@ use Illuminate\Database\Eloquent\Collection;
         $status = $item->cancelled_at
           ? 'cancelled'
           : ($remainingAmount > 0 ? 'pending' : 'paid');
-      ?>
+        ?>
         <tr data-status="<?= $status ?>">
           <td><?= $item->client->name ?></td>
           <td>
@@ -259,20 +262,22 @@ use Illuminate\Database\Eloquent\Collection;
                 'text' => 'Cancelado',
               ]) ?>
             <?php elseif ($remainingAmount > 0): ?>
-              <button
-                type="button"
-                class="btn btn-primary btn-sm"
-                onclick="document.querySelector('#pay-<?= $item->id ?>').showModal()">
-                Registrar pago
-              </button>
+              <?php Flight::render('components/btn', [
+                'text' => 'Registrar pago',
+                'small' => true,
+                'onclick' => "document.querySelector(`#pay-$item->id`).showModal()",
+              ]) ?>
+
               <form
                 method="post"
                 action="./apartados/<?= $item->id ?>/cancelar">
-                <button
-                  class="btn btn-danger btn-sm"
-                  onclick="return confirm('¿Cancelar apartado y restaurar el stock?')">
-                  Cancelar
-                </button>
+                <?php Flight::render('components/btn', [
+                  'text' => 'Cancelar',
+                  'variant' => 'danger',
+                  'small' => true,
+                  'type' => 'submit',
+                  'onclick' => 'return confirm(`¿Cancelar apartado y restaurar el stock?`)',
+                ]) ?>
               </form>
             <?php endif ?>
           </td>
@@ -328,7 +333,10 @@ use Illuminate\Database\Eloquent\Collection;
       </p>
 
       <div class="actions">
-        <button class="btn btn-primary">Guardar pago</button>
+        <?php Flight::render('components/btn', [
+          'text' => 'Guardar pago',
+          'type' => 'submit',
+        ]) ?>
       </div>
     </form>
   </dialog>
@@ -367,7 +375,13 @@ use Illuminate\Database\Eloquent\Collection;
 
     layawayPayments.lastElementChild.insertAdjacentHTML(
       'beforeend',
-      '<button type="button" class="btn btn-danger btn-sm remove-payment">Quitar pago</button>'
+      `<?php Flight::render('components/btn', [
+        'type' => 'button',
+        'variant' => 'danger',
+        'small' => true,
+        'class' => 'remove-payment',
+        'text' => 'Quitar pago',
+      ]); ?>`
     )
   };
 
