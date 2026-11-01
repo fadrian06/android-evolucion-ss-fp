@@ -481,6 +481,10 @@ dialog {
   width: min(100%, 420px);
   padding: 36px;
   box-sizing: border-box;
+
+  .btn {
+    width: 100%;
+  }
 }
 
 .auth-card-title {
@@ -502,10 +506,6 @@ dialog {
 .auth-card-link {
   color: var(--brand);
   font-weight: 700;
-}
-
-.auth-card .btn {
-  width: 100%;
 }
 
 .brand-auth {
