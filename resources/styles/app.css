@@ -441,11 +441,11 @@ dialog {
   transition:
     opacity 200ms ease,
     transform 200ms ease;
-}
 
-.toast.is-leaving {
-  opacity: 0;
-  transform: translateX(16px);
+  &.is-leaving {
+    opacity: 0;
+    transform: translateX(16px);
+  }
 }
 
 .toast--success {
