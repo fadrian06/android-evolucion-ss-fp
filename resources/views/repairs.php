@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Collection;
  */
 
 ?>
+
 <?php if ($receiptId): ?>
   <script>open('./reparaciones/<?= $receiptId ?>', '_blank')</script>
 <?php endif ?>
@@ -153,10 +154,10 @@ use Illuminate\Database\Eloquent\Collection;
   'title' => 'Reparaciones',
   'description' => 'Registra el servicio acordado en USD y cobra cada abono con su método real.',
   'buttonText' => '+ Nueva reparación',
-  'buttonAction' => 'document.querySelector(`#new-repair`).showModal()',
+  'buttonAction' => '$refs.new.showModal()',
 ]) ?>
 
-<dialog class="card repair-modal" id="new-repair">
+<dialog class="card repair-modal" x-ref="new">
   <form
     class="panel stack"
     method="post"
@@ -335,7 +336,7 @@ use Illuminate\Database\Eloquent\Collection;
                 <?php Flight::render('components/btn', [
                   'text' => 'Registrar pago',
                   'small' => true,
-                  'onclick' => "document.querySelector(`#pay-$repair->id`).showModal()",
+                  'onclick' => "\$refs.pay$repair->id.showModal()",
                 ]) ?>
               <?php endif ?>
             </div>
@@ -346,61 +347,63 @@ use Illuminate\Database\Eloquent\Collection;
   </table>
 </section>
 
-<?php foreach ($repairs as $repair): if ($repair->getRemainingAmount() > 0): ?>
-  <dialog class="card repair-modal" id="pay-<?= $repair->id ?>">
-    <form
-      class="panel stack"
-      method="post"
-      action="./reparaciones/<?= $repair->id ?>/pagar">
-      <?php Flight::render('components/toolbar', [
-        'title' => 'Registrar pago',
-        'inDialog' => true,
-      ]) ?>
-
-      <p style="margin:0;color:var(--muted)">
-        Pago pendiente:
-        <strong>
-          $<?= number_format($repair->getRemainingAmount(), 2, ',', '.') ?>
-        </strong>
-      </p>
-
-      <div class="grid grid-2">
-        <div class="field">
-          <label>Monto recibido</label>
-          <input
-            name="amount"
-            type="number"
-            min=".01"
-            step=".01"
-            required
-            placeholder="0.00">
-        </div>
-
-        <div class="field">
-          <label>Método</label>
-          <select name="method" class="payment-method" required>
-            <option value="Efectivo USD">Efectivo USD</option>
-            <option value="Efectivo Bs.">Efectivo Bs.</option>
-            <option value="Punto">Punto</option>
-            <option value="Transferencia">Transferencia</option>
-          </select>
-        </div>
-      </div>
-
-      <p class="payment-hint">
-        Los pagos en Bs. guardan la cotización personalizada vigente como
-        referencia histórica.
-      </p>
-
-      <div class="actions">
-        <?php Flight::render('components/btn', [
-          'text' => 'Guardar pago',
-          'type' => 'submit',
+<?php foreach ($repairs as $repair): ?>
+  <?php if ($repair->getRemainingAmount() > 0): ?>
+    <dialog class="card repair-modal" x-ref="pay<?= $repair->id ?>">
+      <form
+        class="panel stack"
+        method="post"
+        action="./reparaciones/<?= $repair->id ?>/pagar">
+        <?php Flight::render('components/toolbar', [
+          'title' => 'Registrar pago',
+          'inDialog' => true,
         ]) ?>
-      </div>
-    </form>
-  </dialog>
-<?php endif; endforeach ?>
+
+        <p style="margin:0;color:var(--muted)">
+          Pago pendiente:
+          <strong>
+            $<?= number_format($repair->getRemainingAmount(), 2, ',', '.') ?>
+          </strong>
+        </p>
+
+        <div class="grid grid-2">
+          <div class="field">
+            <label>Monto recibido</label>
+            <input
+              name="amount"
+              type="number"
+              min=".01"
+              step=".01"
+              required
+              placeholder="0.00">
+          </div>
+
+          <div class="field">
+            <label>Método</label>
+            <select name="method" class="payment-method" required>
+              <option value="Efectivo USD">Efectivo USD</option>
+              <option value="Efectivo Bs.">Efectivo Bs.</option>
+              <option value="Punto">Punto</option>
+              <option value="Transferencia">Transferencia</option>
+            </select>
+          </div>
+        </div>
+
+        <p class="payment-hint">
+          Los pagos en Bs. guardan la cotización personalizada vigente como
+          referencia histórica.
+        </p>
+
+        <div class="actions">
+          <?php Flight::render('components/btn', [
+            'text' => 'Guardar pago',
+            'type' => 'submit',
+          ]) ?>
+        </div>
+      </form>
+    </dialog>
+  <?php endif ?>
+<?php endforeach ?>
 
 <script>
   const initialPayments = document.querySelector('#initial-payments'),

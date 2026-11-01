@@ -19,7 +19,7 @@ $inDialog ??= false;
       'text' => 'Cancelar',
       'variant' => 'secondary',
       'small' => true,
-      'onclick' => 'this.closest(`dialog`).close()',
+      'onclick' => '$el.closest(`dialog`).close()',
     ]) ?>
   <?php endif ?>
 </div>
