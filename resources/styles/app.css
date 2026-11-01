@@ -87,6 +87,33 @@ button {
   color: var(--sidebar-link);
 }
 
+.profile {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+}
+
+.profile-avatar {
+  display: grid;
+  place-items: center;
+  height: 30px;
+  background: var(--brand);
+  border-radius: 50%;
+  color: white;
+  font-weight: 800;
+}
+
+.profile-email {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-logout {
+  font-size: 11px;
+  color: var(--sidebar-link);
+}
+
 .sidebar {
   position: sticky;
   top: 0;
@@ -100,6 +127,11 @@ button {
 
   .business-switcher {
     margin: 8px 0 0;
+  }
+
+  .profile {
+    border-top: 1px solid var(--line-dark);
+    padding: 18px 8px 0;
   }
 }
 
@@ -165,36 +197,6 @@ button {
   width: 18px;
   text-align: center;
   font-size: 17px;
-}
-
-.profile {
-  margin-top: auto;
-  border-top: 1px solid var(--line-dark);
-  padding: 18px 8px 0;
-  display: grid;
-  grid-template-columns: 30px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 9px;
-}
-
-.profile-avatar {
-  display: grid;
-  place-items: center;
-  height: 30px;
-  background: var(--brand);
-  border-radius: 50%;
-  color: white;
-  font-weight: 800;
-}
-
-.profile-email {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.profile-logout {
-  font-size: 11px;
-  color: var(--sidebar-link);
 }
 
 .content {
@@ -586,15 +588,21 @@ dialog {
     display: grid;
     grid-template-columns: auto 1fr;
     gap: 10px;
+    padding-bottom: 0;
 
     .business-switcher {
       margin: 0;
+    }
+
+    .profile {
+      display: none;
     }
   }
 
   .nav {
     display: flex;
     grid-column: 1 / -1;
+    padding-bottom: 14px;
   }
 
   .nav-item {
@@ -604,10 +612,6 @@ dialog {
   .mobile-logout {
     display: flex;
     color: #fecdca;
-  }
-
-  .profile {
-    display: none;
   }
 
   .content {
