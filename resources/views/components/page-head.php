@@ -2,16 +2,20 @@
 
 declare(strict_types=1);
 
-/**
- * @var string $eyebrow
- * @var string $title
- * @var string $description
- * @var ?string $buttonText
- * @var ?string $buttonAction
- */
+/** @var string */
+$eyebrow ??= '';
 
-$buttonText ??= null;
-$buttonAction ??= null;
+/** @var string */
+$title ??= '';
+
+/** @var string */
+$description ??= '';
+
+/** @var string */
+$buttonText ??= '';
+
+/** @var string */
+$buttonAction ??= '';
 
 ?>
 
