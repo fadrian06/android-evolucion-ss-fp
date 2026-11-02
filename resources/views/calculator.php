@@ -2,10 +2,13 @@
 
 declare(strict_types=1);
 
+use App\Models\ExchangeRate;
+
 /**
  * @var ?float $rate
  * @var ?float $bcvRate
  * @var string $source
+ * @var ?ExchangeRate $latestExchangeRate
  */
 
 ?>
@@ -21,7 +24,7 @@ declare(strict_types=1);
   x-data="{
     amount: '',
     direction: 'usd',
-    rate: <?= $rate ?>,
+    rate: <?= $latestExchangeRate?->rate ?: $rate ?: 0 ?>,
 
     get result() {
       if (!this.amount) return '—';

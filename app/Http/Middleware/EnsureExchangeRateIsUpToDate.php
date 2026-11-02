@@ -32,6 +32,8 @@ final readonly class EnsureExchangeRateIsUpToDate implements BeforeMiddleware
       $hasRateForToday ? $latestExchangeRate : null,
     );
 
+    Flight::view()->set('latestExchangeRate', $latestExchangeRate);
+
     if (
       str_starts_with(Flight::request()->url, '/calculadora')
       || Flight::request()->url === '/negocios'

@@ -3,14 +3,12 @@
 declare(strict_types=1);
 
 use App\Models\Client;
-use App\Models\ExchangeRate;
 use App\Models\Repair;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
  * @var Collection<int, Repair> $repairs
  * @var Collection<int, Client> $clients
- * @var ?ExchangeRate $exchangeRate
  * @var ?string $receiptId
  */
 
