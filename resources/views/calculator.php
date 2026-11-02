@@ -25,19 +25,19 @@ use App\Models\ExchangeRate;
     amount: '',
     direction: 'usd',
     rate: <?= $latestExchangeRate?->rate ?: $rate ?: 0 ?>,
+    bcvRate: <?= $bcvRate ?: 0 ?>,
+    formatter: Intl.NumberFormat('es-VE'),
 
     get result() {
       if (!this.amount) return '—';
 
       return this.direction === 'usd'
-        ? 'Bs. ' + (this.amount * this.rate).toFixed(2)
-        : '$' + (this.amount / this.rate).toFixed(2);
+        ? 'Bs. ' + this.formatter.format(this.amount * this.rate)
+        : '$ ' + this.formatter.format(this.amount / this.rate);
     },
 
-    get localedRate() {
-      return this.rate.toLocaleString('es-VE', {
-        maximumFractionDigits: 2,
-      });
+    getLocaledRate(rate = 0) {
+      return 'Bs. ' + this.formatter.format(rate) + ' / $';
     }
   }">
   <?php if ($rate): ?>
@@ -46,11 +46,7 @@ use App\Models\ExchangeRate;
         'text' => "TASA $source",
       ]) ?>
 
-      <h2>
-        Bs.
-        <span x-text="localedRate"></span>
-        / USD
-      </h2>
+      <h2 x-text="getLocaledRate(rate)"></h2>
 
       <div class="stack">
         <div class="field">
@@ -89,7 +85,7 @@ use App\Models\ExchangeRate;
     <?php if ($bcvRate): ?>
       <p class="muted">
         Referencia BCV actualizada:
-        <strong>Bs. <?= number_format($bcvRate, 2, ',', '.') ?> / USD</strong>
+        <strong x-text="getLocaledRate(bcvRate)"></strong>
       </p>
     <?php endif ?>
 

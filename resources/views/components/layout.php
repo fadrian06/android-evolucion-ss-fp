@@ -18,7 +18,7 @@ use Leaf\Auth;
   @error.window="
     messages.push({
       key: '<?= FlashKey::Errors->key() ?>',
-      text: $event.error.message,
+      text: $event.error?.message || $event.message || '',
     });
 
     <?php // TODO: Send error to backend for logging ?>
