@@ -322,6 +322,8 @@ dialog {
   border: 1px solid var(--line);
   border-radius: 14px;
   box-shadow: var(--shadow);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .card-small {
@@ -574,9 +576,8 @@ dialog {
 }
 
 .auth-card {
-  width: min(100%, 420px);
+  max-width: 420px;
   padding: 36px;
-  box-sizing: border-box;
 }
 
 .auth-card-title {
