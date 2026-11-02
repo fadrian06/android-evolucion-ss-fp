@@ -16,20 +16,38 @@ declare(strict_types=1);
   'description' => 'Convierte con la cotización vigente.',
 ]) ?>
 
-<div class="grid grid-2">
-  <?php if ($rate !== null): ?>
-    <section
-      class="card panel"
-      x-data="{
-        amount: '',
-        direction: 'usd',
-        rate: <?= json_encode($rate) ?>,
-      }">
+<div
+  class="grid grid-2"
+  x-data="{
+    amount: '',
+    direction: 'usd',
+    rate: <?= $rate ?>,
+
+    get result() {
+      if (!this.amount) return '—';
+
+      return this.direction === 'usd'
+        ? 'Bs. ' + (this.amount * this.rate).toFixed(2)
+        : '$' + (this.amount / this.rate).toFixed(2);
+    },
+
+    get localedRate() {
+      return this.rate.toLocaleString('es-VE', {
+        maximumFractionDigits: 2,
+      });
+    }
+  }">
+  <?php if ($rate): ?>
+    <section class="card panel">
       <?php Flight::render('components/eyebrow', [
         'text' => 'TASA ' . strtoupper($source),
       ]) ?>
 
-      <h2>Bs. <?= number_format($rate, 2, ',', '.') ?> / USD</h2>
+      <h2>
+        Bs.
+        <span x-text="localedRate"></span>
+        / USD
+      </h2>
 
       <div class="stack">
         <div class="field">
@@ -52,8 +70,7 @@ declare(strict_types=1);
 
         <div class="metric card">
           <span class="metric-label">Resultado</span>
-          <strong class="metric-value" x-text="amount === '' ? '—' : (direction === 'usd' ? 'Bs. ' + (amount * rate).toFixed(2) : '$' + (amount / rate).toFixed(2))">
-          </strong>
+          <strong class="metric-value" x-text="result"></strong>
         </div>
       </div>
     </section>
@@ -65,8 +82,8 @@ declare(strict_types=1);
     <h2>Cotización personalizada</h2>
     <p>Esta tasa es necesaria para generar comprobantes hoy.</p>
 
-    <?php if ($bcvRate !== null): ?>
-      <p style="margin:0;color:var(--muted);font-size:12px">
+    <?php if ($bcvRate): ?>
+      <p class="muted">
         Referencia BCV actualizada:
         <strong>Bs. <?= number_format($bcvRate, 2, ',', '.') ?> / USD</strong>
       </p>
@@ -80,7 +97,7 @@ declare(strict_types=1);
           type="number"
           min=".01"
           step=".000001"
-          value="<?= $customRate?->rate ?? '' ?>"
+          x-model="rate"
           required
           placeholder="Cotización">
       </div>

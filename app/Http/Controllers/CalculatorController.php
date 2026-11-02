@@ -9,7 +9,7 @@ use App\Services\DailyExchangeRate;
 use Flight;
 use Leaf\Flash;
 use Leaf\Form;
-use Override;
+use RuntimeException;
 
 final readonly class CalculatorController
 {
@@ -17,9 +17,7 @@ final readonly class CalculatorController
     private User $user,
     private DailyExchangeRate $dailyExchangeRate,
     private Form $form,
-  ) {
-    //
-  }
+  ) {}
 
   public function index(): void
   {
@@ -32,20 +30,26 @@ final readonly class CalculatorController
       $bcvRate = $this->dailyExchangeRate->bcvRate();
       $rate = $customRate ? (float) $customRate->rate : $bcvRate;
       $source = $customRate ? 'personalizada' : 'BCV';
-    } catch (\RuntimeException $exception) {
+    } catch (RuntimeException $exception) {
       Flash::set([$exception->getMessage()], 'errors');
+
       if ($customRate) {
         $rate = (float) $customRate->rate;
         $source = 'personalizada';
       }
     }
 
-    Flight::render('calculator', [
-      'rate' => $rate,
-      'source' => $source,
-      'bcvRate' => $bcvRate,
-      'customRate' => $customRate,
-    ], 'slot');
+    Flight::render(
+      'calculator',
+      [
+        'rate' => $rate,
+        'source' => $source,
+        'bcvRate' => $bcvRate,
+        'customRate' => $customRate,
+      ],
+      'slot',
+    );
+
     Flight::render('components/layout');
   }
 
@@ -57,7 +61,9 @@ final readonly class CalculatorController
 
     if (!$validated || (float) $validated['rate'] <= 0) {
       Flash::set(
-        $validated ? ['La cotización debe ser mayor que cero'] : $this->form->errors(),
+        $validated
+          ? ['La cotización debe ser mayor que cero']
+          : $this->form->errors(),
         'errors',
       );
       Flight::redirect('/calculadora');
@@ -69,7 +75,9 @@ final readonly class CalculatorController
       ['date' => $this->dailyExchangeRate->today()],
       ['rate' => $validated['rate']],
     );
+
     Flash::set(['Cotización personalizada guardada'], 'successes');
+
     Flight::redirect('/calculadora');
   }
 }
