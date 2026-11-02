@@ -2,32 +2,41 @@
 
 declare(strict_types=1);
 
-/**
- * @var string $text
- * @var 'primary'|'secondary'|'danger' $variant
- * @var ?string $href
- * @var ?string $onclick
- * @var ?string $type
- * @var ?bool $disabled
- * @var ?bool $small
- * @var ?string $id
- * @var ?string $style
- * @var ?string $class
- * @var ?string $target
- * @var ?string $title
- */
+/** @var string */
+$text ??= '';
 
+/** @var 'primary'|'secondary'|'danger' */
 $variant ??= 'primary';
-$href ??= null;
-$onclick ??= null;
+
+/** @var string */
+$href ??= '';
+
+/** @var string */
+$onclick ??= '';
+
+/** @var 'button'|'submit' */
 $type ??= 'button';
+
+/** @var bool */
 $disabled ??= false;
+
+/** @var bool */
 $small ??= false;
-$id ??= null;
-$style ??= null;
+
+/** @var string */
+$id ??= '';
+
+/** @var string */
+$style ??= '';
+
+/** @var string */
 $class ??= '';
-$target ??= null;
-$title ??= null;
+
+/** @var '_self'|'_blank'|'_parent'|'_top' */
+$target ??= '_self';
+
+/** @var string */
+$title ??= '';
 
 $classes = ['btn', "btn-$variant"];
 
@@ -39,30 +48,30 @@ if ($class) {
   $classes[] = $class;
 }
 
-$classAttr = implode(' ', $classes);
+$class = implode(' ', $classes);
 
 ?>
 
 <?php if ($href): ?>
   <a
-    class="<?= $classAttr ?>"
+    class="<?= $class ?>"
     <?= $disabled ? 'aria-disabled' : "href='$href'" ?>
-    <?= $target ? "target='$target'" : '' ?>
+    target="<?= $target ?>"
     <?= $id ? "id='$id'" : '' ?>
     <?= $onclick ? "@click='$onclick'" : '' ?>
-    <?= $style ? "style='$style'" : '' ?>
-    <?= $title ? "title='$title'" : '' ?>>
+    style="<?= $style ?>"
+    title="<?= $title ?>">
     <?= $text ?>
   </a>
 <?php else: ?>
   <button
     type="<?= $type ?>"
-    class="<?= $classAttr ?>"
+    class="<?= $class ?>"
     <?= $disabled ? 'disabled' : '' ?>
     <?= $id ? "id='$id'" : '' ?>
     <?= $onclick ? "@click='$onclick'" : '' ?>
-    <?= $style ? "style='$style'" : '' ?>
-    <?= $title ? "title='$title'" : '' ?>>
+    style="<?= $style ?>"
+    title="<?= $title ?>">
     <?= $text ?>
   </button>
 <?php endif ?>
