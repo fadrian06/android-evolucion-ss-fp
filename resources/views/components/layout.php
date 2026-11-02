@@ -14,7 +14,20 @@ use Leaf\Auth;
 
 <!doctype html>
 <html
-  x-data="{ messages: [] }"
+  x-data="{
+    messages: [],
+
+    trim(string = '') {
+      return string
+        .toLowerCase()
+        .replace(/\s+/g, '')
+        .replace(/[áÁ]/g, 'a')
+        .replace(/[éÉ]/g, 'e')
+        .replace(/[íÍ]/g, 'i')
+        .replace(/[óÓ]/g, 'o')
+        .replace(/[úÚ]/g, 'u');
+    },
+  }"
   @error.window="
     messages.push({
       key: '<?= FlashKey::Errors->key() ?>',

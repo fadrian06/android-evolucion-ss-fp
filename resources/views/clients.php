@@ -57,11 +57,7 @@ use Illuminate\Database\Eloquent\Collection;
   search: '',
 
   matchSearch($card = new HTMLElement()) {
-    return $card
-      .textContent
-      .toLowerCase()
-      .replace(/\s+/g, '')
-      .includes(this.search.toLowerCase().replace(/\s+/g, ''));
+    return trim($card.textContent).includes(trim(this.search));
   },
 }">
   <section class="card panel field">
