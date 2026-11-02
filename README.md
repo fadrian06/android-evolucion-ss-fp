@@ -1,5 +1,7 @@
 # Orion — Retail Management & Technical Service System
 
+![Orion Banner](resources/images/banner.jpg)
+
 [![Website](https://img.shields.io/badge/Website-android--evolucion.42web.io-blue?style=flat-square&logo=googlechrome)](https://android-evolucion.42web.io)
 [![PHP Version](https://img.shields.io/badge/PHP-%3E%3D8.4-777BB4?style=flat-square&logo=php)](https://www.php.net/)
 [![Flight PHP](https://img.shields.io/badge/Flight_PHP-3.19-f38b00?style=flat-square)](https://flightphp.com/)
