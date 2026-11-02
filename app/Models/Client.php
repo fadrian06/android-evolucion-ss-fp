@@ -40,7 +40,7 @@ final class Client extends Model
     return $this->hasMany(Layaway::class);
   }
 
-  public function hasAssociatedRecords(): bool
+  public function canBeDeleted(): bool
   {
     $associatedRecords = (
       $this->sales_count
@@ -48,6 +48,6 @@ final class Client extends Model
       + $this->layaways_count
     );
 
-    return $associatedRecords > 0;
+    return !$associatedRecords;
   }
 }

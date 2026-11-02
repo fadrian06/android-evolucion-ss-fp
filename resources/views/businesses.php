@@ -56,97 +56,115 @@ use Illuminate\Database\Eloquent\Collection;
   </form>
 </dialog>
 
-<section class="grid grid-3">
-  <?php foreach ($businesses as $item): ?>
-    <article class="card panel">
-      <header class="card-header">
-        <div class="card-avatar"><?= $item->name[0] ?></div>
-        <div>
-          <?php Flight::render('components/eyebrow', [
-            'text' => "LOCAL #$item->id",
+<div class="d-contents" x-data="{
+  search: '',
+
+  matchSearch($card = new HTMLElement()) {
+    return $card
+      .textContent
+      .toLowerCase()
+      .replace(/\s+/g, '')
+      .includes(this.search.toLowerCase().replace(/\s+/g, ''));
+  },
+}">
+  <section class="card panel field">
+    <label>Buscar negocios</label>
+    <input
+      x-model="search"
+      type="search"
+      placeholder="Buscar por nombre, RIF, dirección o teléfono">
+  </section>
+
+  <section class="grid grid-3">
+    <?php foreach ($businesses as $item): ?>
+      <article class="card panel" x-show="matchSearch($el)" x-transition>
+        <header class="card-header">
+          <div class="card-avatar"><?= $item->name[0] ?></div>
+          <div>
+            <?php Flight::render('components/eyebrow', [
+              'text' => "LOCAL #$item->id",
+            ]) ?>
+
+            <h2 class="card-title"><?= $item->name ?></h2>
+          </div>
+        </header>
+
+        <div class="card-body">
+          <div>
+            <strong class="card-eyebrow">RIF</strong>
+            · <?= $item->rif ?>
+          </div>
+          <span><?= $item->address ?></span>
+          <span><?= $item->phone ?></span>
+        </div>
+
+        <footer class="actions">
+          <?php Flight::render('components/btn', [
+            'text' => $business?->id === $item->id
+              ? 'Local activo'
+              : 'Seleccionar',
+            'href' => "./negocios/$item->id/seleccionar",
+            'small' => true,
+            'disabled' => $business?->id === $item->id,
+            'title' => 'No puedes seleccionar el local que ya está activo',
           ]) ?>
 
-          <h2 class="card-title"><?= $item->name ?></h2>
-        </div>
-      </header>
+          <?php Flight::render('components/btn', [
+            'text' => 'Editar',
+            'variant' => 'secondary',
+            'small' => true,
+            'onclick' => "\$refs.edit$item->id?.showModal()",
+          ]) ?>
 
-      <div class="card-body">
-        <div>
-          <strong class="card-eyebrow">RIF</strong>
-          · <?= $item->rif ?>
-        </div>
-        <span><?= $item->address ?></span>
-        <span><?= $item->phone ?></span>
-      </div>
+          <?php Flight::render('components/btn', [
+            'text' => 'Eliminar',
+            'variant' => 'danger',
+            'small' => true,
+            'href' => "./negocios/$item->id/eliminar",
+            'disabled' => !$item->canBeDeleted(),
+            'title' => 'No se puede eliminar un local con registros asociados',
+          ]) ?>
+        </footer>
+      </article>
 
-      <footer class="actions">
-        <?php Flight::render('components/btn', [
-          'text' => $business?->id === $item->id
-            ? 'Local activo'
-            : 'Seleccionar',
-          'href' => "./negocios/$item->id/seleccionar",
-          'small' => true,
-          'disabled' => $business?->id === $item->id,
-          'title' => 'No puedes seleccionar el local que ya está activo',
-        ]) ?>
+      <dialog class="card card-small" x-ref="edit<?= $item->id ?>">
+        <form
+          class="panel stack"
+          method="post"
+          action="./negocios/<?= $item->id ?>">
+          <?php Flight::render('components/toolbar', [
+            'title' => "Editar $item->name",
+            'inDialog' => true,
+          ]) ?>
 
-        <?php Flight::render('components/btn', [
-          'text' => 'Editar',
-          'variant' => 'secondary',
-          'small' => true,
-          'onclick' => "\$refs.edit$item->id?.showModal()",
-        ]) ?>
+          <div class="field">
+            <label>Nombre</label>
+            <input name="name" value="<?= $item->name ?>" required>
+          </div>
 
-        <?php Flight::render('components/btn', [
-          'text' => 'Eliminar',
-          'variant' => 'danger',
-          'small' => true,
-          'href' => "./negocios/$item->id/eliminar",
-          'disabled' => !$item->canBeDeleted(),
-          'title' => 'No se puede eliminar un local con registros asociados',
-        ]) ?>
-      </footer>
-    </article>
-  <?php endforeach ?>
-</section>
+          <div class="field">
+            <label>RIF</label>
+            <input name="rif" value="<?= $item->rif ?>" required>
+          </div>
 
-<?php foreach ($businesses as $item): ?>
-  <dialog class="card card-small" x-ref="edit<?= $item->id ?>">
-    <form
-      class="panel stack"
-      method="post"
-      action="./negocios/<?= $item->id ?>">
-      <?php Flight::render('components/toolbar', [
-        'title' => "Editar $item->name",
-        'inDialog' => true,
-      ]) ?>
+          <div class="field">
+            <label>Dirección</label>
+            <textarea name="address" required><?= $item->address ?></textarea>
+          </div>
 
-      <div class="field">
-        <label>Nombre</label>
-        <input name="name" value="<?= $item->name ?>" required>
-      </div>
+          <div class="field">
+            <label>Teléfono</label>
+            <input type="phone" name="phone" value="<?= $item->phone ?>" required>
+          </div>
 
-      <div class="field">
-        <label>RIF</label>
-        <input name="rif" value="<?= $item->rif ?>" required>
-      </div>
-
-      <div class="field">
-        <label>Dirección</label>
-        <textarea name="address" required><?= $item->address ?></textarea>
-      </div>
-
-      <div class="field">
-        <label>Teléfono</label>
-        <input type="phone" name="phone" value="<?= $item->phone ?>" required>
-      </div>
-
-      <div class="actions">
-        <?php Flight::render('components/btn', [
-          'text' => 'Guardar cambios',
-          'type' => 'submit',
-        ]) ?>
-      </div>
-    </form>
-  </dialog>
-<?php endforeach ?>
+          <div class="actions">
+            <?php Flight::render('components/btn', [
+              'text' => 'Guardar cambios',
+              'type' => 'submit',
+            ]) ?>
+          </div>
+        </form>
+      </dialog>
+    <?php endforeach ?>
+  </section>
+</div>
