@@ -364,6 +364,10 @@ dialog {
   text-transform: uppercase;
 }
 
+.card-cta {
+  color: var(--sidebar-link);
+}
+
 .panel {
   padding: 22px;
 }

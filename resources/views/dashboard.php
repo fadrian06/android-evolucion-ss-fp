@@ -2,6 +2,30 @@
 
 declare(strict_types=1);
 
+$cards = [
+  [
+    'eyebrow' => 'VENTAS',
+    'title' => 'Registrar venta',
+    'description' => 'Registra productos, administra pagos y consulta comprobantes.',
+    'href' => './ventas',
+    'cta' => 'Ir a ventas →',
+  ],
+  [
+    'eyebrow' => 'INVENTARIO',
+    'title' => 'Ver inventario',
+    'description' => 'Actualiza precios, categorías y existencias por local.',
+    'href' => './productos',
+    'cta' => 'Ir a inventario →',
+  ],
+  [
+    'eyebrow' => 'SERVICIO',
+    'title' => 'Nueva reparación',
+    'description' => 'Registra equipos en servicio y sus comprobantes.',
+    'href' => './reparaciones',
+    'cta' => 'Ir a reparaciones →',
+  ],
+];
+
 ?>
 
 <?php Flight::render('components/page-head', [
@@ -11,29 +35,15 @@ declare(strict_types=1);
 ]) ?>
 
 <section class="grid grid-3">
-  <a class="card panel" href="./ventas">
-    <?php Flight::render('components/eyebrow', ['text' => 'VENTAS']) ?>
+  <?php foreach ($cards as $card): ?>
+    <a class="card panel" href="./ventas">
+      <?php Flight::render('components/eyebrow', ['text' => $card['eyebrow']]) ?>
 
-    <h2>Registrar venta</h2>
-    <p>Registra productos, administra pagos y consulta comprobantes.</p>
-    <strong style="color:var(--brand)">Ir a ventas →</strong>
-  </a>
-
-  <a class="card panel" href="./productos">
-    <?php Flight::render('components/eyebrow', ['text' => 'INVENTARIO']) ?>
-
-    <h2>Ver inventario</h2>
-    <p>Actualiza precios, categorías y existencias por local.</p>
-    <strong style="color:var(--brand)">Ir a inventario →</strong>
-  </a>
-
-  <a class="card panel" href="./reparaciones">
-    <?php Flight::render('components/eyebrow', ['text' => 'SERVICIO']) ?>
-
-    <h2>Nueva reparación</h2>
-    <p>Registra equipos en servicio y sus comprobantes.</p>
-    <strong style="color:var(--brand)">Ir a reparaciones →</strong>
-  </a>
+      <h2><?= $card['title'] ?></h2>
+      <p><?= $card['description'] ?></p>
+      <strong class="card-cta"><?= $card['cta'] ?></strong>
+    </a>
+  <?php endforeach ?>
 </section>
 
 <section class="card panel">
