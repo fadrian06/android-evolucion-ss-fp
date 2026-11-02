@@ -22,6 +22,7 @@
   --brand-dark: #4e46d8;
   --brand-light: #635bff;
   --brand: var(--brand-light);
+  --brand-opaque: rgba(99, 91, 255, 10%);
 
   --danger-dark: #fecdca;
   --danger-light: #d92d20;
@@ -477,7 +478,7 @@ dialog {
   label {
     font-size: 12px;
     font-weight: 700;
-    color: light-dark(var(--line-dark), var(--line-light));
+    color: var(--ink);
   }
 
   input,
@@ -486,15 +487,15 @@ dialog {
     width: 100%;
     border: 1px solid light-dark(var(--sidebar-font-color), var(--line-dark));
     border-radius: 8px;
-    padding: 10px 11px;
+    padding: 10px;
     box-sizing: border-box;
-    background: light-dark(white, var(--surface-dark));
+    background: transparent;
     color: var(--ink);
     outline: none;
 
     &:focus {
       border-color: var(--brand);
-      box-shadow: 0 0 0 3px #635bff1c;
+      box-shadow: 0 0 0 3px var(--brand-opaque);
     }
   }
 
