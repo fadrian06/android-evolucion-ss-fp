@@ -283,7 +283,7 @@ use Illuminate\Database\Eloquent\Collection;
       ]) ?>
     </section>
 
-    <div class="actions">
+    <div class="actions stack">
       <?php Flight::render('components/btn', [
         'text' => 'Generar comprobante',
       ]) ?>

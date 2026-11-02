@@ -467,9 +467,20 @@ dialog {
   color: #b42318;
 }
 
+.actions {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
 .stack {
   display: grid;
   gap: 13px;
+
+  .actions,
+  &.actions {
+    display: grid;
+  }
 }
 
 .field {
@@ -602,12 +613,6 @@ dialog {
       calc(0.75em + 0.375rem);
     padding-left: calc(0.75em + 0.375rem + 1rem + 0.1875em);
   }
-}
-
-.actions {
-  display: flex;
-  gap: 7px;
-  flex-wrap: wrap;
 }
 
 .toasts {
