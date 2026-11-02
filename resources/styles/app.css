@@ -574,8 +574,9 @@ dialog {
 }
 
 .auth-card {
-  max-width: 420px;
+  width: min(100%, 420px);
   padding: 36px;
+  box-sizing: border-box;
 }
 
 .auth-card-title {
