@@ -36,7 +36,7 @@ $cards = [
 
 <section class="grid grid-3">
   <?php foreach ($cards as $card): ?>
-    <a class="card panel" href="./ventas">
+    <a class="card panel" href="<?= $card['href'] ?>">
       <?php Flight::render('components/eyebrow', ['text' => $card['eyebrow']]) ?>
 
       <h2><?= $card['title'] ?></h2>
