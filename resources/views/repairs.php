@@ -186,6 +186,7 @@ use Illuminate\Database\Eloquent\Collection;
         <input
           name="price"
           type="number"
+          data-currency="usd"
           min="0"
           step=".01"
           placeholder="0.00">

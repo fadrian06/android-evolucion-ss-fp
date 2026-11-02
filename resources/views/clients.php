@@ -78,7 +78,7 @@ $labels = [
 
     <div class="field">
       <label>Teléfono</label>
-      <input name="phone" required placeholder="0412-0000000">
+      <input type="phone" name="phone" required placeholder="0412-0000000">
     </div>
 
     <div class="field">
@@ -171,7 +171,11 @@ $labels = [
       <?php foreach ($labels as $key => $label): ?>
         <div class="field">
           <label><?= $label ?></label>
-          <input name="<?= $key ?>" value="<?= $client->$key ?>" required>
+          <input
+            <?= $key === 'phone' ? "type='phone'" : '' ?>
+            name="<?= $key ?>"
+            value="<?= $client->$key ?>"
+            required>
         </div>
       <?php endforeach ?>
 

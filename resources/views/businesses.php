@@ -39,12 +39,12 @@ use Illuminate\Database\Eloquent\Collection;
 
     <div class="field">
       <label>Dirección</label>
-      <input name="address" required placeholder="Dirección del local">
+      <textarea name="address" required placeholder="Dirección del local"></textarea>
     </div>
 
     <div class="field">
       <label>Teléfono</label>
-      <input name="phone" required placeholder="0412-0000000">
+      <input type="phone" name="phone" required placeholder="0412-0000000">
     </div>
 
     <div class="actions">
@@ -146,7 +146,7 @@ use Illuminate\Database\Eloquent\Collection;
 
       <div class="field">
         <label>Teléfono</label>
-        <input name="phone" value="<?= $item->phone ?>" required>
+        <input type="phone" name="phone" value="<?= $item->phone ?>" required>
       </div>
 
       <div class="actions">

@@ -159,6 +159,7 @@ $labels = [
         <input
           name="price"
           type="number"
+          data-currency="usd"
           min=".01"
           step=".01"
           required
@@ -340,6 +341,7 @@ $labels = [
           <input
             name="price"
             type="number"
+            data-currency="usd"
             min=".01"
             step=".01"
             value="<?= number_format($product->price, 2, '.', '') ?>"

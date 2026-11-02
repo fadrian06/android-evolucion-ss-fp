@@ -58,6 +58,7 @@ use App\Models\ExchangeRate;
           <input
             x-model="amount"
             type="number"
+            :data-currency="direction"
             min="0"
             step="0.01"
             placeholder="0,00">
@@ -98,6 +99,7 @@ use App\Models\ExchangeRate;
         <input
           name="rate"
           type="number"
+          data-currency="usd"
           min=".01"
           step=".000001"
           x-model="rate"
