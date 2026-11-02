@@ -40,7 +40,7 @@ declare(strict_types=1);
   <?php if ($rate): ?>
     <section class="card panel">
       <?php Flight::render('components/eyebrow', [
-        'text' => 'TASA ' . strtoupper($source),
+        'text' => "TASA $source",
       ]) ?>
 
       <h2>

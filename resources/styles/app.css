@@ -169,6 +169,7 @@ button {
   font-weight: 700;
   letter-spacing: 0.08em;
   color: var(--muted);
+  text-transform: uppercase;
 }
 
 .nav {
@@ -360,6 +361,7 @@ dialog {
 
 .card-eyebrow {
   color: var(--ink);
+  text-transform: uppercase;
 }
 
 .panel {
@@ -603,6 +605,7 @@ dialog {
   font-size: 23px;
   font-weight: 800;
   color: var(--brand);
+  text-transform: lowercase;
 }
 
 .receipt {

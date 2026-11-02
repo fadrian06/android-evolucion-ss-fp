@@ -36,10 +36,11 @@ declare(strict_types=1);
   </a>
 </section>
 
-<section class="card panel" style="margin-top:20px">
+<section class="card panel">
   <?php Flight::render('components/eyebrow', ['text' => 'ANTES DE VENDER']) ?>
 
   <h2>Verifica tu cotización diaria</h2>
+
   <p>
     La cotización personalizada define el valor en bolívares que quedará
     guardado en cada comprobante.
