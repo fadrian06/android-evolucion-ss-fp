@@ -60,7 +60,7 @@ use Illuminate\Database\Eloquent\Collection;
   <?php foreach ($businesses as $item): ?>
     <article class="card panel">
       <header class="card-header">
-        <div class="card-avatar"><?= strtoupper($item->name[0]) ?></div>
+        <div class="card-avatar"><?= $item->name[0] ?></div>
         <div>
           <?php Flight::render('components/eyebrow', [
             'text' => "LOCAL #$item->id",
@@ -70,11 +70,11 @@ use Illuminate\Database\Eloquent\Collection;
         </div>
       </header>
 
-      <div class="stack card-body">
-        <span>
+      <div class="card-body">
+        <div>
           <strong class="card-eyebrow">RIF</strong>
           · <?= $item->rif ?>
-        </span>
+        </div>
         <span><?= $item->address ?></span>
         <span><?= $item->phone ?></span>
       </div>
@@ -97,22 +97,14 @@ use Illuminate\Database\Eloquent\Collection;
           'onclick' => "\$refs.edit$item->id?.showModal()",
         ]) ?>
 
-        <?php if ($item->canBeDeleted()): ?>
-          <?php Flight::render('components/btn', [
-            'text' => 'Eliminar',
-            'variant' => 'danger',
-            'small' => true,
-            'href' => "./negocios/$item->id/eliminar",
-          ]) ?>
-        <?php else: ?>
-          <?php Flight::render('components/btn', [
-            'text' => 'Eliminar',
-            'variant' => 'danger',
-            'small' => true,
-            'disabled' => true,
-            'title' => 'No se puede eliminar un local con registros asociados',
-          ]) ?>
-        <?php endif ?>
+        <?php Flight::render('components/btn', [
+          'text' => 'Eliminar',
+          'variant' => 'danger',
+          'small' => true,
+          'href' => "./negocios/$item->id/eliminar",
+          'disabled' => !$item->canBeDeleted(),
+          'title' => 'No se puede eliminar un local con registros asociados',
+        ]) ?>
       </footer>
     </article>
   <?php endforeach ?>
@@ -141,7 +133,7 @@ use Illuminate\Database\Eloquent\Collection;
 
       <div class="field">
         <label>Dirección</label>
-        <input name="address" value="<?= $item->address ?>" required>
+        <textarea name="address" required><?= $item->address ?></textarea>
       </div>
 
       <div class="field">
