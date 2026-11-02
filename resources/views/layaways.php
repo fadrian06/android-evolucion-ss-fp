@@ -67,10 +67,10 @@ use Illuminate\Database\Eloquent\Collection;
   'title' => 'Apartados',
   'description' => 'Productos reservados, pagos parciales y stock protegido.',
   'buttonText' => '+ Nuevo apartado',
-  'buttonAction' => 'document.querySelector(`#new-layaway`).showModal()',
+  'buttonAction' => '$refs.new?.showModal()',
 ]) ?>
 
-<dialog class="card layaway-modal" id="new-layaway">
+<dialog class="card layaway-modal" x-ref="new">
   <form class="panel stack" method="post" action="./apartados">
     <?php Flight::render('components/toolbar', [
       'title' => 'Nuevo apartado',
@@ -81,12 +81,10 @@ use Illuminate\Database\Eloquent\Collection;
       <div class="field">
         <label>Cliente</label>
         <select name="client_id" required>
-          <option value="">Seleccionar cliente</option>
+          <option value="" hidden>Seleccionar cliente</option>
 
           <?php foreach ($clients as $client): ?>
-            <option value="<?= $client->id ?>">
-              <?= $client->name ?>
-            </option>
+            <option value="<?= $client->id ?>"><?= $client->name ?></option>
           <?php endforeach ?>
         </select>
       </div>
@@ -94,7 +92,7 @@ use Illuminate\Database\Eloquent\Collection;
       <div class="field">
         <label>Producto disponible</label>
         <select name="product_id" required id="layaway-product">
-          <option value="">Seleccionar producto</option>
+          <option value="" hidden>Seleccionar producto</option>
 
           <?php foreach ($products as $product): ?>
             <option
