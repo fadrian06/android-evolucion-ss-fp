@@ -13,13 +13,13 @@ use Illuminate\Database\Eloquent\Collection;
  * @var Collection<int, Client> $clients
  * @var Collection<int, Product> $products
  * @var Collection<int, Business> $businesses
- * @var ?string $invoiceId
+ * @var ?string $salesIds
  */
 
 ?>
 
-<?php if ($invoiceId): ?>
-  <?php foreach (explode(',', $invoiceId) as $id): ?>
+<?php if ($salesIds): ?>
+  <?php foreach (explode(',', $salesIds) as $id): ?>
     <script>open('./ventas/<?= $id ?>', '_blank')</script>
   <?php endforeach ?>
 <?php endif ?>

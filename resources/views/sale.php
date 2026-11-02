@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use App\Models\Sale;
 
-/** @var Sale $invoice */
+/** @var Sale $sale */
 
 ?>
 
@@ -13,18 +13,18 @@ use App\Models\Sale;
     <div>
       <?php Flight::render('components/brand-auth') ?>
 
-      <h1><?= $invoice->business->name ?></h1>
+      <h1><?= $sale->business->name ?></h1>
       <p>
-        <?= $invoice->business->rif ?> <br>
-        <?= $invoice->business->address ?> · <?= $invoice->business->phone ?>
+        <?= $sale->business->rif ?> <br>
+        <?= $sale->business->address ?> · <?= $sale->business->phone ?>
       </p>
     </div>
     <div>
       <?php Flight::render('components/eyebrow', ['text' => 'COMPROBANTE']) ?>
 
-      <p><?= $invoice->created_at->format('d/m/Y') ?></p>
+      <p><?= $sale->created_at->format('d/m/Y') ?></p>
 
-      <?php if ($invoice->cancelled_at): ?>
+      <?php if ($sale->cancelled_at): ?>
         <?php Flight::render('components/status', [
           'variant' => 'danger',
           'text' => 'ANULADA',
@@ -35,11 +35,11 @@ use App\Models\Sale;
 
   <dl class="receipt-meta">
     <dt>Cliente</dt>
-    <dd><?= $invoice->client->name ?></dd>
+    <dd><?= $sale->client->name ?></dd>
     <dt>Cédula</dt>
-    <dd><?= $invoice->client->id_card ?></dd>
+    <dd><?= $sale->client->id_card ?></dd>
     <dt>Contacto</dt>
-    <dd><?= $invoice->client->phone ?></dd>
+    <dd><?= $sale->client->phone ?></dd>
   </dl>
 
   <table class="data-table">
@@ -51,7 +51,7 @@ use App\Models\Sale;
       </tr>
     </thead>
     <tbody>
-      <?php foreach ($invoice->items as $item): ?>
+      <?php foreach ($sale->items as $item): ?>
         <tr>
           <td><?= $item->product->name ?> × <?= $item->quantity ?></td>
           <td>
@@ -68,7 +68,7 @@ use App\Models\Sale;
 
   <div style="text-align:right;margin-top:22px">
     <strong>
-      Total: Bs. <?= number_format($invoice->getTotalVes(), 2, ',', '.') ?>
+      Total: Bs. <?= number_format($sale->getTotalVes(), 2, ',', '.') ?>
     </strong>
   </div>
 </section>

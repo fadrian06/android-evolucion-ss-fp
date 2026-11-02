@@ -9,7 +9,7 @@
 > 🌐 **Website / Live Demo:** [https://android-evolucion.42web.io](https://android-evolucion.42web.io)  
 > 📖 **Language:** English | [Versión en español](LEAME.md)
 
-A lightweight and modern web system designed for retail management, inventory control, sales invoicing, layaway plans, and mobile phone/spare parts technical repair services. Features multi-store branch support and real-time synchronization with Venezuela's official Central Bank (BCV) exchange rate.
+A lightweight and modern web system designed for retail management, inventory control, sales voucher generation, layaway plans, and mobile phone/spare parts technical repair services. Features multi-store branch support and real-time synchronization with Venezuela's official Central Bank (BCV) exchange rate.
 
 ---
 
@@ -39,7 +39,7 @@ A lightweight and modern web system designed for retail management, inventory co
     - Bolívares (VES) Cash
     - Debit/Credit Card (POS Terminal)
     - Bank Transfer / Mobile Payment (*Pago Móvil*)
-  - Printable sales receipt / invoice generation (`invoice`).
+  - Printable sales receipt / voucher generation (`sale`).
   - Sale cancellation with automatic stock restoration.
 
 - **Layaway Plans**:
@@ -105,7 +105,7 @@ android-evolucion-ss-fp/
 │       ├── components/           # UI components (layout, nav, sidebar, toast, etc.)
 │       ├── dashboard.php         # Main dashboard view
 │       ├── sales.php             # Sales registration and history
-│       ├── invoice.php           # Printable sales invoice
+│       ├── sale.php              # Printable sales voucher
 │       ├── products.php          # Inventory and product management
 │       ├── repairs.php           # Technical repair service view
 │       ├── repair-receipt.php    # Technical repair intake and delivery receipt
@@ -256,10 +256,10 @@ vendor/bin/phpunit
 - `POST /clientes/@id` — Update customer profile.
 - `GET /clientes/@id/eliminar` — Delete customer.
 
-### Sales & POS Invoicing
+### Sales & POS Vouchers
 - `GET /ventas` — Sales register and transactions list.
 - `POST /ventas` — Process sale with split payment details.
-- `GET /ventas/@id` — Display printable invoice receipt (`invoice`).
+- `GET /ventas/@id` — Display printable voucher receipt (`sale`).
 - `POST /ventas/@id/pagar` — Add subsequent payment to a sale.
 - `POST /ventas/@id/anular` — Cancel sale and restore inventory stock.
 
@@ -282,7 +282,7 @@ vendor/bin/phpunit
 - **Password Security**: Passwords hashed with Bcrypt and configurable cost factor (`BCRYPT_ROUNDS`).
 - **SQL Injection Prevention**: Parameterized and prepared queries managed through Eloquent ORM and PDO.
 - **Exchange Rate Protection**: Middleware safeguards that prevent financial transactions when the day's exchange rate has not been confirmed.
-- **Store-level Isolation**: Foreign key constraints enforce strict isolation of products, invoices, and stock batches per user and active business branch.
+- **Store-level Isolation**: Foreign key constraints enforce strict isolation of products, vouchers, and stock batches per user and active business branch.
 
 ---
 

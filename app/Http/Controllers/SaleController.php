@@ -31,7 +31,7 @@ final readonly class SaleController implements ResourceController
   #[Override]
   public function index(): void
   {
-    $invoiceId = Flash::displaySaved();
+    $salesIds = Flash::displaySaved();
     Flash::clearSaved();
 
     Flight::render('sales', [
@@ -43,7 +43,7 @@ final readonly class SaleController implements ResourceController
         ->filter(static fn(Product $product): bool => $product->getStock() > 0)
         ->load('batches'),
       'businesses' => $this->user->businesses,
-      'invoiceId' => $invoiceId,
+      'salesIds' => $salesIds,
     ], 'slot');
 
     Flight::render('components/layout');
@@ -196,7 +196,7 @@ final readonly class SaleController implements ResourceController
       }
     }
 
-    $invoiceIds = Manager::connection()->transaction(function () use (
+    $salesIds = Manager::connection()->transaction(function () use (
       $validated,
       $stockChanges,
       $phoneItems,
@@ -208,25 +208,25 @@ final readonly class SaleController implements ResourceController
         $batch->save();
       }
 
-      $invoiceIds = [];
+      $salesIds = [];
 
       foreach ($phoneItems as $item) {
         $sale = $this->business->sales()->create(['client_id' => $validated['client_id']]);
         $sale->items()->create($item);
-        $invoiceIds[] = $sale->id;
+        $salesIds[] = $sale->id;
       }
 
       if ($nonPhoneItems) {
         $sale = $this->business->sales()->create(['client_id' => $validated['client_id']]);
         $sale->items()->createMany($nonPhoneItems);
         $sale->payments()->createMany(PaymentDetails::forPersistence($payments));
-        $invoiceIds[] = $sale->id;
+        $salesIds[] = $sale->id;
       }
 
-      return $invoiceIds;
+      return $salesIds;
     });
 
-    Flash::save(implode(',', $invoiceIds));
+    Flash::save(implode(',', $salesIds));
     Flash::set(['Venta registrada'], 'successes');
 
     redirect:
@@ -236,24 +236,24 @@ final readonly class SaleController implements ResourceController
   #[Override]
   public function show(string $id): void
   {
-    $invoice = null;
+    $sale = null;
 
     foreach ($this->user->businesses as $business) {
-      $invoice = $business->sales->find($id);
+      $sale = $business->sales->find($id);
 
-      if ($invoice instanceof Sale) {
+      if ($sale instanceof Sale) {
         break;
       }
     }
 
-    if (!$invoice instanceof Sale) {
+    if (!$sale instanceof Sale) {
       Flash::set(['Comprobante no encontrado'], 'errors');
       Flight::redirect('/ventas');
 
       return;
     }
 
-    Flight::render('invoice', ['invoice' => $invoice], 'slot');
+    Flight::render('sale', ['sale' => $sale], 'slot');
     Flight::render('components/layout');
   }
 

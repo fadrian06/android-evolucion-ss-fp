@@ -9,7 +9,7 @@
 > 🌐 **Sitio Web / Demo:** [https://android-evolucion.42web.io](https://android-evolucion.42web.io)  
 > 📖 **Idioma:** Español | [English version](README.md)
 
-Sistema web ligero y moderno para la administración comercial, control de inventario, facturación de ventas, gestión de apartados y servicio técnico de telefonía y repuestos, con soporte multi-negocio y sincronización de tasa de cambio oficial (BCV).
+Sistema web ligero y moderno para la administración comercial, control de inventario, generación de comprobantes de venta, gestión de apartados y servicio técnico de telefonía y repuestos, con soporte multi-negocio y sincronización de tasa de cambio oficial (BCV).
 
 ---
 
@@ -32,14 +32,14 @@ Sistema web ligero y moderno para la administración comercial, control de inven
   - Control de existencias por sucursal mediante lotes (`batches`).
   - Fijación de precios en divisas (USD) y cálculo automático en moneda nacional (VES).
 
-- **Ventas y Facturación**:
+- **Ventas y Comprobantes**:
   - Carrito y registro de ventas multilínea.
   - Soporte de múltiples métodos de pago combinados:
     - Efectivo en USD
     - Efectivo en Bolívares (VES)
     - Punto de Venta (Tarjeta de Débito/Crédito)
     - Transferencia bancaria / Pago Móvil
-  - Generación de comprobante / ticket de venta imprimible (`invoice`).
+  - Generación de comprobante / ticket de venta imprimible (`sale`).
   - Anulación de ventas con reversión automática del inventario.
 
 - **Módulo de Apartados (Layaways)**:
@@ -105,7 +105,7 @@ android-evolucion-ss-fp/
 │       ├── components/           # Componentes modulares (layout, nav, sidebar, toast, etc.)
 │       ├── dashboard.php         # Panel principal
 │       ├── sales.php             # Módulo de ventas
-│       ├── invoice.php           # Factura / Comprobante de venta
+│       ├── sale.php              # Comprobante de venta
 │       ├── products.php          # Módulo de inventario y productos
 │       ├── repairs.php           # Módulo de servicio técnico
 │       ├── repair-receipt.php    # Comprobante de reparación
@@ -255,10 +255,10 @@ vendor/bin/phpunit
 - `POST /clientes/@id` — Modificar datos del cliente.
 - `GET /clientes/@id/eliminar` — Eliminar cliente.
 
-### Ventas y Facturación
+### Ventas y Comprobantes
 - `GET /ventas` — Módulo de registro y listado de ventas.
 - `POST /ventas` — Procesar y registrar venta con sus métodos de pago.
-- `GET /ventas/@id` — Ver comprobante de venta (`invoice`).
+- `GET /ventas/@id` — Ver comprobante de venta (`sale`).
 - `POST /ventas/@id/pagar` — Registrar pago complementario.
 - `POST /ventas/@id/anular` — Anular venta y restituir inventario.
 
