@@ -352,7 +352,7 @@ use Illuminate\Database\Eloquent\Collection;
                 'variant' => 'secondary',
                 'small' => true,
                 'target' => '_blank',
-                'href' => "./ventas/<?= $sale->id ?>",
+                'href' => "./ventas/$sale->id",
               ]) ?>
 
               <?php if ($sale->isCancelled()): ?>
