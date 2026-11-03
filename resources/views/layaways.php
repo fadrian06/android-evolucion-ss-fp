@@ -148,20 +148,31 @@ use Illuminate\Database\Eloquent\Collection;
   </form>
 </dialog>
 
-<div class="d-contents">
+<div class="d-contents" x-data="{
+  search: '',
+  status: '',
+
+  matchSearch($card = new HTMLElement()) {
+    return trim($card.textContent).includes(trim(this.search));
+  },
+
+  matchStatus(status) {
+    return this.status === '' || status === this.status;
+  }
+}">
   <section class="card panel stack">
     <div class="grid grid-2">
       <div class="field">
         <label>Buscar</label>
         <input
-          id="layaway-search"
+          x-model="search"
           type="search"
           placeholder="Cliente, producto, IMEI o código">
       </div>
 
       <div class="field">
         <label>Estado</label>
-        <select id="layaway-status">
+        <select x-model="status">
           <option value="">Todos</option>
           <option value="pending">Pendientes</option>
           <option value="paid">Pagados</option>
@@ -183,11 +194,11 @@ use Illuminate\Database\Eloquent\Collection;
           <th>Pago pendiente</th>
         </tr>
       </thead>
-      <tbody id="layaway-list">
-        <?php foreach ($layaways as $item):
-          $remainingAmount = $item->getRemainingAmount(); ?>
-
-          <tr data-status="<?= $item->getStatus() ?>">
+      <tbody>
+        <?php foreach ($layaways as $item): ?>
+          <tr
+            x-show="matchSearch($el) && matchStatus(`<?= $item->getStatus() ?>`)"
+            x-transition>
             <td><?= $item->client->name ?></td>
             <td>
               <strong><?= $item->product->name ?></strong>
@@ -215,7 +226,7 @@ use Illuminate\Database\Eloquent\Collection;
                 ]) ?>
               <?php else: ?>
                 <strong>
-                  $<?= number_format($remainingAmount, 2, ',', '.') ?>
+                  $<?= number_format($item->getRemainingAmount(), 2, ',', '.') ?>
                 </strong>
               <?php endif ?>
             </td>
@@ -362,17 +373,4 @@ use Illuminate\Database\Eloquent\Collection;
   layawayPayments.addEventListener('click', event => {
     if (event.target.closest('.remove-payment')) event.target.closest('.layaway-payment-row').remove()
   });
-
-  const layawaySearch = document.querySelector('#layaway-search'),
-    layawayStatus = document.querySelector('#layaway-status'),
-    layawayRows = document.querySelectorAll('#layaway-list tr');
-
-  function filterLayaways() {
-    const query = layawaySearch.value.toLowerCase();
-
-    layawayRows.forEach(row => row.hidden = !(row.textContent.toLowerCase().includes(query) && (!layawayStatus.value || row.dataset.status === layawayStatus.value)))
-  }
-
-  layawaySearch.addEventListener('input', filterLayaways);
-  layawayStatus.addEventListener('change', filterLayaways);
 </script>
