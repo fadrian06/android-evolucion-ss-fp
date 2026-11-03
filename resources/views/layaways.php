@@ -31,7 +31,7 @@ use Illuminate\Database\Eloquent\Collection;
 
     get product() {
       for (const product of this.products) {
-        if (product.id === this.productId) {
+        if (product.id == this.productId) {
           return product;
         }
       }
