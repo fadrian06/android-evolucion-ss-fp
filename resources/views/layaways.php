@@ -16,22 +16,6 @@ use Illuminate\Database\Eloquent\Collection;
 ?>
 
 <style>
-  .layaway-modal {
-    width: min(760px, 92vw);
-    max-height: 90vh;
-    padding: 0;
-    border: 0;
-    overflow: auto
-  }
-
-  .layaway-modal::backdrop {
-    background: rgb(17 24 39 / 55%)
-  }
-
-  .layaway-identifiers.hidden {
-    display: none
-  }
-
   .layaway-payment-row {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(190px, 1fr) auto;
@@ -39,25 +23,9 @@ use Illuminate\Database\Eloquent\Collection;
     align-items: end
   }
 
-  .layaway-payment-method {
-    appearance: none;
-    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='m5 7 5 5 5-5' fill='none' stroke='%23667085' stroke-linecap='round' stroke-width='1.8'/%3E%3C/svg%3E") no-repeat right 14px center;
-    background-size: 18px;
-    padding-right: 42px
-  }
-
-  .data-table .layaway-paid,
-  .data-table .layaway-remaining {
-    text-align: center
-  }
-
-  @media(max-width:720px) {
-    .layaway-modal {
-      width: calc(100vw - 24px)
-    }
-
+  @media (max-width: 720px) {
     .layaway-payment-row {
-      grid-template-columns: 1fr
+      grid-template-columns: 1fr;
     }
   }
 </style>
@@ -70,7 +38,7 @@ use Illuminate\Database\Eloquent\Collection;
   'buttonAction' => '$refs.new?.showModal()',
 ]) ?>
 
-<dialog class="card layaway-modal" x-ref="new">
+<dialog class="card card-medium" x-ref="new">
   <form class="panel stack" method="post" action="./apartados">
     <?php Flight::render('components/toolbar', [
       'title' => 'Nuevo apartado',
@@ -80,6 +48,7 @@ use Illuminate\Database\Eloquent\Collection;
     <div class="grid grid-2">
       <div class="field">
         <label>Cliente</label>
+
         <select name="client_id" required>
           <option value="" hidden>Seleccionar cliente</option>
 
@@ -105,7 +74,7 @@ use Illuminate\Database\Eloquent\Collection;
       </div>
     </div>
 
-    <div class="grid grid-2 layaway-identifiers hidden" id="layaway-imeis">
+    <div class="grid grid-2 hidden" id="layaway-imeis">
       <div class="field">
         <label>IMEI 1</label>
         <input name="imei1" placeholder="IMEI 1">
@@ -117,23 +86,22 @@ use Illuminate\Database\Eloquent\Collection;
       </div>
     </div>
 
-    <div class="field layaway-identifiers hidden" id="layaway-code">
+    <div class="field hidden" id="layaway-code">
       <label>
         Código
-        <small style="color:var(--muted);font-weight:400">(opcional)</small>
+        <small class="muted-text">(opcional)</small>
       </label>
       <input name="code" placeholder="Código del accesorio">
     </div>
 
     <section class="card panel stack">
       <div>
-        <h2 style="margin:0">
+        <h2 class="card-title">
           Pagos iniciales
-          <small style="color:var(--muted);font-weight:400">
-            (opcionales)
-          </small>
+          <small class="muted-text">(opcionales)</small>
         </h2>
-        <p style="margin:0;color:var(--muted)">
+
+        <p class="muted">
           Efectivo USD registra dólares; los demás métodos registran Bs. con
           su cotización histórica.
         </p>
@@ -153,7 +121,7 @@ use Illuminate\Database\Eloquent\Collection;
 
           <div class="field">
             <label>Método</label>
-            <select name="method[]" class="layaway-payment-method">
+            <select name="method[]">
               <option value="Efectivo USD">Efectivo USD</option>
               <option value="Efectivo Bs.">Efectivo Bs.</option>
               <option value="Punto">Punto</option>
@@ -175,125 +143,124 @@ use Illuminate\Database\Eloquent\Collection;
       <?php Flight::render('components/btn', [
         'text' => 'Confirmar apartado',
         'type' => 'submit',
-        'style' => 'width:100%',
       ]) ?>
     </div>
   </form>
 </dialog>
 
-<section class="card panel stack">
-  <div class="grid grid-2">
-    <div class="field">
-      <label for="layaway-search">Buscar</label>
-      <input
-        id="layaway-search"
-        type="search"
-        placeholder="Cliente, producto, IMEI o código">
+<div class="d-contents">
+  <section class="card panel stack">
+    <div class="grid grid-2">
+      <div class="field">
+        <label>Buscar</label>
+        <input
+          id="layaway-search"
+          type="search"
+          placeholder="Cliente, producto, IMEI o código">
+      </div>
+
+      <div class="field">
+        <label>Estado</label>
+        <select id="layaway-status">
+          <option value="">Todos</option>
+          <option value="pending">Pendientes</option>
+          <option value="paid">Pagados</option>
+          <option value="cancelled">Cancelados</option>
+        </select>
+      </div>
     </div>
+  </section>
 
-    <div class="field">
-      <label for="layaway-status">Estado</label>
-      <select id="layaway-status">
-        <option value="">Todos</option>
-        <option value="pending">Pendientes</option>
-        <option value="paid">Pagados</option>
-        <option value="cancelled">Cancelados</option>
-      </select>
-    </div>
-  </div>
-</section>
-
-<section class="card table-wrap">
-  <table class="data-table">
-    <thead>
-      <tr>
-        <th>Cliente</th>
-        <th>Producto</th>
-        <th>Identificador</th>
-        <th>Total</th>
-        <th class="layaway-paid">Pagado</th>
-        <th class="layaway-remaining">Pago pendiente</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody id="layaway-list">
-      <?php foreach ($layaways as $item):
-        $remainingAmount = $item->getRemainingAmount();
-
-        $status = $item->cancelled_at
-          ? 'cancelled'
-          : ($remainingAmount > 0 ? 'pending' : 'paid');
-        ?>
-        <tr data-status="<?= $status ?>">
-          <td><?= $item->client->name ?></td>
-          <td>
-            <strong><?= $item->product->name ?></strong>
-          </td>
-          <td>
-            <small>
-              <?= $item->product->category === 'phone'
-                ? $item->imei1 . '<br>' . $item->imei2
-                : ($item->code ?: 'Sin código')
-              ?>
-            </small>
-          </td>
-          <td>$<?= number_format($item->price, 2, ',', '.') ?></td>
-          <td class="layaway-paid">
-            $<?= number_format($item->getTotalPaid(), 2, ',', '.') ?>
-          </td>
-          <td class="layaway-remaining">
-            <?php if ($remainingAmount === 0.0): ?>
-              <?php Flight::render('components/status', [
-                'variant' => 'success',
-                'text' => 'Pagado',
-              ]) ?>
-            <?php else: ?>
-              <strong>
-                $<?= number_format($remainingAmount, 2, ',', '.') ?>
-              </strong>
-            <?php endif ?>
-          </td>
-          <td>
-            <div class="actions">
-              <?php if ($item->cancelled_at): ?>
-                <?php Flight::render('components/status', [
-                  'variant' => 'danger',
-                  'text' => 'Cancelado',
-                ]) ?>
-              <?php elseif ($remainingAmount > 0): ?>
-                <?php Flight::render('components/btn', [
-                  'text' => 'Registrar pago',
-                  'small' => true,
-                  'onclick' => "\$refs.pay$item->id?.showModal()",
-                ]) ?>
-
-                <form
-                  method="post"
-                  action="./apartados/<?= $item->id ?>/cancelar">
-                  <?php Flight::render('components/btn', [
-                    'text' => 'Cancelar',
-                    'variant' => 'danger',
-                    'small' => true,
-                    'type' => 'submit',
-                    'onclick' => '
-                      if (!confirm(`¿Cancelar apartado y restaurar el stock?`)) {
-                        $event.preventDefault();
-                      }
-                    ',
-                  ]) ?>
-                </form>
-              <?php endif ?>
-            </div>
-          </td>
+  <section class="card table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Producto</th>
+          <th>Identificador</th>
+          <th>Total</th>
+          <th>Pagado</th>
+          <th>Pago pendiente</th>
         </tr>
-      <?php endforeach ?>
-    </tbody>
-  </table>
-</section>
+      </thead>
+      <tbody id="layaway-list">
+        <?php foreach ($layaways as $item):
+          $remainingAmount = $item->getRemainingAmount(); ?>
+
+          <tr data-status="<?= $item->getStatus() ?>">
+            <td><?= $item->client->name ?></td>
+            <td>
+              <strong><?= $item->product->name ?></strong>
+            </td>
+            <td>
+              <small>
+                <?php if ($item->product->isPhone()): ?>
+                  <?= $item->imei1 ?>
+                  <br>
+                  <?= $item->imei2 ?>
+                <?php else: ?>
+                  <?= $item->code ?: 'Sin código' ?>
+                <?php endif ?>
+              </small>
+            </td>
+            <td>$<?= number_format($item->price, 2, ',', '.') ?></td>
+            <td>
+              $<?= number_format($item->getTotalPaid(), 2, ',', '.') ?>
+            </td>
+            <td>
+              <?php if ($item->isFullyPaid()): ?>
+                <?php Flight::render('components/status', [
+                  'variant' => 'success',
+                  'text' => 'Pagado',
+                ]) ?>
+              <?php else: ?>
+                <strong>
+                  $<?= number_format($remainingAmount, 2, ',', '.') ?>
+                </strong>
+              <?php endif ?>
+            </td>
+            <td>
+              <div class="actions">
+                <?php if ($item->isCancelled()): ?>
+                  <?php Flight::render('components/status', [
+                    'variant' => 'danger',
+                    'text' => 'Cancelado',
+                  ]) ?>
+                <?php elseif ($item->canBePaid()): ?>
+                  <?php Flight::render('components/btn', [
+                    'text' => 'Registrar pago',
+                    'small' => true,
+                    'onclick' => "\$refs.pay$item->id?.showModal()",
+                  ]) ?>
+
+                  <form
+                    method="post"
+                    action="./apartados/<?= $item->id ?>/cancelar">
+                    <?php Flight::render('components/btn', [
+                      'text' => 'Cancelar',
+                      'variant' => 'danger',
+                      'small' => true,
+                      'type' => 'submit',
+                      'onclick' => '
+                        if (!confirm(`¿Cancelar apartado y restaurar el stock?`)) {
+                          $event.preventDefault();
+                        }
+                      ',
+                    ]) ?>
+                  </form>
+                <?php endif ?>
+              </div>
+            </td>
+          </tr>
+        <?php endforeach ?>
+      </tbody>
+    </table>
+  </section>
+</div>
 
 <?php foreach ($layaways as $item): ?>
-  <?php if (!$item->cancelled_at && $item->getRemainingAmount() > 0): ?>
-    <dialog class="card layaway-modal" x-ref="pay<?= $item->id ?>">
+  <?php if ($item->canBePaid()): ?>
+    <dialog class="card card-medium" x-ref="pay<?= $item->id ?>">
       <form
         class="panel stack"
         method="post"
@@ -303,7 +270,7 @@ use Illuminate\Database\Eloquent\Collection;
           'inDialog' => true,
         ]) ?>
 
-        <p style="margin:0;color:var(--muted)">
+        <p class="muted-text">
           Pago pendiente:
           <strong>
             $<?= number_format($item->getRemainingAmount(), 2, ',', '.') ?>
@@ -333,7 +300,7 @@ use Illuminate\Database\Eloquent\Collection;
           </div>
         </div>
 
-        <p style="margin:0;color:var(--muted)">
+        <p class="muted-text">
           Los pagos en Bs. guardan la cotización personalizada vigente como
           referencia histórica.
         </p>

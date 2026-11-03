@@ -76,4 +76,9 @@ final class Product extends Model
       ->pluck('business_id')
       ->implode(',');
   }
+
+  public function isPhone(): bool
+  {
+    return $this->category === 'phone';
+  }
 }

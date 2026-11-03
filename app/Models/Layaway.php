@@ -72,6 +72,30 @@ final class Layaway extends Model
 
   public function getRemainingAmount(): float
   {
-    return round((float) $this->price - $this->getTotalPaid(), 2);
+    return round($this->price - $this->getTotalPaid(), 2);
+  }
+
+  public function isCancelled(): bool
+  {
+    return $this->cancelled_at !== null;
+  }
+
+  public function isFullyPaid(): bool
+  {
+    return $this->getRemainingAmount() <= 0;
+  }
+
+  public function getStatus(): string
+  {
+    return match (true) {
+      $this->isCancelled() => 'cancelled',
+      $this->isFullyPaid() => 'paid',
+      default => 'pending',
+    };
+  }
+
+  public function canBePaid(): bool
+  {
+    return !$this->isCancelled() && !$this->isFullyPaid();
   }
 }
