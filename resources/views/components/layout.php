@@ -18,7 +18,7 @@ use Leaf\Auth;
 <html
   x-data="{
     messages: [],
-    exchangeRate: <?= $exchangeRate?->rate ?: 0 ?>,
+    exchangeRate: Number(<?= $exchangeRate?->rate ?: 0 ?>),
 
     getTotalPaid(payments = []) {
       let total = 0;
@@ -27,7 +27,7 @@ use Leaf\Auth;
         if (!payment.method || payment.method === 'Efectivo USD') {
           total += Number(payment.amount);
         } else {
-          total += Number(payment.amount) / this.exchangeRate;
+          total += Number(payment.amount) / Number(this.exchangeRate);
         }
       }
 
