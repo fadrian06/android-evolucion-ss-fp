@@ -27,7 +27,7 @@ use Illuminate\Database\Eloquent\Collection;
   <form class="panel stack" method="post" action="./apartados" x-data='{
     products: <?= $products->toJson() ?>,
     productId: "",
-    payments: [{ amount: "", method: "" }],
+    payments: [{ id: crypto.randomUUID(), amount: "", method: "" }],
 
     get product() {
       return this.products.find(product => product.id == this.productId) || null;
@@ -104,12 +104,29 @@ use Illuminate\Database\Eloquent\Collection;
         </p>
       </div>
 
+      <p class="muted-text" x-show="product" x-transition>
+        Pago pendiente:
+        <strong
+          x-text="(product?.price - getTotalPaid(payments)).toLocaleString('es-VE', {
+            style: 'currency',
+            currency: 'USD',
+            currencyDisplay: 'narrowSymbol',
+          })">
+        </strong>
+      </p>
+
       <div class="stack">
-        <template x-for="(payment, index) in payments">
-          <div class="grid grid-3">
+        <template x-for="(payment, index) in payments" :key="payment.id">
+          <div
+            class="grid grid-3"
+            x-data="{ visible: false }"
+            x-init="$nextTick(() => visible = true)"
+            x-show="visible"
+            x-transition.duration.200ms>
             <div class="field">
               <label>Monto recibido</label>
               <input
+                x-model="payment.amount"
                 name="amount[]"
                 type="number"
                 min=".01"
@@ -119,7 +136,7 @@ use Illuminate\Database\Eloquent\Collection;
 
             <div class="field">
               <label>Método</label>
-              <select name="method[]">
+              <select name="method[]" x-model="payment.method">
                 <option value="Efectivo USD">Efectivo USD</option>
                 <option value="Efectivo Bs.">Efectivo Bs.</option>
                 <option value="Punto">Punto</option>
@@ -133,7 +150,11 @@ use Illuminate\Database\Eloquent\Collection;
                 'variant' => 'danger',
                 'small' => true,
                 'text' => 'Quitar pago',
-                'onclick' => 'payments.splice(index, 1)',
+                'onclick' => '
+                  visible = false;
+
+                  setTimeout(() => payments.splice(index, 1), 200);
+                ',
               ]) ?>
             </div>
         </template>
@@ -142,7 +163,11 @@ use Illuminate\Database\Eloquent\Collection;
           'text' => '+ Añadir pago',
           'variant' => 'secondary',
           'small' => true,
-          'onclick' => 'payments.push({ amount: ``, method: `` })',
+          'onclick' => 'payments.push({
+            id: crypto.randomUUID(),
+            amount: ``,
+            method: ``,
+          })',
         ]) ?>
       </div>
     </section>
@@ -285,7 +310,7 @@ use Illuminate\Database\Eloquent\Collection;
         method="post"
         action="./apartados/<?= $item->id ?>/pagar"
         x-data="{
-          payments: [{ amount: '', method: '' }],
+          payments: [{ id: crypto.randomUUID(), amount: '', method: 'Efectivo USD' }],
         }">
         <?php Flight::render('components/toolbar', [
           'title' => 'Registrar pago',
@@ -294,17 +319,27 @@ use Illuminate\Database\Eloquent\Collection;
 
         <p class="muted-text">
           Pago pendiente:
-          <strong>
-            $<?= number_format($item->getRemainingAmount(), 2, ',', '.') ?>
+          <strong
+            x-text="(<?= $item->getRemainingAmount() ?> - getTotalPaid(payments)).toLocaleString('es-VE', {
+              style: 'currency',
+              currency: 'USD',
+              currencyDisplay: 'narrowSymbol',
+            })">
           </strong>
         </p>
 
         <div class="stack">
-          <template x-for="(payment, index) in payments">
-            <div class="grid grid-3">
+          <template x-for="(payment, index) in payments" :key="payment.id">
+            <div
+              class="grid grid-3"
+              x-data="{ visible: false }"
+              x-init="$nextTick(() => visible = true)"
+              x-show="visible"
+              x-transition.duration.200ms>
               <div class="field">
                 <label>Monto recibido</label>
                 <input
+                  x-model="payment.amount"
                   name="amount[]"
                   type="number"
                   min=".01"
@@ -314,7 +349,7 @@ use Illuminate\Database\Eloquent\Collection;
 
               <div class="field">
                 <label>Método</label>
-                <select name="method[]">
+                <select name="method[]" x-model="payment.method">
                   <option value="Efectivo USD">Efectivo USD</option>
                   <option value="Efectivo Bs.">Efectivo Bs.</option>
                   <option value="Punto">Punto</option>
@@ -328,7 +363,11 @@ use Illuminate\Database\Eloquent\Collection;
                   'variant' => 'danger',
                   'small' => true,
                   'text' => 'Quitar pago',
-                  'onclick' => 'payments.splice(index, 1)',
+                  'onclick' => '
+                    visible = false;
+
+                    setTimeout(() => payments.splice(index, 1), 200);
+                  ',
                 ]) ?>
               </div>
           </template>
@@ -338,7 +377,11 @@ use Illuminate\Database\Eloquent\Collection;
           'text' => '+ Añadir pago',
           'variant' => 'secondary',
           'small' => true,
-          'onclick' => 'payments.push({ amount: ``, method: `` })',
+          'onclick' => 'payments.push({
+            id: crypto.randomUUID(),
+            amount: ``,
+            method: ``,
+          })',
         ]) ?>
 
         <p class="muted-text">

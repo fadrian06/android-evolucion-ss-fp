@@ -3,11 +3,13 @@
 declare(strict_types=1);
 
 use App\FlashKey;
+use App\Models\ExchangeRate;
 use Leaf\Auth;
 
 /**
  * @var Auth $auth
  * @var string $slot
+ * @var ?ExchangeRate $exchangeRate
  */
 
 ?>
@@ -16,6 +18,21 @@ use Leaf\Auth;
 <html
   x-data="{
     messages: [],
+    exchangeRate: <?= $exchangeRate?->rate ?: 0 ?>,
+
+    getTotalPaid(payments = []) {
+      let total = 0;
+
+      for (const payment of payments) {
+        if (!payment.method || payment.method === 'Efectivo USD') {
+          total += Number(payment.amount);
+        } else {
+          total += Number(payment.amount) / this.exchangeRate;
+        }
+      }
+
+      return total;
+    },
 
     trim(string = '') {
       return string
