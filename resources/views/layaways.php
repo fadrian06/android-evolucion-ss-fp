@@ -30,7 +30,13 @@ use Illuminate\Database\Eloquent\Collection;
     payments: [{ id: crypto.randomUUID(), amount: "", method: "" }],
 
     get product() {
-      return this.products?.find(product => product.id == this.productId) || null;
+      for (const product of this.products) {
+        if (product.id === this.productId) {
+          return product;
+        }
+      }
+
+      return null;
     },
   }'>
     <?php Flight::render('components/toolbar', [
