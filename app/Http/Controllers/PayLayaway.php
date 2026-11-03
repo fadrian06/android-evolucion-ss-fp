@@ -50,11 +50,13 @@ final readonly class PayLayaway implements InvokableController
       goto redirect;
     }
 
+    $data = Flight::request()->data->getData();
+
     try {
       $customRate = $this->dailyExchangeRate->customRateFor($this->user);
-      $payment = PaymentDetails::fromInput(
-        Flight::request()->data->amount,
-        Flight::request()->data->method,
+      $payments = PaymentDetails::fromInputs(
+        $data['amount'] ?? null,
+        $data['method'] ?? null,
         $customRate ? (float) $customRate->rate : null,
       );
     } catch (\InvalidArgumentException $exception) {
@@ -63,14 +65,19 @@ final readonly class PayLayaway implements InvokableController
       goto redirect;
     }
 
-    if ($payment['amount_usd'] > $layaway->getRemainingAmount()) {
+    if (empty($payments)) {
+      Flash::set(['Debes ingresar al menos un pago'], 'errors');
+
+      goto redirect;
+    }
+
+    if (PaymentDetails::totalUsd($payments) > $layaway->getRemainingAmount()) {
       Flash::set(['El pago excede el saldo pendiente'], 'errors');
 
       goto redirect;
     }
 
-    unset($payment['amount_usd']);
-    $layaway->payments()->create($payment);
+    $layaway->payments()->createMany(PaymentDetails::forPersistence($payments));
     Flash::set(['Pago registrado'], 'successes');
 
     redirect:

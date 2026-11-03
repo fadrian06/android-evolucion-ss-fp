@@ -119,8 +119,8 @@ final class LayawayRoutesTest extends FeatureTestCase
     $layawayId = $this->layawayId($productId);
 
     $response = $this->post("/apartados/$layawayId/pagar", [
-      'amount' => '20',
-      'method' => 'Efectivo USD',
+      'amount' => ['20'],
+      'method' => ['Efectivo USD'],
     ]);
 
     self::assertSame(303, $response->getStatusCode());
