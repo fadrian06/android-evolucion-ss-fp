@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 <dialog class="card card-medium" x-ref="new">
   <form class="panel stack" method="post" action="./apartados" x-data='{
-    products: <?= $products->toJson() ?>,
+    products: Object.values(<?= $products->toJson() ?>),
     productId: "",
     payments: [{ id: crypto.randomUUID(), amount: "", method: "" }],
 
