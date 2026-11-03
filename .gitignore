@@ -1,5 +1,7 @@
 *.sqlite
 .env
 .phpunit.result.cache
+.picasa.ini
+.picasaoriginals/
 /node_modules
 /vendor
