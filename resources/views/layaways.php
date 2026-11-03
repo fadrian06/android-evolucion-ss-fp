@@ -25,12 +25,12 @@ use Illuminate\Database\Eloquent\Collection;
 
 <dialog class="card card-medium" x-ref="new">
   <form class="panel stack" method="post" action="./apartados" x-data='{
-    products: <?= json_encode($products->toArray()) ?>,
+    products: <?= $products->toJson() ?>,
     productId: "",
     payments: [{ id: crypto.randomUUID(), amount: "", method: "" }],
 
     get product() {
-      return this.products.find(product => product.id == this.productId) || null;
+      return this.products?.find(product => product.id == this.productId) || null;
     },
   }'>
     <?php Flight::render('components/toolbar', [
