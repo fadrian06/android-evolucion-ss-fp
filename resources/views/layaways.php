@@ -15,21 +15,6 @@ use Illuminate\Database\Eloquent\Collection;
 
 ?>
 
-<style>
-  .layaway-payment-row {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(190px, 1fr) auto;
-    gap: 10px;
-    align-items: end
-  }
-
-  @media (max-width: 720px) {
-    .layaway-payment-row {
-      grid-template-columns: 1fr;
-    }
-  }
-</style>
-
 <?php Flight::render('components/page-head', [
   'eyebrow' => 'RESERVAS',
   'title' => 'Apartados',
@@ -39,7 +24,15 @@ use Illuminate\Database\Eloquent\Collection;
 ]) ?>
 
 <dialog class="card card-medium" x-ref="new">
-  <form class="panel stack" method="post" action="./apartados">
+  <form class="panel stack" method="post" action="./apartados" x-data='{
+    products: <?= $products->toJson() ?>,
+    productId: "",
+    payments: [{ amount: "", method: "" }],
+
+    get product() {
+      return this.products.find(product => product.id == this.productId) || null;
+    },
+  }'>
     <?php Flight::render('components/toolbar', [
       'title' => 'Nuevo apartado',
       'inDialog' => true,
@@ -60,13 +53,11 @@ use Illuminate\Database\Eloquent\Collection;
 
       <div class="field">
         <label>Producto disponible</label>
-        <select name="product_id" required id="layaway-product">
+        <select name="product_id" required x-model="productId">
           <option value="" hidden>Seleccionar producto</option>
 
           <?php foreach ($products as $product): ?>
-            <option
-              value="<?= $product->id ?>"
-              data-category="<?= $product->category ?>">
+            <option value="<?= $product->id ?>">
               <?= $product->name ?> · $<?= $product->price ?>
             </option>
           <?php endforeach ?>
@@ -74,7 +65,10 @@ use Illuminate\Database\Eloquent\Collection;
       </div>
     </div>
 
-    <div class="grid grid-2 hidden" id="layaway-imeis">
+    <div
+      class="grid grid-2"
+      x-show="product && product.category === 'phone'"
+      x-transition:enter>
       <div class="field">
         <label>IMEI 1</label>
         <input name="imei1" placeholder="IMEI 1">
@@ -86,7 +80,10 @@ use Illuminate\Database\Eloquent\Collection;
       </div>
     </div>
 
-    <div class="field hidden" id="layaway-code">
+    <div
+      class="field"
+      x-show="product && product.category !== 'phone'"
+      x-transition:enter>
       <label>
         Código
         <small class="muted-text">(opcional)</small>
@@ -107,36 +104,47 @@ use Illuminate\Database\Eloquent\Collection;
         </p>
       </div>
 
-      <div id="layaway-initial-payments" class="stack">
-        <div class="layaway-payment-row">
-          <div class="field">
-            <label>Monto recibido</label>
-            <input
-              name="amount[]"
-              type="number"
-              min=".01"
-              step=".01"
-              placeholder="Sin pago inicial">
-          </div>
+      <div class="stack">
+        <template x-for="(payment, index) in payments">
+          <div class="grid grid-3">
+            <div class="field">
+              <label>Monto recibido</label>
+              <input
+                name="amount[]"
+                type="number"
+                min=".01"
+                step=".01"
+                placeholder="Sin pago inicial">
+            </div>
 
-          <div class="field">
-            <label>Método</label>
-            <select name="method[]">
-              <option value="Efectivo USD">Efectivo USD</option>
-              <option value="Efectivo Bs.">Efectivo Bs.</option>
-              <option value="Punto">Punto</option>
-              <option value="Transferencia">Transferencia</option>
-            </select>
-          </div>
-        </div>
+            <div class="field">
+              <label>Método</label>
+              <select name="method[]">
+                <option value="Efectivo USD">Efectivo USD</option>
+                <option value="Efectivo Bs.">Efectivo Bs.</option>
+                <option value="Punto">Punto</option>
+                <option value="Transferencia">Transferencia</option>
+              </select>
+            </div>
+
+            <div class="actions" x-show="index">
+              <?php Flight::render('components/btn', [
+                'type' => 'button',
+                'variant' => 'danger',
+                'small' => true,
+                'text' => 'Quitar pago',
+                'onclick' => 'payments.splice(index, 1)',
+              ]) ?>
+            </div>
+        </template>
+
+        <?php Flight::render('components/btn', [
+          'text' => '+ Añadir pago',
+          'variant' => 'secondary',
+          'small' => true,
+          'onclick' => 'payments.push({ amount: ``, method: `` })',
+        ]) ?>
       </div>
-
-      <?php Flight::render('components/btn', [
-        'text' => '+ Añadir pago',
-        'variant' => 'secondary',
-        'small' => true,
-        'id' => 'add-layaway-payment',
-      ]) ?>
     </section>
 
     <div class="actions">
@@ -275,7 +283,10 @@ use Illuminate\Database\Eloquent\Collection;
       <form
         class="panel stack"
         method="post"
-        action="./apartados/<?= $item->id ?>/pagar">
+        action="./apartados/<?= $item->id ?>/pagar"
+        x-data="{
+          payments: [{ amount: '', method: '' }],
+        }">
         <?php Flight::render('components/toolbar', [
           'title' => 'Registrar pago',
           'inDialog' => true,
@@ -288,28 +299,47 @@ use Illuminate\Database\Eloquent\Collection;
           </strong>
         </p>
 
-        <div class="grid grid-2">
-          <div class="field">
-            <label>Monto recibido</label>
-            <input
-              name="amount"
-              type="number"
-              min=".01"
-              step=".01"
-              required
-              placeholder="0.00">
-          </div>
+        <div class="stack">
+          <template x-for="(payment, index) in payments">
+            <div class="grid grid-3">
+              <div class="field">
+                <label>Monto recibido</label>
+                <input
+                  name="amount[]"
+                  type="number"
+                  min=".01"
+                  step=".01"
+                  placeholder="Sin pago inicial">
+              </div>
 
-          <div class="field">
-            <label>Método</label>
-            <select name="method" class="layaway-payment-method" required>
-              <option value="Efectivo USD">Efectivo USD</option>
-              <option value="Efectivo Bs.">Efectivo Bs.</option>
-              <option value="Punto">Punto</option>
-              <option value="Transferencia">Transferencia</option>
-            </select>
-          </div>
+              <div class="field">
+                <label>Método</label>
+                <select name="method[]">
+                  <option value="Efectivo USD">Efectivo USD</option>
+                  <option value="Efectivo Bs.">Efectivo Bs.</option>
+                  <option value="Punto">Punto</option>
+                  <option value="Transferencia">Transferencia</option>
+                </select>
+              </div>
+
+              <div class="actions" x-show="index">
+                <?php Flight::render('components/btn', [
+                  'type' => 'button',
+                  'variant' => 'danger',
+                  'small' => true,
+                  'text' => 'Quitar pago',
+                  'onclick' => 'payments.splice(index, 1)',
+                ]) ?>
+              </div>
+          </template>
         </div>
+
+        <?php Flight::render('components/btn', [
+          'text' => '+ Añadir pago',
+          'variant' => 'secondary',
+          'small' => true,
+          'onclick' => 'payments.push({ amount: ``, method: `` })',
+        ]) ?>
 
         <p class="muted-text">
           Los pagos en Bs. guardan la cotización personalizada vigente como
@@ -326,51 +356,3 @@ use Illuminate\Database\Eloquent\Collection;
     </dialog>
   <?php endif ?>
 <?php endforeach ?>
-
-<script>
-  const layawayProduct = document.querySelector('#layaway-product'),
-    layawayImeis = document.querySelector('#layaway-imeis'),
-    layawayCode = document.querySelector('#layaway-code'),
-    imeiInputs = layawayImeis.querySelectorAll('input');
-
-  function updateLayawayIdentifiers() {
-    const category = layawayProduct.selectedOptions[0]?.dataset.category,
-      isPhone = category === 'phone',
-      isAccessory = category === 'accessory';
-
-    layawayImeis.classList.toggle('hidden', !isPhone);
-    layawayCode.classList.toggle('hidden', !isAccessory);
-
-    imeiInputs.forEach(input => {
-      input.required = isPhone;
-
-      if (!isPhone) input.value = ''
-    });
-
-    if (!isAccessory) layawayCode.querySelector('input').value = ''
-  }
-
-  layawayProduct.addEventListener('change', updateLayawayIdentifiers);
-
-  const layawayPayments = document.querySelector('#layaway-initial-payments'),
-    layawayPaymentTemplate = layawayPayments.firstElementChild.outerHTML;
-
-  document.querySelector('#add-layaway-payment').onclick = () => {
-    layawayPayments.insertAdjacentHTML('beforeend', layawayPaymentTemplate);
-
-    layawayPayments.lastElementChild.insertAdjacentHTML(
-      'beforeend',
-      `<?php Flight::render('components/btn', [
-        'type' => 'button',
-        'variant' => 'danger',
-        'small' => true,
-        'class' => 'remove-payment',
-        'text' => 'Quitar pago',
-      ]); ?>`
-    )
-  };
-
-  layawayPayments.addEventListener('click', event => {
-    if (event.target.closest('.remove-payment')) event.target.closest('.layaway-payment-row').remove()
-  });
-</script>

@@ -486,6 +486,7 @@ dialog {
   display: flex;
   gap: 7px;
   flex-wrap: wrap;
+  align-items: end;
 }
 
 .stack {
