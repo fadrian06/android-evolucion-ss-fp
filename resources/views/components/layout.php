@@ -12,6 +12,8 @@ use Leaf\Auth;
  * @var ?ExchangeRate $exchangeRate
  */
 
+$exchangeRate ??= null;
+
 ?>
 
 <!doctype html>
