@@ -7,6 +7,7 @@ use App\Models\Business;
 use App\Models\User;
 use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Builder;
 use Leaf\Auth;
 use Leaf\Form;
@@ -49,6 +50,11 @@ $container->singleton(
 
     $manager->setAsGlobal();
     $manager->bootEloquent();
+
+    $isLocal = $_ENV['APP_ENV'] !== 'production';
+
+    Model::preventLazyLoading($isLocal);
+    Model::preventSilentlyDiscardingAttributes($isLocal);
 
     return $manager;
   },
