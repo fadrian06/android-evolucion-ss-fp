@@ -14,11 +14,14 @@ use Leaf\Lingo;
   <?php foreach (FlashKey::cases() as $key): ?>
     <?php foreach (Flash::retrieve($key) as $message): ?>
       <div
-        x-data="{ leaving: false }"
-        x-init="setTimeout(() => leaving = true, 5000)"
-        @transitionend="$el.remove()"
-        class="<?= $key->class() ?>"
-        :class="{ 'is-leaving': leaving }">
+        x-data="{ visible: false }"
+        x-init="
+          $nextTick(() => visible = true);
+          setTimeout(() => visible = false, 5000);
+        "
+        x-show="visible"
+        x-transition
+        class="<?= $key->class() ?>">
         <?= $lingo->translate($message) ?>
       </div>
     <?php endforeach ?>
@@ -26,14 +29,14 @@ use Leaf\Lingo;
 
   <template x-for="(message, index) in messages || []">
     <div
-      x-data="{ leaving: false }"
-      x-init="setTimeout(() => leaving = true, 5000)"
-      @transitionend="
-        $el.remove();
-        messages.splice(index, 1);
+      x-data="{ visible: true }"
+      x-init="
+        $nextTick(() => visible = true);
+        setTimeout(() => visible = false, 5000);
       "
+      x-show="visible"
+      x-transition
       :class="{
-        'is-leaving': leaving,
         <?php foreach (FlashKey::cases() as $key): ?>
           '<?= $key->class() ?>': message.key === '<?= $key->key() ?>',
         <?php endforeach ?>

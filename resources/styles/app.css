@@ -656,14 +656,6 @@ dialog {
   border: 1px solid var(--line);
   box-shadow: var(--shadow);
   font-weight: 600;
-  transition:
-    opacity 200ms ease,
-    transform 200ms ease;
-
-  &.is-leaving {
-    opacity: 0;
-    transform: translateX(16px);
-  }
 }
 
 .toast-success {
