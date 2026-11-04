@@ -9,7 +9,6 @@ use App\FlashKey;
 use App\Models\Business;
 use App\Models\User;
 use Flight;
-use Illuminate\Database\Capsule\Manager;
 use Leaf\Form;
 use NoDiscard;
 use Override;
@@ -109,13 +108,7 @@ final readonly class BusinessController implements ResourceController
       return;
     }
 
-    Manager::connection()->transaction(static function () use (
-      $business,
-      $validated,
-    ): void {
-      $business->refreshForUpdate()->update($validated);
-    });
-
+    $business->update($validated);
     Flash::set(['Negocio actualizado'], FlashKey::Successes);
     Flight::redirect('/negocios');
   }
