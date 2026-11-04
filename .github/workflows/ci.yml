@@ -15,8 +15,12 @@ jobs:
             **/.git*
             **/.git*/**
             **/tests/**
+            .editorconfig
             .env
-            composer.*
+            *.json
+            composer.lock
+            *.md
+            *.toml
             phpunit.*
           log-level: minimal
           password: ${{ secrets.ftp_password }}
