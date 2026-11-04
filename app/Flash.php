@@ -13,4 +13,10 @@ final readonly class Flash
   {
     return (array) LeafFlash::display($key->key());
   }
+
+  /** @param string[] $messages */
+  public static function set(array $messages, FlashKey $key): void
+  {
+    LeafFlash::set($messages, $key->key());
+  }
 }
