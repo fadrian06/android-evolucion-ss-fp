@@ -25,3 +25,4 @@ tab-width = 2
 print-width = 80
 preserve-breaking-argument-list = true
 parentheses-in-new-expression = false
+parentheses-in-exit-and-die = false

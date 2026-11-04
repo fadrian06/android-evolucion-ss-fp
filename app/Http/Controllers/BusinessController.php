@@ -6,10 +6,12 @@ namespace App\Http\Controllers;
 
 use App\Flash;
 use App\FlashKey;
+use App\Models\Business;
 use App\Models\User;
 use Flight;
-use Illuminate\Database\UniqueConstraintViolationException;
+use Illuminate\Database\Capsule\Manager;
 use Leaf\Form;
+use NoDiscard;
 use Override;
 
 final readonly class BusinessController implements ResourceController
@@ -40,23 +42,7 @@ final readonly class BusinessController implements ResourceController
   #[Override]
   public function store(): void
   {
-    $validated = $this->form->validate(Flight::request()->data->getData(), [
-      'name' => 'string',
-      'rif' => 'string',
-      'address' => 'string',
-      'phone' => 'string',
-    ]);
-
-    if (!$validated) {
-      Flash::set(
-        array_filter($this->form->errors(), 'is_string'),
-        FlashKey::Errors,
-      );
-
-      Flight::redirect('/negocios');
-
-      return;
-    }
+    $validated = $this->getValidated();
 
     if ($this->user->businesses()->where(
       'name',
@@ -78,20 +64,7 @@ final readonly class BusinessController implements ResourceController
       return;
     }
 
-    try {
-      $this->user->businesses()->create($validated);
-    } catch (UniqueConstraintViolationException $exception) {
-      error_log($exception->getMessage());
-      Flash::set(
-        ['No se pudo registrar el negocio porque ya existe un dato único'],
-        FlashKey::Errors,
-      );
-
-      Flight::redirect('/negocios');
-
-      return;
-    }
-
+    $this->user->businesses()->create($validated);
     Flash::set(['Negocio registrado'], FlashKey::Successes);
     Flight::redirect('/negocios');
   }
@@ -111,44 +84,8 @@ final readonly class BusinessController implements ResourceController
   #[Override]
   public function update(string $id): void
   {
-    $business = $this->user->businesses->find($id);
-
-    if (!$business) {
-      Flash::set(['Negocio no encontrado'], FlashKey::Errors);
-      Flight::redirect('/negocios');
-
-      return;
-    }
-
-    $validated = $this->form->validate(Flight::request()->data->getData(), [
-      'name' => 'string',
-      'rif' => 'string',
-      'address' => 'string',
-      'phone' => 'string',
-    ]);
-
-    if (!$validated) {
-      Flash::set(
-        array_filter($this->form->errors(), 'is_string'),
-        FlashKey::Errors,
-      );
-
-      Flight::redirect('/negocios');
-
-      return;
-    }
-
-    if (
-      $business->name === $validated['name']
-      && $business->rif === $validated['rif']
-      && $business->address === $validated['address']
-      && $business->phone === $validated['phone']
-    ) {
-      Flash::set(['Los datos del negocio no han cambiado'], FlashKey::Notes);
-      Flight::redirect('/negocios');
-
-      return;
-    }
+    $business = $this->getBusinessById($id);
+    $validated = $this->getValidated();
 
     if ($this->user
       ->businesses()
@@ -172,19 +109,12 @@ final readonly class BusinessController implements ResourceController
       return;
     }
 
-    try {
-      $business->update($validated);
-    } catch (UniqueConstraintViolationException $exception) {
-      error_log($exception->getMessage());
-      Flash::set(
-        ['No se pudo actualizar el negocio porque ya existe un dato único'],
-        FlashKey::Errors,
-      );
-
-      Flight::redirect('/negocios');
-
-      return;
-    }
+    Manager::connection()->transaction(static function () use (
+      $business,
+      $validated,
+    ): void {
+      $business->refreshForUpdate()->update($validated);
+    });
 
     Flash::set(['Negocio actualizado'], FlashKey::Successes);
     Flight::redirect('/negocios');
@@ -193,14 +123,7 @@ final readonly class BusinessController implements ResourceController
   #[Override]
   public function destroy(string $id): void
   {
-    $business = $this->user->businesses->find($id);
-
-    if (!$business) {
-      Flash::set(['Negocio no encontrado'], FlashKey::Errors);
-      Flight::redirect('/negocios');
-
-      return;
-    }
+    $business = $this->getBusinessById($id);
 
     if (!$business->canBeDeleted()) {
       Flash::set(
@@ -216,5 +139,43 @@ final readonly class BusinessController implements ResourceController
     $business->delete();
     Flash::set(['Negocio eliminado'], FlashKey::Notes);
     Flight::redirect('/negocios');
+  }
+
+  #[NoDiscard]
+  private function getBusinessById(string $id): Business
+  {
+    $business = $this->user->businesses->find($id);
+
+    if (!$business) {
+      Flash::set(['Negocio no encontrado'], FlashKey::Errors);
+      Flight::redirect('/negocios');
+
+      exit;
+    }
+
+    return $business;
+  }
+
+  private function getValidated(): array
+  {
+    $validated = $this->form->validate(Flight::request()->data->getData(), [
+      'name' => 'string',
+      'rif' => 'string',
+      'address' => 'string',
+      'phone' => 'string',
+    ]);
+
+    if (!$validated) {
+      Flash::set(
+        array_filter($this->form->errors(), 'is_string'),
+        FlashKey::Errors,
+      );
+
+      Flight::redirect('/negocios');
+
+      exit;
+    }
+
+    return $validated;
   }
 }
