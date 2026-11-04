@@ -33,6 +33,8 @@ final class Repair extends Model
     'due_date',
   ];
 
+  protected $with = ['payments', 'client'];
+
   #[Override]
   protected function casts(): array
   {

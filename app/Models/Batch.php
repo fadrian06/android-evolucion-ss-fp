@@ -16,6 +16,7 @@ final class Batch extends Model
 {
   public $timestamps = false;
   protected $fillable = ['business_id', 'product_id', 'stock'];
+  protected $with = ['business'];
 
   /** @return BelongsTo<Business, $this> */
   public function business(): BelongsTo

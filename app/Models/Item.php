@@ -35,6 +35,8 @@ final class Item extends Model
     'code',
   ];
 
+  protected $with = ['product'];
+
   #[Override]
   protected function casts(): array
   {

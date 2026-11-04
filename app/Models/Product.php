@@ -26,6 +26,7 @@ final class Product extends Model
 
   public $timestamps = false;
   protected $fillable = ['name', 'category', 'price'];
+  protected $with = ['batches'];
 
   #[Override]
   protected function casts(): array
