@@ -178,6 +178,58 @@ $container->singleton(Form::class, static function (): Form {
     },
   );
 
+  $form->rule(
+    'array',
+    static function (
+      mixed $value,
+      array|string $args,
+      string $field,
+      array $data,
+    ) use ($form): bool {
+      if (!is_array($value)) {
+        return false;
+      }
+
+      if (!$args || !is_string($args)) {
+        return true;
+      }
+
+      $args = explode(',', $args);
+      $argsLength = count($args);
+      $keysRules = null;
+      $valuesRules = null;
+
+      if ($argsLength === 1) {
+        $valuesRules = $args[0];
+      } elseif ($argsLength === 2) {
+        $keysRules = $args[0];
+        $valuesRules = $args[1];
+      } else {
+        throw new InvalidArgumentException(
+          'The "array" rule accepts at most two arguments',
+        );
+      }
+
+      $test = new ReflectionMethod($form, 'test');
+
+      foreach ($value as $keyToTest => $valueToTest) {
+        if (
+          $keysRules
+          && !$test->invoke($form, $keysRules, $keyToTest, $field, $data)
+        ) {
+          return true;
+        }
+
+        if (!$test->invoke($form, $valuesRules, $valueToTest, $field, $data)) {
+          return true;
+        }
+      }
+
+      return true;
+    },
+    '{field} must be an array',
+  );
+
   return $form;
 });
 
