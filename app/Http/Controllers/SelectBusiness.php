@@ -12,10 +12,9 @@ use Override;
 
 final readonly class SelectBusiness implements InvokableController
 {
-  public function __construct(private User $user)
-  {
-    //
-  }
+  public function __construct(
+    private User $user,
+  ) {}
 
   #[Override]
   public function __invoke(string ...$attributes): void

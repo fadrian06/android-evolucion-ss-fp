@@ -11,7 +11,6 @@ use App\Services\DailyExchangeRate;
 use App\Support\PaymentDetails;
 use Flight;
 use Leaf\Flash;
-use Leaf\Form;
 use Override;
 
 final readonly class PayRepair implements InvokableController
@@ -20,11 +19,7 @@ final readonly class PayRepair implements InvokableController
     private Business $business,
     private User $user,
     private DailyExchangeRate $dailyExchangeRate,
-    private Form $form,
-  )
-  {
-    //
-  }
+  ) {}
 
   #[Override]
   public function __invoke(string ...$attributes): void
@@ -47,6 +42,7 @@ final readonly class PayRepair implements InvokableController
     try {
       $customRate = $this->dailyExchangeRate->customRateFor($this->user);
       $data = Flight::request()->data->getData();
+
       $payment = PaymentDetails::fromInput(
         $data['amount'] ?? null,
         $data['method'] ?? null,

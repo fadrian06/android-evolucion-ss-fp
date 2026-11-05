@@ -24,9 +24,7 @@ final readonly class LayawayController implements ResourceController
     private Business $business,
     private DailyExchangeRate $dailyExchangeRate,
     private Form $form,
-  ) {
-    //
-  }
+  ) {}
 
   #[Override]
   public function index(): void

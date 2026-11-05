@@ -14,10 +14,10 @@ use Override;
 
 final readonly class ClientController implements ResourceController
 {
-  public function __construct(private User $user, private Form $form)
-  {
-    //
-  }
+  public function __construct(
+    private User $user,
+    private Form $form,
+  ) {}
 
   #[Override]
   public function index(): void

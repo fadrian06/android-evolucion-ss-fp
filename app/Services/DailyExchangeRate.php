@@ -11,10 +11,9 @@ use DateTimeZone;
 
 final readonly class DailyExchangeRate
 {
-  public function __construct(private BcvExchangeRate $bcvExchangeRate)
-  {
-    //
-  }
+  public function __construct(
+    private BcvExchangeRate $bcvExchangeRate,
+  ) {}
 
   public function customRateFor(User $user): ?ExchangeRate
   {

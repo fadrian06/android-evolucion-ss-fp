@@ -15,10 +15,9 @@ use Override;
 
 final readonly class CancelLayaway implements InvokableController
 {
-  public function __construct(private Business $business)
-  {
-    //
-  }
+  public function __construct(
+    private Business $business,
+  ) {}
 
   #[Override]
   public function __invoke(string ...$attributes): void

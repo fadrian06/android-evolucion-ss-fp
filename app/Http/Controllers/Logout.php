@@ -12,10 +12,9 @@ use Override;
 
 final readonly class Logout implements InvokableController
 {
-  public function __construct(private Auth $auth)
-  {
-    //
-  }
+  public function __construct(
+    private Auth $auth,
+  ) {}
 
   #[Override]
   public function __invoke(string ...$attributes): void

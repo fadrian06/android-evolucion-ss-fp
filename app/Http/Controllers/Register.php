@@ -12,10 +12,10 @@ use Override;
 
 final readonly class Register implements InvokableController
 {
-  public function __construct(private Auth $auth, private Form $form)
-  {
-    //
-  }
+  public function __construct(
+    private Auth $auth,
+    private Form $form,
+  ) {}
 
   #[Override]
   public function __invoke(string ...$attributes): void
@@ -27,7 +27,6 @@ final readonly class Register implements InvokableController
 
     if (!$validated) {
       Flash::set($this->form->errors(), 'errors');
-
       Flight::redirect('/registrarse');
 
       return;
@@ -35,14 +34,12 @@ final readonly class Register implements InvokableController
 
     if (!$this->auth->register($validated)) {
       Flash::set($this->auth->errors(), 'errors');
-
       Flight::redirect('/registrarse');
 
       return;
     }
 
     Flash::set(['Has sido registrado'], 'successes');
-
     Flight::redirect('/');
   }
 }

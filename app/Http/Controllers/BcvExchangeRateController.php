@@ -10,10 +10,9 @@ use Override;
 
 final readonly class BcvExchangeRateController implements InvokableController
 {
-  public function __construct(private BcvExchangeRate $bcvExchangeRate)
-  {
-    //
-  }
+  public function __construct(
+    private BcvExchangeRate $bcvExchangeRate,
+  ) {}
 
   #[Override]
   public function __invoke(string ...$attributes): void

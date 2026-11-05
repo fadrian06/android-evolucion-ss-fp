@@ -20,10 +20,7 @@ final readonly class ProductController implements ResourceController
     private User $user,
     private DailyExchangeRate $dailyExchangeRate,
     private Form $form,
-  )
-  {
-    //
-  }
+  ) {}
 
   #[Override]
   public function index(): void

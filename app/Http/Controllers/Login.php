@@ -12,10 +12,10 @@ use Override;
 
 final readonly class Login implements InvokableController
 {
-  public function __construct(private Auth $auth, private Form $form)
-  {
-    //
-  }
+  public function __construct(
+    private Auth $auth,
+    private Form $form,
+  ) {}
 
   #[Override]
   public function __invoke(string ...$attributes): void
@@ -27,7 +27,6 @@ final readonly class Login implements InvokableController
 
     if (!$validated) {
       Flash::set($this->form->errors(), 'errors');
-
       Flight::redirect('/ingresar');
 
       return;
@@ -35,7 +34,6 @@ final readonly class Login implements InvokableController
 
     if (!$this->auth->login($validated)) {
       Flash::set($this->auth->errors(), 'errors');
-
       Flight::redirect('/ingresar');
 
       return;

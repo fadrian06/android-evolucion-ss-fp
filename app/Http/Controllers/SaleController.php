@@ -24,9 +24,7 @@ final readonly class SaleController implements ResourceController
     private Business $business,
     private DailyExchangeRate $dailyExchangeRate,
     private Form $form,
-  ) {
-    //
-  }
+  ) {}
 
   #[Override]
   public function index(): void
@@ -81,7 +79,6 @@ final readonly class SaleController implements ResourceController
     }
 
     $exchangeRate = (float) $customRate->rate;
-
     $phoneItems = [];
     $nonPhoneItems = [];
     $stockChanges = [];
