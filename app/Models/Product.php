@@ -7,6 +7,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use NoDiscard;
 use Override;
 
 /**
@@ -62,11 +63,10 @@ final class Product extends Model
     return $stock;
   }
 
-  public function hasAssociatedRecords(): bool
+  #[NoDiscard]
+  public function canBeDeleted(): bool
   {
-    $associatedRecords = $this->items_count + $this->layaways_count;
-
-    return $associatedRecords > 0;
+    return !$this->items->count() && !$this->layaways->count();
   }
 
   public function getBusinessIdsWithStock(): string

@@ -22,13 +22,11 @@ $labels = [
 ?>
 
 <style>
-  .disabled-product-action,
   .price-reference {
     position: relative;
     display: inline-flex
   }
 
-  .disabled-product-action:hover:after,
   .price-reference:hover:after,
   .price-reference:focus:after {
     position: absolute;
@@ -47,10 +45,6 @@ $labels = [
     text-align: center;
     box-shadow: var(--shadow);
     transform: translateX(-50%)
-  }
-
-  .disabled-product-action:hover:after {
-    content: 'No se puede eliminar un producto con registros asociados'
   }
 
   .price-reference {
@@ -269,24 +263,14 @@ $labels = [
                 'onclick' => "\$refs.edit$product->id?.showModal()",
               ]) ?>
 
-              <?php if ($product->hasAssociatedRecords()): ?>
-                <span class="disabled-product-action">
-                  <?php Flight::render('components/btn', [
-                    'text' => 'Eliminar',
-                    'variant' => 'danger',
-                    'small' => true,
-                    'disabled' => true,
-                    'style' => 'cursor:not-allowed;opacity:.45;filter:grayscale(1)',
-                  ]) ?>
-                </span>
-              <?php else: ?>
-                <?php Flight::render('components/btn', [
-                  'text' => 'Eliminar',
-                  'variant' => 'danger',
-                  'small' => true,
-                  'href' => "./productos/$product->id/eliminar",
-                ]) ?>
-              <?php endif ?>
+              <?php Flight::render('components/btn', [
+                'text' => 'Eliminar',
+                'variant' => 'danger',
+                'small' => true,
+                'href' => "./productos/$product->id/eliminar",
+                'disabled' => !$product->canBeDeleted(),
+                'title' => 'No se puede eliminar un producto con registros asociados',
+              ]) ?>
             </div>
           </td>
         </tr>
