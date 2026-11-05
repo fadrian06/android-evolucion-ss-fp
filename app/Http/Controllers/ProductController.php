@@ -28,14 +28,7 @@ final readonly class ProductController implements ResourceController
     Flight::render(
       'products',
       [
-        'products' => $this->user
-          ->products()
-          ->with('batches')
-          ->withCount([
-            'items',
-            'layaways',
-          ])
-          ->get(),
+        'products' => $this->user->products,
         'businesses' => $this->user->businesses,
         'customRate' => $this->dailyExchangeRate->customRateFor($this->user),
       ],
