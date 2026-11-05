@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Flash;
+use App\FlashKey;
 use App\Models\Product;
 use App\Models\User;
 use App\Services\DailyExchangeRate;
 use Flight;
-use Illuminate\Database\Capsule\Manager;
-use Illuminate\Database\UniqueConstraintViolationException;
-use Leaf\Flash;
 use Leaf\Form;
+use NoDiscard;
 use Override;
 
 final readonly class ProductController implements ResourceController
@@ -47,87 +47,25 @@ final readonly class ProductController implements ResourceController
   #[Override]
   public function store(): void
   {
-    $validated = $this->form->validate(Flight::request()->data->getData(), [
-      'name' => 'string',
-      'category' => 'in:[phone,accessory,spare_part]',
-      'price' => 'optional',
-      'stocks' => 'array<number>',
-    ]);
-
-    if (
-      !$validated
-      || !is_numeric($validated['price'] ?? null)
-      || (float) $validated['price'] <= 0
-    ) {
-      Flash::set($this->form->errors(), 'errors');
-
-      if ($validated) {
-        Flash::set(['El precio debe ser mayor que cero'], 'errors');
-      }
-
-      Flight::redirect('/productos');
-
-      return;
-    }
-
-    if ($this->user->products()->where('name', $validated['name'])->exists()) {
-      Flash::set(['Ya existe un producto con ese nombre'], 'errors');
-      Flight::redirect('/productos');
-
-      return;
-    }
+    $validated = $this->getValidated();
+    $this->ensureNameIsNotDuplicated($validated['name']);
 
     $batches = [];
 
     foreach ($validated['stocks'] as $businessId => $stock) {
-      $business = $this->user->businesses->find($businessId);
-
-      if (!$business) {
-        Flash::set(['Negocio no encontrado'], 'errors');
-        Flight::redirect('/productos');
-
-        return;
-      }
-
-      if ($stock < 0) {
-        Flash::set(['El stock no puede ser negativo'], 'errors');
-        Flight::redirect('/productos');
-
-        return;
-      }
-
       $batches[] = ['business_id' => $businessId, 'stock' => $stock];
     }
 
-    try {
-      Manager::connection()->transaction(function () use (
-        $validated,
-        $batches,
-      ): void {
-        $product = $this->user
-          ->products()
-          ->create([
-            'name' => $validated['name'],
-            'category' => $validated['category'],
-            'price' => $validated['price'],
-          ]);
+    $product = $this->user
+      ->products()
+      ->create([
+        'name' => $validated['name'],
+        'category' => $validated['category'],
+        'price' => $validated['price'],
+      ]);
 
-        $product->batches()->createMany($batches);
-      });
-    } catch (UniqueConstraintViolationException $exception) {
-      error_log($exception->getMessage());
-
-      Flash::set(
-        ['No se pudo registrar el producto porque ya existe un dato único'],
-        'errors',
-      );
-
-      Flight::redirect('/productos');
-
-      return;
-    }
-
-    Flash::set(['Producto registrado'], 'successes');
+    $product->batches()->createMany($batches);
+    Flash::set(['Producto registrado'], FlashKey::Successes);
     Flight::redirect('/productos');
   }
 
@@ -146,121 +84,41 @@ final readonly class ProductController implements ResourceController
   #[Override]
   public function update(string $id): void
   {
-    $product = $this->user->products->find($id);
+    $product = $this->getProductById($id);
+    $validated = $this->getValidated();
 
-    if (!$product) {
-      Flash::set(['Producto no encontrado'], 'errors');
-      Flight::redirect('/productos');
-
-      return;
-    }
-
-    $validated = $this->form->validate(Flight::request()->data->getData(), [
-      'name' => 'string',
-      'category' => 'in:[phone,accessory,spare_part]',
-      'price' => 'optional',
-      'stocks' => 'array<number>',
-    ]);
-
-    if (
-      !$validated
-      || !is_numeric($validated['price'] ?? null)
-      || (float) $validated['price'] <= 0
-    ) {
-      Flash::set($this->form->errors(), 'errors');
-
-      if ($validated) {
-        Flash::set(['El precio debe ser mayor que cero'], 'errors');
-      }
-
-      Flight::redirect('/productos');
-
-      return;
-    }
-
-    if ($this->user->products->first(
-      static fn(Product $p): bool => (
-        $p->name === $validated['name']
-        && $p->id !== $product->id
-      ),
-    )) {
-      Flash::set(['Ya existe un producto con ese nombre'], 'errors');
-      Flight::redirect('/productos');
-
-      return;
+    if ($product->name !== $validated['name']) {
+      $this->ensureNameIsNotDuplicated($validated['name']);
     }
 
     $batches = [];
 
     foreach ($validated['stocks'] as $businessId => $stock) {
-      $business = $this->user->businesses->find($businessId);
-
-      if (!$business) {
-        Flash::set(['Negocio no encontrado'], 'errors');
-        Flight::redirect('/productos');
-
-        return;
-      }
-
-      if ($stock < 0) {
-        Flash::set(['El stock no puede ser negativo'], 'errors');
-        Flight::redirect('/productos');
-
-        return;
-      }
-
       $batches[] = ['business_id' => $businessId, 'stock' => $stock];
     }
 
-    try {
-      Manager::connection()->transaction(static function () use (
-        $product,
-        $validated,
-        $batches,
-      ): void {
-        $product->batches()->delete();
+    $product->batches()->delete();
 
-        $product->update([
-          'name' => $validated['name'],
-          'category' => $validated['category'],
-          'price' => $validated['price'],
-        ]);
+    $product->update([
+      'name' => $validated['name'],
+      'category' => $validated['category'],
+      'price' => $validated['price'],
+    ]);
 
-        $product->batches()->createMany($batches);
-      });
-    } catch (UniqueConstraintViolationException $exception) {
-      error_log($exception->getMessage());
-
-      Flash::set(
-        ['No se pudo actualizar el producto porque ya existe un dato único'],
-        'errors',
-      );
-
-      Flight::redirect('/productos');
-
-      return;
-    }
-
-    Flash::set(['Producto actualizado'], 'successes');
+    $product->batches()->createMany($batches);
+    Flash::set(['Producto actualizado'], FlashKey::Successes);
     Flight::redirect('/productos');
   }
 
   #[Override]
   public function destroy(string $id): void
   {
-    $product = $this->user->products->find($id);
+    $product = $this->getProductById($id);
 
-    if (!$product) {
-      Flash::set(['Producto no encontrado'], 'errors');
-      Flight::redirect('/productos');
-
-      return;
-    }
-
-    if ($product->items()->exists() || $product->layaways()->exists()) {
+    if (!$product->canBeDeleted()) {
       Flash::set(
         ['No se puede eliminar un producto que tiene registros asociados'],
-        'errors',
+        FlashKey::Errors,
       );
 
       Flight::redirect('/productos');
@@ -268,12 +126,70 @@ final readonly class ProductController implements ResourceController
       return;
     }
 
-    Manager::connection()->transaction(static function () use ($product): void {
-      $product->batches()->delete();
-      $product->delete();
-    });
-
-    Flash::set(['Producto eliminado'], 'notes');
+    $product->batches()->delete();
+    $product->delete();
+    Flash::set(['Producto eliminado'], FlashKey::Notes);
     Flight::redirect('/productos');
+  }
+
+  #[NoDiscard]
+  private function getProductById(string $id): Product
+  {
+    $product = $this->user->products->find($id);
+
+    if (!$product) {
+      Flash::set(['Producto no encontrado'], FlashKey::Errors);
+      Flight::redirect('/productos');
+
+      exit;
+    }
+
+    return $product;
+  }
+
+  /**
+   * @return array{
+   *   name: string,
+   *   category: 'phone'|'accessory'|'spare_part',
+   *   price: float,
+   *   stocks: array<int, int>,
+   * }
+   */
+  #[NoDiscard]
+  private function getValidated(): array
+  {
+    $rules = [
+      'name' => 'string',
+      'category' => 'in:[phone,accessory,spare_part]',
+      'price' => 'min:0.01',
+    ];
+
+    foreach ($this->user->businesses->pluck('id') as $id) {
+      $rules["stocks.$id"] = 'number';
+    }
+
+    $validated = $this->form->validate(
+      Flight::request()->data->getData(),
+      $rules,
+    );
+
+    if (!$validated) {
+      Flash::set($this->form->errors(), FlashKey::Errors);
+      Flight::redirect('/productos');
+
+      exit;
+    }
+
+    return $validated;
+  }
+
+  private function ensureNameIsNotDuplicated(string $name): void
+  {
+    if ($this->user->products()->where('name', $name)->exists()) {
+      Flash::set(['Ya existe un producto con ese nombre'], FlashKey::Errors);
+      Flight::redirect('/productos');
+
+      exit;
+    }
   }
 }
