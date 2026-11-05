@@ -24,7 +24,6 @@ use Override;
 final class Sale extends Model
 {
   protected $fillable = ['client_id'];
-  protected $with = ['client', 'items', 'payments'];
 
   #[Override]
   protected function casts(): array

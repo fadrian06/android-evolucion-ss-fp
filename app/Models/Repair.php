@@ -33,13 +33,10 @@ final class Repair extends Model
     'due_date',
   ];
 
-  protected $with = ['payments', 'client'];
-
-  #[Override]
-  protected function casts(): array
-  {
-    return ['due_date' => 'date'];
-  }
+  protected $casts = [
+    'due_date' => 'date',
+    'price_ves' => 'float',
+  ];
 
   /** @return BelongsTo<Business, $this> */
   public function business(): BelongsTo

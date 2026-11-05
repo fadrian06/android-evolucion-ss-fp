@@ -53,7 +53,7 @@ $container->singleton(
 
     $isLocal = $_ENV['APP_ENV'] !== 'production';
 
-    Model::preventLazyLoading($isLocal);
+    // Model::preventLazyLoading($isLocal);
     Model::preventSilentlyDiscardingAttributes($isLocal);
 
     return $manager;
