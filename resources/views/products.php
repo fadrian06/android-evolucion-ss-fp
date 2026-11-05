@@ -351,14 +351,17 @@ $labels = [
 
       <div class="grid grid-3">
         <?php foreach ($businesses as $businessItem):
-          $batch = $product->batches->first(fn($b) => $b->business->id === $businessItem->id); ?>
+          $batch = $product->batches->first(
+            fn($b) => $b->business->id === $businessItem->id,
+          ); ?>
+
           <div class="field">
             <label>Stock · <?= $businessItem->name ?></label>
             <input
               name="stocks[<?= $businessItem->id ?>]"
               type="number"
               min="0"
-              value="<?= $batch?->stock ?? 0 ?>"
+              value="<?= $batch->stock ?? 0 ?>"
               required>
           </div>
         <?php endforeach ?>

@@ -34,6 +34,9 @@ final readonly class DailyExchangeRate
 
   public function today(): string
   {
-    return (new DateTimeImmutable('today', new DateTimeZone('America/Caracas')))->format('Y-m-d');
+    return new DateTimeImmutable(
+      'today',
+      new DateTimeZone('America/Caracas'),
+    )->format('Y-m-d');
   }
 }

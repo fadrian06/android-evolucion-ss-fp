@@ -25,17 +25,22 @@ final readonly class ProductController implements ResourceController
   #[Override]
   public function index(): void
   {
-    Flight::render('products', [
-      'products' => $this->user->products()
-        ->with('batches')
-        ->withCount([
-          'items',
-          'layaways',
-        ])
-        ->get(),
-      'businesses' => $this->user->businesses,
+    Flight::render(
+      'products',
+      [
+        'products' => $this->user
+          ->products()
+          ->with('batches')
+          ->withCount([
+            'items',
+            'layaways',
+          ])
+          ->get(),
+        'businesses' => $this->user->businesses,
         'customRate' => $this->dailyExchangeRate->customRateFor($this->user),
-    ], 'slot');
+      ],
+      'slot',
+    );
 
     Flight::render('components/layout');
   }
@@ -56,19 +61,27 @@ final readonly class ProductController implements ResourceController
       'stocks' => 'array<number>',
     ]);
 
-    if (!$validated || !is_numeric($validated['price'] ?? null) || (float) $validated['price'] <= 0) {
+    if (
+      !$validated
+      || !is_numeric($validated['price'] ?? null)
+      || (float) $validated['price'] <= 0
+    ) {
       Flash::set($this->form->errors(), 'errors');
+
       if ($validated) {
         Flash::set(['El precio debe ser mayor que cero'], 'errors');
       }
 
-      goto redirect;
+      Flight::redirect('/productos');
+
+      return;
     }
 
     if ($this->user->products()->where('name', $validated['name'])->exists()) {
       Flash::set(['Ya existe un producto con ese nombre'], 'errors');
+      Flight::redirect('/productos');
 
-      goto redirect;
+      return;
     }
 
     $batches = [];
@@ -78,38 +91,50 @@ final readonly class ProductController implements ResourceController
 
       if (!$business) {
         Flash::set(['Negocio no encontrado'], 'errors');
+        Flight::redirect('/productos');
 
-        goto redirect;
+        return;
       }
 
       if ($stock < 0) {
         Flash::set(['El stock no puede ser negativo'], 'errors');
+        Flight::redirect('/productos');
 
-        goto redirect;
+        return;
       }
 
       $batches[] = ['business_id' => $businessId, 'stock' => $stock];
     }
 
     try {
-      Manager::connection()->transaction(function () use ($validated, $batches): void {
-        $product = $this->user->products()->create([
-          'name' => $validated['name'],
-          'category' => $validated['category'],
-          'price' => $validated['price'],
-        ]);
+      Manager::connection()->transaction(function () use (
+        $validated,
+        $batches,
+      ): void {
+        $product = $this->user
+          ->products()
+          ->create([
+            'name' => $validated['name'],
+            'category' => $validated['category'],
+            'price' => $validated['price'],
+          ]);
+
         $product->batches()->createMany($batches);
       });
     } catch (UniqueConstraintViolationException $exception) {
       error_log($exception->getMessage());
-      Flash::set(['No se pudo registrar el producto porque ya existe un dato único'], 'errors');
 
-      goto redirect;
+      Flash::set(
+        ['No se pudo registrar el producto porque ya existe un dato único'],
+        'errors',
+      );
+
+      Flight::redirect('/productos');
+
+      return;
     }
 
     Flash::set(['Producto registrado'], 'successes');
-
-    redirect:
     Flight::redirect('/productos');
   }
 
@@ -132,8 +157,9 @@ final readonly class ProductController implements ResourceController
 
     if (!$product) {
       Flash::set(['Producto no encontrado'], 'errors');
+      Flight::redirect('/productos');
 
-      goto redirect;
+      return;
     }
 
     $validated = $this->form->validate(Flight::request()->data->getData(), [
@@ -143,24 +169,32 @@ final readonly class ProductController implements ResourceController
       'stocks' => 'array<number>',
     ]);
 
-    if (!$validated || !is_numeric($validated['price'] ?? null) || (float) $validated['price'] <= 0) {
+    if (
+      !$validated
+      || !is_numeric($validated['price'] ?? null)
+      || (float) $validated['price'] <= 0
+    ) {
       Flash::set($this->form->errors(), 'errors');
+
       if ($validated) {
         Flash::set(['El precio debe ser mayor que cero'], 'errors');
       }
 
-      goto redirect;
+      Flight::redirect('/productos');
+
+      return;
     }
 
     if ($this->user->products->first(
       static fn(Product $p): bool => (
         $p->name === $validated['name']
         && $p->id !== $product->id
-      )
+      ),
     )) {
       Flash::set(['Ya existe un producto con ese nombre'], 'errors');
+      Flight::redirect('/productos');
 
-      goto redirect;
+      return;
     }
 
     $batches = [];
@@ -170,39 +204,51 @@ final readonly class ProductController implements ResourceController
 
       if (!$business) {
         Flash::set(['Negocio no encontrado'], 'errors');
+        Flight::redirect('/productos');
 
-        goto redirect;
+        return;
       }
 
       if ($stock < 0) {
         Flash::set(['El stock no puede ser negativo'], 'errors');
+        Flight::redirect('/productos');
 
-        goto redirect;
+        return;
       }
 
       $batches[] = ['business_id' => $businessId, 'stock' => $stock];
     }
 
     try {
-      Manager::connection()->transaction(function () use ($product, $validated, $batches): void {
+      Manager::connection()->transaction(static function () use (
+        $product,
+        $validated,
+        $batches,
+      ): void {
         $product->batches()->delete();
+
         $product->update([
           'name' => $validated['name'],
           'category' => $validated['category'],
           'price' => $validated['price'],
         ]);
+
         $product->batches()->createMany($batches);
       });
     } catch (UniqueConstraintViolationException $exception) {
       error_log($exception->getMessage());
-      Flash::set(['No se pudo actualizar el producto porque ya existe un dato único'], 'errors');
 
-      goto redirect;
+      Flash::set(
+        ['No se pudo actualizar el producto porque ya existe un dato único'],
+        'errors',
+      );
+
+      Flight::redirect('/productos');
+
+      return;
     }
 
     Flash::set(['Producto actualizado'], 'successes');
-
-    redirect:
     Flight::redirect('/productos');
   }
 
@@ -213,26 +259,28 @@ final readonly class ProductController implements ResourceController
 
     if (!$product) {
       Flash::set(['Producto no encontrado'], 'errors');
+      Flight::redirect('/productos');
 
-      goto redirect;
+      return;
     }
 
-    if (
-      $product->items()->exists()
-      || $product->layaways()->exists()
-    ) {
-      Flash::set(['No se puede eliminar un producto que tiene registros asociados'], 'errors');
+    if ($product->items()->exists() || $product->layaways()->exists()) {
+      Flash::set(
+        ['No se puede eliminar un producto que tiene registros asociados'],
+        'errors',
+      );
 
-      goto redirect;
+      Flight::redirect('/productos');
+
+      return;
     }
 
-    Manager::connection()->transaction(function () use ($product): void {
+    Manager::connection()->transaction(static function () use ($product): void {
       $product->batches()->delete();
       $product->delete();
     });
-    Flash::set(['Producto eliminado'], 'notes');
 
-    redirect:
+    Flash::set(['Producto eliminado'], 'notes');
     Flight::redirect('/productos');
   }
 }

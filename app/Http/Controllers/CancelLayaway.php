@@ -27,20 +27,23 @@ final readonly class CancelLayaway implements InvokableController
 
     if (!$layaway instanceof Layaway) {
       Flash::set(['Apartado no encontrado'], 'errors');
+      Flight::redirect('/apartados');
 
-      goto redirect;
+      return;
     }
 
     if ($layaway->cancelled_at) {
       Flash::set(['El apartado ya fue cancelado'], 'errors');
+      Flight::redirect('/apartados');
 
-      goto redirect;
+      return;
     }
 
     if ($layaway->getRemainingAmount() <= 0) {
       Flash::set(['No se puede cancelar un apartado pagado'], 'errors');
+      Flight::redirect('/apartados');
 
-      goto redirect;
+      return;
     }
 
     $batch = Batch::query()
@@ -49,12 +52,20 @@ final readonly class CancelLayaway implements InvokableController
       ->first();
 
     if (!$batch instanceof Batch) {
-      Flash::set(['No se encontró el lote original del producto apartado'], 'errors');
+      Flash::set(
+        ['No se encontró el lote original del producto apartado'],
+        'errors',
+      );
 
-      goto redirect;
+      Flight::redirect('/apartados');
+
+      return;
     }
 
-    Manager::connection()->transaction(function () use ($layaway, $batch): void {
+    Manager::connection()->transaction(static function () use (
+      $layaway,
+      $batch,
+    ): void {
       $batch->stock++;
       $batch->save();
       $layaway->cancelled_at = new DateTimeImmutable;
@@ -62,8 +73,6 @@ final readonly class CancelLayaway implements InvokableController
     });
 
     Flash::set(['Apartado cancelado y stock restaurado'], 'notes');
-
-    redirect:
     Flight::redirect('/apartados');
   }
 }

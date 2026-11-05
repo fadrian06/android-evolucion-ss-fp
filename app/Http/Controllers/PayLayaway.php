@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Services\DailyExchangeRate;
 use App\Support\PaymentDetails;
 use Flight;
+use InvalidArgumentException;
 use Leaf\Flash;
 use Override;
 
@@ -29,20 +30,23 @@ final readonly class PayLayaway implements InvokableController
 
     if (!$layaway instanceof Layaway) {
       Flash::set(['Apartado no encontrado'], 'errors');
+      Flight::redirect('/apartados');
 
-      goto redirect;
+      return;
     }
 
     if ($layaway->cancelled_at) {
       Flash::set(['No se puede pagar un apartado cancelado'], 'errors');
+      Flight::redirect('/apartados');
 
-      goto redirect;
+      return;
     }
 
     if ($layaway->getRemainingAmount() <= 0) {
       Flash::set(['El apartado ya está pagado'], 'errors');
+      Flight::redirect('/apartados');
 
-      goto redirect;
+      return;
     }
 
     $data = Flight::request()->data->getData();
@@ -55,28 +59,29 @@ final readonly class PayLayaway implements InvokableController
         $data['method'] ?? null,
         $customRate ? (float) $customRate->rate : null,
       );
-    } catch (\InvalidArgumentException $exception) {
+    } catch (InvalidArgumentException $exception) {
       Flash::set([$exception->getMessage()], 'errors');
+      Flight::redirect('/apartados');
 
-      goto redirect;
+      return;
     }
 
     if (empty($payments)) {
       Flash::set(['Debes ingresar al menos un pago'], 'errors');
+      Flight::redirect('/apartados');
 
-      goto redirect;
+      return;
     }
 
     if (PaymentDetails::totalUsd($payments) > $layaway->getRemainingAmount()) {
       Flash::set(['El pago excede el saldo pendiente'], 'errors');
+      Flight::redirect('/apartados');
 
-      goto redirect;
+      return;
     }
 
     $layaway->payments()->createMany(PaymentDetails::forPersistence($payments));
     Flash::set(['Pago registrado'], 'successes');
-
-    redirect:
     Flight::redirect('/apartados');
   }
 }

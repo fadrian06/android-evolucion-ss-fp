@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Models\Client;
 use App\Models\User;
 use Flight;
 use Illuminate\Database\UniqueConstraintViolationException;
@@ -22,11 +21,17 @@ final readonly class ClientController implements ResourceController
   #[Override]
   public function index(): void
   {
-    Flight::render('clients', [
-      'clients' => $this->user->clients()
-        ->withCount(['sales', 'repairs', 'layaways'])
-        ->get(),
-    ], 'slot');
+    Flight::render(
+      'clients',
+      [
+        'clients' => $this->user
+          ->clients()
+          ->withCount(['sales', 'repairs', 'layaways'])
+          ->get(),
+      ],
+      'slot',
+    );
+
     Flight::render('components/layout');
   }
 
@@ -48,34 +53,40 @@ final readonly class ClientController implements ResourceController
 
     if (!$validated) {
       Flash::set($this->form->errors(), 'errors');
+      Flight::redirect('/clientes');
 
-      goto redirect;
+      return;
     }
 
     if ($this->user->clients()->where('name', $validated['name'])->exists()) {
       Flash::set(['Ya existe un cliente con ese nombre'], 'errors');
+      Flight::redirect('/clientes');
 
-      goto redirect;
+      return;
     }
 
     if ($this->user->clients()->where('id_card', $validated['id_card'])->exists()) {
       Flash::set(['Ya existe un cliente con esa cédula'], 'errors');
+      Flight::redirect('/clientes');
 
-      goto redirect;
+      return;
     }
 
     try {
       $this->user->clients()->create($validated);
     } catch (UniqueConstraintViolationException $exception) {
       error_log($exception->getMessage());
-      Flash::set(['No se pudo registrar el cliente porque ya existe un dato único'], 'errors');
+      Flash::set(
+        ['No se pudo registrar el cliente porque ya existe un dato único'],
+        'errors',
+      );
 
-      goto redirect;
+      Flight::redirect('/clientes');
+
+      return;
     }
 
     Flash::set(['Cliente registrado'], 'successes');
-
-    redirect:
     Flight::redirect('/clientes');
   }
 
@@ -98,8 +109,9 @@ final readonly class ClientController implements ResourceController
 
     if (!$client) {
       Flash::set(['Cliente no encontrado'], 'errors');
+      Flight::redirect('/clientes');
 
-      goto redirect;
+      return;
     }
 
     $validated = $this->form->validate(Flight::request()->data->getData(), [
@@ -111,8 +123,9 @@ final readonly class ClientController implements ResourceController
 
     if (!$validated) {
       Flash::set($this->form->errors(), 'errors');
+      Flight::redirect('/clientes');
 
-      goto redirect;
+      return;
     }
 
     if (
@@ -122,40 +135,48 @@ final readonly class ClientController implements ResourceController
       && $client->address === $validated['address']
     ) {
       Flash::set(['Los datos del cliente no han cambiado'], 'notes');
+      Flight::redirect('/clientes');
 
-      goto redirect;
+      return;
     }
 
     if ($this->user->clients()
       ->where('name', $validated['name'])
       ->where('id', '!=', $client->id)
-      ->exists()) {
+      ->exists()
+    ) {
       Flash::set(['Ya existe un cliente con ese nombre'], 'errors');
+      Flight::redirect('/clientes');
 
-      goto redirect;
+      return;
     }
 
     if ($this->user->clients()
       ->where('id_card', $validated['id_card'])
       ->where('id', '!=', $client->id)
-      ->exists()) {
+      ->exists()
+    ) {
       Flash::set(['Ya existe un cliente con esa cédula'], 'errors');
+      Flight::redirect('/clientes');
 
-      goto redirect;
+      return;
     }
 
     try {
       $client->update($validated);
     } catch (UniqueConstraintViolationException $exception) {
       error_log($exception->getMessage());
-      Flash::set(['No se pudo actualizar el cliente porque ya existe un dato único'], 'errors');
+      Flash::set(
+        ['No se pudo actualizar el cliente porque ya existe un dato único'],
+        'errors',
+      );
 
-      goto redirect;
+      Flight::redirect('/clientes');
+
+      return;
     }
 
     Flash::set(['Cliente actualizado'], 'successes');
-
-    redirect:
     Flight::redirect('/clientes');
   }
 
@@ -166,20 +187,28 @@ final readonly class ClientController implements ResourceController
 
     if (!$client) {
       Flash::set(['Cliente no encontrado'], 'errors');
+      Flight::redirect('/clientes');
 
-      goto redirect;
+      return;
     }
 
-    if ($client->sales()->exists() || $client->repairs()->exists() || $client->layaways()->exists()) {
-      Flash::set(['No se puede eliminar un cliente que tiene registros asociados'], 'errors');
+    if (
+      $client->sales()->exists()
+      || $client->repairs()->exists()
+      || $client->layaways()->exists()
+    ) {
+      Flash::set(
+        ['No se puede eliminar un cliente que tiene registros asociados'],
+        'errors',
+      );
 
-      goto redirect;
+      Flight::redirect('/clientes');
+
+      return;
     }
 
     $client->delete();
     Flash::set(['Cliente eliminado'], 'notes');
-
-    redirect:
     Flight::redirect('/clientes');
   }
 }

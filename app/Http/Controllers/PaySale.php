@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Services\DailyExchangeRate;
 use App\Support\PaymentDetails;
 use Flight;
+use InvalidArgumentException;
 use Leaf\Flash;
 use Override;
 
@@ -35,20 +36,23 @@ final readonly class PaySale implements InvokableController
 
     if (!$sale instanceof Sale) {
       Flash::set(['Venta no encontrada'], 'errors');
+      Flight::redirect('/ventas');
 
-      goto redirect;
+      return;
     }
 
     if ($sale->cancelled_at) {
       Flash::set(['No se puede pagar un comprobante anulado'], 'errors');
+      Flight::redirect('/ventas');
 
-      goto redirect;
+      return;
     }
 
     if ($sale->getRemainingAmount() <= 0) {
       Flash::set(['La venta ya está pagada'], 'errors');
+      Flight::redirect('/ventas');
 
-      goto redirect;
+      return;
     }
 
     try {
@@ -59,23 +63,23 @@ final readonly class PaySale implements InvokableController
         Flight::request()->data->method,
         $customRate ? (float) $customRate->rate : null,
       );
-    } catch (\InvalidArgumentException $exception) {
+    } catch (InvalidArgumentException $exception) {
       Flash::set([$exception->getMessage()], 'errors');
+      Flight::redirect('/ventas');
 
-      goto redirect;
+      return;
     }
 
     if ($payment['amount_usd'] > $sale->getRemainingAmount()) {
       Flash::set(['El pago excede el saldo pendiente'], 'errors');
+      Flight::redirect('/ventas');
 
-      goto redirect;
+      return;
     }
 
     unset($payment['amount_usd']);
     $sale->payments()->create($payment);
     Flash::set(['Pago registrado'], 'successes');
-
-    redirect:
     Flight::redirect('/ventas');
   }
 }

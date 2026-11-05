@@ -6,13 +6,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Batch;
 use App\Models\Business;
-use App\Models\Layaway;
 use App\Models\Product;
 use App\Models\User;
 use App\Services\DailyExchangeRate;
 use App\Support\PaymentDetails;
 use Flight;
 use Illuminate\Database\Capsule\Manager;
+use InvalidArgumentException;
 use Leaf\Flash;
 use Leaf\Form;
 use Override;
@@ -29,19 +29,25 @@ final readonly class LayawayController implements ResourceController
   #[Override]
   public function index(): void
   {
-    $products = $this->user->products
+    $products = $this->user
+      ->products
       ->load('batches')
       ->filter(
         fn(Product $product): bool => $product->batches->contains(
-            fn(Batch $batch): bool => $batch->business_id === $this->business->id && $batch->stock > 0
-          ),
+          fn(Batch $batch): bool => $batch->business_id === $this->business->id && $batch->stock > 0,
+        ),
       );
 
-    Flight::render('layaways', [
-      'layaways' => $this->business->layaways,
-      'clients' => $this->user->clients,
-      'products' => $products,
-    ], 'slot');
+    Flight::render(
+      'layaways',
+      [
+        'layaways' => $this->business->layaways,
+        'clients' => $this->user->clients,
+        'products' => $products,
+      ],
+      'slot',
+    );
+
     Flight::render('components/layout');
   }
 
@@ -60,12 +66,10 @@ final readonly class LayawayController implements ResourceController
     ]);
 
     if (!$validated) {
-      Flash::set(
-        $this->form->errors(),
-        'errors',
-      );
+      Flash::set($this->form->errors(), 'errors');
+      Flight::redirect('/apartados');
 
-      goto redirect;
+      return;
     }
 
     $client = $this->user->clients->find($validated['client_id']);
@@ -73,14 +77,16 @@ final readonly class LayawayController implements ResourceController
 
     if (!$client) {
       Flash::set(['Cliente no encontrado'], 'errors');
+      Flight::redirect('/apartados');
 
-      goto redirect;
+      return;
     }
 
     if (!$product) {
       Flash::set(['Producto no encontrado'], 'errors');
+      Flight::redirect('/apartados');
 
-      goto redirect;
+      return;
     }
 
     $data = Flight::request()->data->getData();
@@ -90,16 +96,22 @@ final readonly class LayawayController implements ResourceController
 
     if ($product->category === 'phone' && ($imei1 === '' || $imei2 === '')) {
       Flash::set(['Debes indicar IMEI 1 e IMEI 2'], 'errors');
+      Flight::redirect('/apartados');
 
-      goto redirect;
+      return;
     }
 
     $customRate = $this->dailyExchangeRate->customRateFor($this->user);
 
     if (!$customRate) {
-      Flash::set(['Debes establecer una cotización personalizada antes de crear un apartado'], 'errors');
+      Flash::set(
+        ['Debes establecer una cotización personalizada antes de crear un apartado'],
+        'errors',
+      );
 
-      goto redirect;
+      Flight::redirect('/apartados');
+
+      return;
     }
 
     $batch = Batch::query()
@@ -108,9 +120,14 @@ final readonly class LayawayController implements ResourceController
       ->first();
 
     if (!$batch instanceof Batch || $batch->stock < 1) {
-      Flash::set(['No hay existencias de este producto en el local seleccionado'], 'errors');
+      Flash::set(
+        ['No hay existencias de este producto en el local seleccionado'],
+        'errors',
+      );
 
-      goto redirect;
+      Flight::redirect('/apartados');
+
+      return;
     }
 
     try {
@@ -119,32 +136,45 @@ final readonly class LayawayController implements ResourceController
         $data['method'] ?? null,
         (float) $customRate->rate,
       );
-    } catch (\InvalidArgumentException $exception) {
+    } catch (InvalidArgumentException $exception) {
       Flash::set([$exception->getMessage()], 'errors');
+      Flight::redirect('/apartados');
 
-      goto redirect;
+      return;
     }
 
 
-    Manager::connection()->transaction(function () use ($batch, $client, $product, $customRate, $imei1, $imei2, $code, $payments): void {
+    Manager::connection()->transaction(function () use (
+      $batch,
+      $client,
+      $product,
+      $customRate,
+      $imei1,
+      $imei2,
+      $code,
+      $payments,
+    ): void {
       $batch->stock--;
       $batch->save();
 
-      $layaway = $this->business->layaways()->create([
-        'client_id' => $client->id,
-        'product_id' => $product->id,
-        'price' => $product->price,
-        'price_ves' => round($product->price * (float) $customRate->rate, 2),
-        'imei1' => $product->category === 'phone' ? $imei1 : null,
-        'imei2' => $product->category === 'phone' ? $imei2 : null,
-        'code' => $product->category === 'accessory' && $code !== '' ? $code : null,
-      ]);
-      $layaway->payments()->createMany(PaymentDetails::forPersistence($payments));
+      $layaway = $this->business
+        ->layaways()
+        ->create([
+          'client_id' => $client->id,
+          'product_id' => $product->id,
+          'price' => $product->price,
+          'price_ves' => round($product->price * (float) $customRate->rate, 2),
+          'imei1' => $product->category === 'phone' ? $imei1 : null,
+          'imei2' => $product->category === 'phone' ? $imei2 : null,
+          'code' => $product->category === 'accessory' && $code !== '' ? $code : null,
+        ]);
+
+      $layaway->payments()->createMany(
+        PaymentDetails::forPersistence($payments),
+      );
     });
 
     Flash::set(['Producto apartado'], 'successes');
-
-    redirect:
     Flight::redirect('/apartados');
   }
 

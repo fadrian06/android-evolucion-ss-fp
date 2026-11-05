@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Services\DailyExchangeRate;
 use App\Support\PaymentDetails;
 use Flight;
+use InvalidArgumentException;
 use Leaf\Flash;
 use Override;
 
@@ -29,14 +30,16 @@ final readonly class PayRepair implements InvokableController
 
     if (!$repair instanceof Repair) {
       Flash::set(['Reparación no encontrada'], 'errors');
+      Flight::redirect('/reparaciones');
 
-      goto redirect;
+      return;
     }
 
     if ($repair->getRemainingAmount() <= 0) {
       Flash::set(['La reparación ya está pagada'], 'errors');
+      Flight::redirect('/reparaciones');
 
-      goto redirect;
+      return;
     }
 
     try {
@@ -48,23 +51,23 @@ final readonly class PayRepair implements InvokableController
         $data['method'] ?? null,
         $customRate ? (float) $customRate->rate : null,
       );
-    } catch (\InvalidArgumentException $exception) {
+    } catch (InvalidArgumentException $exception) {
       Flash::set([$exception->getMessage()], 'errors');
+      Flight::redirect('/reparaciones');
 
-      goto redirect;
+      return;
     }
 
     if ($payment['amount_usd'] > $repair->getRemainingAmount()) {
       Flash::set(['El pago excede el saldo pendiente'], 'errors');
+      Flight::redirect('/reparaciones');
 
-      goto redirect;
+      return;
     }
 
     unset($payment['amount_usd']);
     $repair->payments()->create($payment);
     Flash::set(['Pago registrado'], 'successes');
-
-    redirect:
     Flight::redirect('/reparaciones');
   }
 }

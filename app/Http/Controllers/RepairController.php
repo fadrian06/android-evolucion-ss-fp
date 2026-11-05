@@ -14,6 +14,7 @@ use DateTimeImmutable;
 use DateTimeZone;
 use Flight;
 use Illuminate\Database\Capsule\Manager;
+use InvalidArgumentException;
 use Leaf\Flash;
 use Leaf\Form;
 use Override;
@@ -30,11 +31,16 @@ final readonly class RepairController implements ResourceController
   #[Override]
   public function index(): void
   {
-    Flight::render('repairs', [
-      'repairs' => $this->business->repairs,
-      'clients' => $this->user->clients,
-      'receiptId' => Flash::display('repairReceipt'),
-    ], 'slot');
+    Flight::render(
+      'repairs',
+      [
+        'repairs' => $this->business->repairs,
+        'clients' => $this->user->clients,
+        'receiptId' => Flash::display('repairReceipt'),
+      ],
+      'slot',
+    );
+
     Flight::render('components/layout');
   }
 
@@ -63,7 +69,11 @@ final readonly class RepairController implements ResourceController
     $rawPrice = trim((string) ($data['price'] ?? ''));
 
     if ($rawPrice !== '' && (!is_numeric($rawPrice) || (float) $rawPrice < 0)) {
-      Flash::set(['El costo de mano de obra debe ser mayor o igual a cero'], 'errors');
+      Flash::set(
+        ['El costo de mano de obra debe ser mayor o igual a cero'],
+        'errors',
+      );
+
       Flight::redirect('/reparaciones');
 
       return;
@@ -81,7 +91,11 @@ final readonly class RepairController implements ResourceController
     $customRate = $this->dailyExchangeRate->customRateFor($this->user);
 
     if (!$customRate) {
-      Flash::set(['Debes establecer una cotización personalizada antes de registrar una reparación'], 'errors');
+      Flash::set(
+        ['Debes establecer una cotización personalizada antes de registrar una reparación'],
+        'errors',
+      );
+
       Flight::redirect('/reparaciones');
 
       return;
@@ -93,7 +107,7 @@ final readonly class RepairController implements ResourceController
         $data['method'] ?? null,
         (float) $customRate->rate,
       );
-    } catch (\InvalidArgumentException $exception) {
+    } catch (InvalidArgumentException $exception) {
       Flash::set([$exception->getMessage()], 'errors');
       Flight::redirect('/reparaciones');
 
@@ -101,17 +115,28 @@ final readonly class RepairController implements ResourceController
     }
 
 
-    $repair = Manager::connection()->transaction(function () use ($validated, $price, $customRate, $payments): Repair {
-      $repair = $this->business->repairs()->create([
-        'client_id' => $validated['client_id'],
-        'description' => $validated['description'],
-        'price' => $price,
-        'price_ves' => round($price * (float) $customRate->rate, 2),
-        'due_date' => (new DateTimeImmutable('today', new DateTimeZone('America/Caracas')))
-          ->add(new DateInterval('P15D'))
-          ->format('Y-m-d'),
-      ]);
-      $repair->payments()->createMany(PaymentDetails::forPersistence($payments));
+    $repair = Manager::connection()->transaction(function () use (
+      $validated,
+      $price,
+      $customRate,
+      $payments,
+    ): Repair {
+      $repair = $this->business
+        ->repairs()
+        ->create([
+          'client_id' => $validated['client_id'],
+          'description' => $validated['description'],
+          'price' => $price,
+          'price_ves' => round($price * (float) $customRate->rate, 2),
+          'due_date' => new DateTimeImmutable(
+            'today',
+            new DateTimeZone('America/Caracas'),
+          )->add(new DateInterval('P15D'))->format('Y-m-d'),
+        ]);
+
+      $repair
+        ->payments()
+        ->createMany(PaymentDetails::forPersistence($payments));
 
       return $repair;
     });

@@ -27,14 +27,16 @@ final readonly class CancelSale implements InvokableController
 
     if (!$sale instanceof Sale) {
       Flash::set(['Comprobante no encontrado'], 'errors');
+      Flight::redirect('/ventas');
 
-      goto redirect;
+      return;
     }
 
     if ($sale->cancelled_at) {
       Flash::set(['El comprobante ya fue anulado'], 'errors');
+      Flight::redirect('/ventas');
 
-      goto redirect;
+      return;
     }
 
     $stockRestorations = [];
@@ -46,15 +48,23 @@ final readonly class CancelSale implements InvokableController
         ->first();
 
       if (!$batch instanceof Batch) {
-        Flash::set(['No se encontró el lote original de un ítem vendido'], 'errors');
+        Flash::set(
+          ['No se encontró el lote original de un ítem vendido'],
+          'errors',
+        );
 
-        goto redirect;
+        Flight::redirect('/ventas');
+
+        return;
       }
 
       $stockRestorations[] = ['batch' => $batch, 'quantity' => $item->quantity];
     }
 
-    Manager::connection()->transaction(function () use ($sale, $stockRestorations): void {
+    Manager::connection()->transaction(static function () use (
+      $sale,
+      $stockRestorations,
+    ): void {
       foreach ($stockRestorations as ['batch' => $batch, 'quantity' => $quantity]) {
         $batch->stock += $quantity;
         $batch->save();
@@ -65,8 +75,6 @@ final readonly class CancelSale implements InvokableController
     });
 
     Flash::set(['Comprobante anulado y stock restaurado'], 'notes');
-
-    redirect:
     Flight::redirect('/ventas');
   }
 }
