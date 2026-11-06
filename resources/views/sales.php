@@ -286,6 +286,7 @@ use Illuminate\Database\Eloquent\Collection;
     <div class="actions stack">
       <?php Flight::render('components/btn', [
         'text' => 'Generar comprobante',
+        'type' => 'submit',
       ]) ?>
     </div>
   </form>
@@ -373,6 +374,7 @@ use Illuminate\Database\Eloquent\Collection;
                         $event.preventDefault();
                       }
                     ',
+                    'type' => 'submit',
                   ]) ?>
                 </form>
               <?php endif ?>

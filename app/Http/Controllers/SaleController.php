@@ -203,17 +203,6 @@ final readonly class SaleController implements ResourceController
 
     $payments = [];
 
-    if ($hasPhone && (isset($data['amount']) || isset($data['method']))) {
-      Flash::set(
-        ['Las ventas con teléfonos no aceptan pagos iniciales'],
-        'errors',
-      );
-
-      Flight::redirect('/ventas');
-
-      return;
-    }
-
     if (!$hasPhone) {
       try {
         $payments = PaymentDetails::fromInputs(
