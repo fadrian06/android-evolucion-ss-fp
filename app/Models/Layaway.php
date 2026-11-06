@@ -5,23 +5,21 @@ declare(strict_types=1);
 namespace App\Models;
 
 use DateTimeInterface;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use NoDiscard;
 use Override;
 
 /**
  * @property-read int $id
  * @property-read float $price
- * @property-read string $price_ves
- * @property-read null|string $imei1
- * @property-read null|string $imei2
- * @property-read null|string $code
- * @property-read null|DateTimeInterface $cancelled_at
+ * @property-read ?string $imei1
+ * @property-read ?string $imei2
+ * @property-read ?string $code
+ * @property-read ?DateTimeInterface $cancelled_at
  * @property-read Client $client
  * @property-read Product $product
- * @property-read Collection<int, LayawayPayment> $payments
  */
 final class Layaway extends Model
 {
@@ -59,11 +57,12 @@ final class Layaway extends Model
     return $this->hasMany(LayawayPayment::class);
   }
 
+  #[NoDiscard]
   public function getTotalPaid(): float
   {
     $total = 0;
 
-    foreach ($this->payments as $payment) {
+    foreach ($this->payments()->lazyById(1000, 'id') as $payment) {
       $total += $payment->getAmountUsd();
     }
 
