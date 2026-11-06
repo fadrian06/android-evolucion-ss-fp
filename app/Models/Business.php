@@ -15,8 +15,6 @@ use NoDiscard;
  * @property-read string $rif
  * @property-read string $address
  * @property-read string $phone
- * @property-read Collection<int, Batch> $batches
- * @property-read Collection<int, Item> $items
  * @property-read Collection<int, Sale> $sales
  * @property-read Collection<int, Repair> $repairs
  * @property-read Collection<int, Layaway> $layaways
@@ -59,12 +57,10 @@ final class Business extends Model
   #[NoDiscard]
   public function canBeDeleted(): bool
   {
-    return (
-      !$this->batches->count()
-      && !$this->items->count()
-      && !$this->sales->count()
-      && !$this->repairs->count()
-      && !$this->layaways->count()
-    );
+    return !$this->batches()->count()
+      && !$this->items()->count()
+      && !$this->sales()->count()
+      && !$this->repairs()->count()
+      && !$this->layaways()->count();
   }
 }
