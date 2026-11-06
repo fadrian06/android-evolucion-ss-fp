@@ -16,10 +16,6 @@ use Override;
  * @property-read 'phone'|'accessory'|'spare_part' $category
  * @property-read float $price
  * @property-read Collection<int, Batch> $batches
- * @property-read Collection<int, Item> $items
- * @property-read Collection<int, Layaway> $layaways
- * @property-read int $items_count
- * @property-read int $layaways_count
  */
 final class Product extends Model
 {
@@ -66,7 +62,7 @@ final class Product extends Model
   #[NoDiscard]
   public function canBeDeleted(): bool
   {
-    return !$this->items->count() && !$this->layaways->count();
+    return !$this->items()->count() && !$this->layaways()->count();
   }
 
   public function getBusinessIdsWithStock(): string
