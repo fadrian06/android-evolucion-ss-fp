@@ -24,17 +24,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 final class Repair extends Model
 {
+  protected $casts = ['due_date' => 'date', 'price_ves' => 'float'];
+
   protected $fillable = [
     'client_id',
     'description',
     'price',
     'price_ves',
     'due_date',
-  ];
-
-  protected $casts = [
-    'due_date' => 'date',
-    'price_ves' => 'float',
   ];
 
   /** @return BelongsTo<Business, $this> */
@@ -73,12 +70,11 @@ final class Repair extends Model
 
   public function isOverdue(): bool
   {
-    return (
-      $this->getRemainingAmount() > 0
-      && $this->due_date < new DateTimeImmutable(
-        'today',
-        new DateTimeZone('America/Caracas'),
-      )
+    $today = new DateTimeImmutable(
+      'today',
+      new DateTimeZone('America/Caracas'),
     );
+
+    return $this->getRemainingAmount() > 0 && $this->due_date < $today;
   }
 }
