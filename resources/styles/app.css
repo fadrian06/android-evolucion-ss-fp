@@ -354,6 +354,13 @@ dialog {
   }
 }
 
+.product-placeholder {
+  display: block;
+  border: 1px solid #e0e7ff;
+  border-radius: 10px;
+  background: #eef2ff;
+}
+
 .card {
   background: var(--surface);
   border: 1px solid var(--line);
@@ -369,6 +376,10 @@ dialog {
 
 .card-medium {
   width: min(760px, 90vw);
+}
+
+.card-large {
+  width: min(820px, 90vw);
 }
 
 .card-header {

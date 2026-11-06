@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Collection;
 /**
  * @var Collection<int, Product> $products
  * @var Collection<int, Business> $businesses
- * @var ?ExchangeRate $customRate
+ * @var ExchangeRate $customRate
  */
 
 $labels = [
@@ -21,55 +21,6 @@ $labels = [
 
 ?>
 
-<style>
-  .price-reference {
-    position: relative;
-    display: inline-flex
-  }
-
-  .price-reference:hover:after,
-  .price-reference:focus:after {
-    position: absolute;
-    z-index: 10;
-    bottom: calc(100% + 8px);
-    left: 50%;
-    width: max-content;
-    max-width: 220px;
-    padding: 8px 10px;
-    border-radius: 8px;
-    background: #182230;
-    color: #fff;
-    font-size: 11px;
-    font-weight: 600;
-    line-height: 1.35;
-    text-align: center;
-    box-shadow: var(--shadow);
-    transform: translateX(-50%)
-  }
-
-  .price-reference {
-    cursor: help;
-    border-bottom: 1px dashed #98a2b3
-  }
-
-  .price-reference:hover:after,
-  .price-reference:focus:after {
-    content: attr(data-tooltip)
-  }
-
-  .price-reference:focus {
-    outline: 2px solid #635bff;
-    border-radius: 3px;
-    outline-offset: 3px
-  }
-
-  .data-table .product-category,
-  .data-table .product-price,
-  .data-table .stock-total {
-    text-align: center
-  }
-</style>
-
 <?php Flight::render('components/page-head', [
   'eyebrow' => 'INVENTARIO',
   'title' => 'Productos',
@@ -78,55 +29,7 @@ $labels = [
   'buttonAction' => '$refs.new?.showModal()',
 ]) ?>
 
-<div class="grid grid-3" style="max-width:820px;margin:0 0 20px">
-  <div class="field">
-    <label for="product-search">Buscar productos</label>
-    <input
-      id="product-search"
-      type="search"
-      placeholder="Nombre del producto">
-  </div>
-
-  <div class="field">
-    <label for="product-category-filter">Categoría</label>
-    <select id="product-category-filter">
-      <option value="">Todas las categorías</option>
-      <option value="phone">Teléfonos</option>
-      <option value="accessory">Accesorios</option>
-      <option value="spare_part">Repuestos</option>
-    </select>
-  </div>
-
-  <div class="field">
-    <label for="product-stock-filter">Disponibilidad</label>
-    <select id="product-stock-filter">
-      <option value="">Todo el inventario</option>
-      <option value="low-stock">Casi agotados</option>
-      <option value="out-of-stock">Agotados</option>
-    </select>
-  </div>
-</div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const search = document.querySelector('#product-search'),
-      category = document.querySelector('#product-category-filter'),
-      stock = document.querySelector('#product-stock-filter'),
-      applyFilters = () => document.querySelectorAll('.data-table tbody tr').forEach(row => {
-        const matchesSearch = row.querySelector('strong').textContent.toLowerCase().replace(/\s+/g, '').includes(search.value.toLowerCase().replace(/\s+/g, '')),
-          matchesCategory = !category.value || row.dataset.category === category.value,
-          matchesStock = !stock.value || (stock.value === 'low-stock' ? Number(row.dataset.stock) === 1 : Number(row.dataset.stock) === 0);
-        row.hidden = !(matchesSearch && matchesCategory && matchesStock)
-      });
-
-    [search, category, stock].forEach(filter => filter.addEventListener('input', applyFilters))
-  })
-</script>
-
-<dialog
-  class="card"
-  x-ref="new"
-  style="border:0;padding:0;width:min(760px,90vw)">
+<dialog class="card card-medium" x-ref="new">
   <form class="panel stack" method="post" action="./productos">
     <?php Flight::render('components/toolbar', [
       'title' => 'Añadir producto',
@@ -184,106 +87,147 @@ $labels = [
   </form>
 </dialog>
 
-<section class="card table-wrap">
-  <?php Flight::render('components/toolbar', [
-    'title' => "{$products->count()} productos",
-  ]) ?>
+<div class="d-contents" x-data="{
+  name: '',
+  category: '',
+  disponibility: '',
 
-  <table class="data-table">
-    <thead>
-      <tr>
-        <th>Imagen</th>
-        <th>Producto</th>
-        <th class="product-category">Categoría</th>
-        <th class="product-price">Precio</th>
-        <th class="stock-total">Stock total</th>
-        <th></th>
-      </tr>
-    </thead>
+  matchName(name = '') {
+    return trim(name).includes(trim(this.name));
+  },
 
-    <tbody>
-      <?php foreach ($products as $product):
-        $stock = $product->getStock();
+  matchCategory(category = '') {
+    return !this.category || category === this.category;
+  },
 
-        $priceVes = $customRate
-          ? $product->price * (float) $customRate->rate
-          : null;
-      ?>
-        <tr
-          data-category="<?= $product->category ?>"
-          data-stock="<?= $stock ?>">
-          <td>
-            <img
-              src="./resources/images/product-placeholder.svg"
-              width="44"
-              height="44"
-              style="display:block;border:1px solid #e0e7ff;border-radius:10px;background:#eef2ff">
-          </td>
-          <td>
-            <strong><?= $product->name ?></strong>
-          </td>
-          <td class="product-category"><?= $labels[$product->category] ?></td>
-          <td class="product-price">
-            <?php if ($priceVes !== null): ?>
-              <span
-                class="price-reference"
-                tabindex="0"
-                data-tooltip="Bs. <?= number_format($priceVes, 2, ',', '.') ?>">
-                $<?= number_format($product->price, 2, ',', '.') ?>
-              </span>
-            <?php else: ?>
-              $<?= number_format($product->price, 2, ',', '.') ?>
-            <?php endif ?>
-          </td>
-          <td class="stock-total">
-            <?php if ($stock === 0): ?>
-              0 unidades
-              <br>
-              <?php Flight::render('components/status', [
-                'variant' => 'danger',
-                'text' => 'Agotado',
-              ]) ?>
-            <?php elseif ($stock === 1): ?>
-              1 unidad
-              <br>
-              <?php Flight::render('components/status', [
-                'variant' => 'warning',
-                'text' => 'Casi agotado',
-              ]) ?>
-            <?php else: ?>
-              <?= $stock ?> unidades
-            <?php endif ?>
-          </td>
-          <td>
-            <div class="actions">
-              <?php Flight::render('components/btn', [
-                'text' => 'Editar',
-                'variant' => 'secondary',
-                'small' => true,
-                'onclick' => "\$refs.edit$product->id?.showModal()",
-              ]) ?>
+  matchStock(stock = 0) {
+    if (this.disponibility === 'low-stock') {
+      return stock === 1;
+    }
 
-              <?php Flight::render('components/btn', [
-                'text' => 'Eliminar',
-                'variant' => 'danger',
-                'small' => true,
-                'href' => "./productos/$product->id/eliminar",
-                'disabled' => !$product->canBeDeleted(),
-                'title' => 'No se puede eliminar un producto con registros asociados',
-              ]) ?>
-            </div>
-          </td>
+    if (this.disponibility === 'out-of-stock') {
+      return !stock;
+    }
+
+    return true;
+  },
+}">
+  <section class="card panel stack">
+    <div class="grid grid-3">
+      <div class="field">
+        <label>Buscar productos</label>
+        <input
+          x-model="name"
+          type="search"
+          placeholder="Nombre del producto">
+      </div>
+
+      <div class="field">
+        <label>Categoría</label>
+        <select x-model="category">
+          <option value="">Todas las categorías</option>
+          <option value="phone">Teléfonos</option>
+          <option value="accessory">Accesorios</option>
+          <option value="spare_part">Repuestos</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Disponibilidad</label>
+        <select x-model="disponibility">
+          <option value="">Todo el inventario</option>
+          <option value="low-stock">Casi agotados</option>
+          <option value="out-of-stock">Agotados</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <section class="card table-wrap">
+    <?php Flight::render('components/toolbar', [
+      'title' => "{$products->count()} productos",
+    ]) ?>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Imagen</th>
+          <th>Producto</th>
+          <th>Categoría</th>
+          <th>Precio</th>
+          <th>Stock total</th>
         </tr>
-      <?php endforeach ?>
-    </tbody>
-  </table>
-</section>
+      </thead>
+
+      <tbody>
+        <?php foreach ($products as $product): ?>
+          <tr
+            x-show="
+              matchName('<?= $product->name ?>')
+              && matchCategory('<?= $product->category ?>')
+              && matchStock(<?= $product->getStock() ?>)
+            "
+            x-transition>
+            <td>
+              <img
+                src="./resources/images/product-placeholder.svg"
+                width="44"
+                height="44"
+                class="product-placeholder">
+            </td>
+            <td>
+              <strong><?= $product->name ?></strong>
+            </td>
+            <td class="product-category"><?= $labels[$product->category] ?></td>
+            <td class="product-price">
+              <abbr :data-title="`Bs. ${getPriceInVES(<?= $product->price ?>).toLocaleString('es-VE')}`">
+                $<?= number_format($product->price, 2, ',', '.') ?>
+              </abrr>
+            </td>
+            <td class="stock-total">
+              <?php if (!$product->getStock()): ?>
+                <?php Flight::render('components/status', [
+                  'variant' => 'danger',
+                  'text' => 'Agotado',
+                ]) ?>
+              <?php elseif ($product->getStock() === 1): ?>
+                <?php Flight::render('components/status', [
+                  'variant' => 'warning',
+                  'text' => 'Casi agotado',
+                  'title' => 'Este producto tiene solo 1 unidad en stock. Considera reponerlo pronto.',
+                ]) ?>
+              <?php else: ?>
+                <?= $product->getStock() ?> unidades
+              <?php endif ?>
+            </td>
+            <td>
+              <div class="actions">
+                <?php Flight::render('components/btn', [
+                  'text' => 'Editar',
+                  'variant' => 'secondary',
+                  'small' => true,
+                  'onclick' => "\$refs.edit$product->id?.showModal()",
+                ]) ?>
+
+                <?php Flight::render('components/btn', [
+                  'text' => 'Eliminar',
+                  'variant' => 'danger',
+                  'small' => true,
+                  'href' => "./productos/$product->id/eliminar",
+                  'disabled' => !$product->canBeDeleted(),
+                  'title' => 'No se puede eliminar un producto con registros asociados',
+                ]) ?>
+              </div>
+            </td>
+          </tr>
+        <?php endforeach ?>
+      </tbody>
+    </table>
+  </section>
+</div>
 
 <?php foreach ($products as $product): ?>
-  <dialog
-    x-ref="edit<?= $product->id ?>"
-    class="card"
-    style="border:0;padding:0;width:min(700px,90vw)">
+  <dialog x-ref="edit<?= $product->id ?>" class="card card-medium">
     <form
       method="post"
       action="./productos/<?= $product->id ?>"
@@ -334,18 +278,14 @@ $labels = [
       </div>
 
       <div class="grid grid-3">
-        <?php foreach ($businesses as $businessItem):
-          $batch = $product->batches->first(
-            fn($b) => $b->business->id === $businessItem->id,
-          ); ?>
-
+        <?php foreach ($businesses as $businessItem): ?>
           <div class="field">
             <label>Stock · <?= $businessItem->name ?></label>
             <input
               name="stocks[<?= $businessItem->id ?>]"
               type="number"
               min="0"
-              value="<?= $batch->stock ?? 0 ?>"
+              value="<?= $product->getStockInBusiness($businessItem) ?>"
               required>
           </div>
         <?php endforeach ?>
