@@ -24,6 +24,7 @@ return static function (Container $container): Manager {
   $manager->bootEloquent();
 
   Model::shouldBeStrict($_ENV['APP_ENV'] !== 'production');
+  Model::preventLazyLoading(false);
 
   return $manager;
 };
