@@ -21,6 +21,7 @@ if ($_ENV['DB_CONNECTION'] === 'sqlite' && !file_exists($_ENV['DB_DATABASE'])) {
   touch($_ENV['DB_DATABASE']);
 }
 
+date_default_timezone_set('America/Caracas');
 ini_set('error_log', __DIR__ . '/storage/logs/php_errors.log');
 
 /** @var Closure(): ContainerInterface */
