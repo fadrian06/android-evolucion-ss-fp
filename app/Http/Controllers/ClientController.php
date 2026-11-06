@@ -192,11 +192,7 @@ final readonly class ClientController implements ResourceController
       return;
     }
 
-    if (
-      $client->sales()->exists()
-      || $client->repairs()->exists()
-      || $client->layaways()->exists()
-    ) {
+    if (!$client->canBeDeleted()) {
       Flash::set(
         ['No se puede eliminar un cliente que tiene registros asociados'],
         'errors',

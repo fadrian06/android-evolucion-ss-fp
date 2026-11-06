@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use NoDiscard;
 
 /**
  * @property-read int $id
@@ -13,9 +14,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read string $id_card
  * @property-read string $phone
  * @property-read string $address
- * @property-read int $sales_count
- * @property-read int $repairs_count
- * @property-read int $layaways_count
  */
 final class Client extends Model
 {
@@ -40,14 +38,13 @@ final class Client extends Model
     return $this->hasMany(Layaway::class);
   }
 
+  #[NoDiscard]
   public function canBeDeleted(): bool
   {
-    $associatedRecords = (
-      $this->sales_count
-      + $this->repairs_count
-      + $this->layaways_count
-    );
+    $salesCount = $this->sales()->count();
+    $repairsCount = $this->repairs()->count();
+    $layawaysCount = $this->layaways()->count();
 
-    return !$associatedRecords;
+    return !$salesCount && !$repairsCount && !$layawaysCount;
   }
 }
