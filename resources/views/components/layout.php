@@ -46,6 +46,10 @@ $exchangeRate ??= null;
         .replace(/[óÓ]/g, 'o')
         .replace(/[úÚ]/g, 'u');
     },
+
+    getPriceInVES(price = 0) {
+      return Number(price) * Number(this.exchangeRate);
+    },
   }"
   @error.window="
     messages.push({
