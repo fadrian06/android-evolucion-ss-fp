@@ -18,8 +18,16 @@ return new readonly class implements Migration {
     if (!$builder->hasTable($sale->getTable())) {
       $builder->create(
         $sale->getTable(),
-        static function (Blueprint $blueprint) {
-          $blueprint->id();
+        static function (Blueprint $blueprint) use ($sale) {
+          if ($sale->getKeyType() === 'int') {
+            $blueprint->unsignedBigInteger(
+              $sale->getKeyName(),
+              $sale->incrementing,
+            );
+          } else {
+            $blueprint->string($sale->getKeyName())->primary();
+          }
+
           $blueprint->foreignIdFor(Business::class)->constrained();
           $blueprint->foreignIdFor(Client::class)->constrained();
           $blueprint->timestamp('cancelled_at')->nullable();

@@ -17,10 +17,18 @@ return new readonly class implements Migration {
     if (!$builder->hasTable($client->getTable())) {
       $builder->create(
         $client->getTable(),
-        static function (Blueprint $blueprint): void {
+        static function (Blueprint $blueprint) use ($client): void {
           $user = new User;
 
-          $blueprint->id();
+          if ($client->getKeyType() === 'int') {
+            $blueprint->unsignedBigInteger(
+              $client->getKeyName(),
+              $client->incrementing,
+            );
+          } else {
+            $blueprint->string($client->getKeyName())->primary();
+          }
+
           $blueprint->foreignIdFor($user::class)->constrained();
           $blueprint->string('name');
           $blueprint->string('id_card');

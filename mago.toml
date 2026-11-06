@@ -35,6 +35,7 @@ omit-redundant-arithmetic-binary-expression-parentheses = true
 omit-redundant-bitwise-binary-expression-parentheses = true
 parentheses-in-exit-and-die = false
 parentheses-in-new-expression = false
+preserve-breaking-argument-list = true
 preserve-breaking-array-like = false
 preserve-breaking-binary-expression = true
 print-width = 80

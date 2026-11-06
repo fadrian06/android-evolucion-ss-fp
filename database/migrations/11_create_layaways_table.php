@@ -19,8 +19,16 @@ return new readonly class implements Migration {
     if (!$builder->hasTable($layaway->getTable())) {
       $builder->create(
         $layaway->getTable(),
-        static function (Blueprint $blueprint): void {
-          $blueprint->id();
+        static function (Blueprint $blueprint) use ($layaway): void {
+          if ($layaway->getKeyType() === 'int') {
+            $blueprint->unsignedBigInteger(
+              $layaway->getKeyName(),
+              $layaway->incrementing,
+            );
+          } else {
+            $blueprint->string($layaway->getKeyName())->primary();
+          }
+
           $blueprint->foreignIdFor(Business::class)->constrained();
           $blueprint->foreignIdFor(Client::class)->constrained();
           $blueprint->foreignIdFor(Product::class)->constrained();

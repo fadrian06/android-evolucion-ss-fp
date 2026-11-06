@@ -17,8 +17,16 @@ return new readonly class implements Migration {
     if (!$builder->hasTable($payment->getTable())) {
       $builder->create(
         $payment->getTable(),
-        static function (Blueprint $blueprint): void {
-          $blueprint->id();
+        static function (Blueprint $blueprint) use ($payment): void {
+          if ($payment->getKeyType() === 'int') {
+            $blueprint->unsignedBigInteger(
+              $payment->getKeyName(),
+              $payment->incrementing,
+            );
+          } else {
+            $blueprint->string($payment->getKeyName())->primary();
+          }
+
           $blueprint->foreignIdFor(Sale::class)->constrained();
           $blueprint->decimal('amount');
           $blueprint->string('method');

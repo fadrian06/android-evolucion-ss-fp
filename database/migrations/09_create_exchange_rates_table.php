@@ -17,10 +17,18 @@ return new readonly class implements Migration {
     if (!$builder->hasTable($exchangeRate->getTable())) {
       $builder->create(
         $exchangeRate->getTable(),
-        static function (Blueprint $blueprint): void {
+        static function (Blueprint $blueprint) use ($exchangeRate): void {
           $user = new User;
 
-          $blueprint->id();
+          if ($exchangeRate->getKeyType() === 'int') {
+            $blueprint->unsignedBigInteger(
+              $exchangeRate->getKeyName(),
+              $exchangeRate->incrementing,
+            );
+          } else {
+            $blueprint->string($exchangeRate->getKeyName())->primary();
+          }
+
           $blueprint->foreignIdFor($user::class)->constrained();
           $blueprint->date('date');
           $blueprint->decimal('rate');

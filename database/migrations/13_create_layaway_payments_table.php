@@ -17,13 +17,21 @@ return new readonly class implements Migration {
     if (!$builder->hasTable($layawayPayment->getTable())) {
       $builder->create(
         $layawayPayment->getTable(),
-        static function (Blueprint $blueprint): void {
-          $blueprint->id();
+        static function (Blueprint $blueprint) use ($layawayPayment): void {
+          if ($layawayPayment->getKeyType() === 'int') {
+            $blueprint->unsignedBigInteger(
+              $layawayPayment->getKeyName(),
+              $layawayPayment->incrementing,
+            );
+          } else {
+            $blueprint->string($layawayPayment->getKeyName())->primary();
+          }
+
           $blueprint->foreignIdFor(Layaway::class)->constrained();
           $blueprint->decimal('amount');
           $blueprint->string('method');
           $blueprint->decimal('exchange_rate')->nullable();
-        }
+        },
       );
     }
   }

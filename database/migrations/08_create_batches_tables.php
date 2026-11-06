@@ -18,8 +18,16 @@ return new readonly class implements Migration {
     if (!$builder->hasTable($batch->getTable())) {
       $builder->create(
         $batch->getTable(),
-        static function (Blueprint $blueprint): void {
-          $blueprint->id();
+        static function (Blueprint $blueprint) use ($batch): void {
+          if ($batch->getKeyType() === 'int') {
+            $blueprint->unsignedBigInteger(
+              $batch->getKeyName(),
+              $batch->incrementing,
+            );
+          } else {
+            $blueprint->string($batch->getKeyName())->primary();
+          }
+
           $blueprint->foreignIdFor(Business::class)->constrained();
           $blueprint->foreignIdFor(Product::class)->constrained();
           $blueprint->integer('stock');

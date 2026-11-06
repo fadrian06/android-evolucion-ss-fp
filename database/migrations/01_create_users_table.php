@@ -16,8 +16,16 @@ return new readonly class implements Migration {
     if (!$builder->hasTable($user->getTable())) {
       $builder->create(
         $user->getTable(),
-        static function (Blueprint $blueprint): void {
-          $blueprint->id();
+        static function (Blueprint $blueprint) use ($user): void {
+          if ($user->getKeyType() === 'int') {
+            $blueprint->unsignedBigInteger(
+              $user->getKeyName(),
+              $user->incrementing,
+            );
+          } else {
+            $blueprint->string($user->getKeyName())->primary();
+          }
+
           $blueprint->string('email')->unique();
           $blueprint->string('password');
         },
