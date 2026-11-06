@@ -6,24 +6,30 @@ namespace App\Models;
 
 use App\Support\PaymentMethod;
 use Illuminate\Database\Eloquent\Model;
+use NoDiscard;
 
-/**
- * @property-read int $id
- * @property-read float $amount
- * @property-read string $method
- * @property-read null|float $exchange_rate
- */
 final class Payment extends Model
 {
   public $timestamps = false;
   protected $fillable = ['amount', 'method', 'exchange_rate'];
+  protected $casts = ['amount' => 'float', 'exchange_rate' => 'float'];
 
+  #[NoDiscard]
   public function getAmountUsd(): float
   {
-    if (!PaymentMethod::isVes($this->method)) {
-      return (float) $this->amount;
+    /** @var float */
+    $amount = $this->__get('amount');
+
+    /** @var string */
+    $method = $this->__get('method');
+
+    /** @var float */
+    $exchangeRate = $this->__get('exchange_rate');
+
+    if (!PaymentMethod::isVes($method)) {
+      return $amount;
     }
 
-    return round((float) $this->amount / (float) $this->exchange_rate, 2);
+    return $amount / $exchangeRate;
   }
 }
