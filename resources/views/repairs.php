@@ -201,6 +201,16 @@ use Illuminate\Database\Eloquent\Collection;
         placeholder="Dispositivo, falla reportada, diagnóstico o servicio acordado"></textarea>
     </div>
 
+    <div class="field">
+      <label>
+        Fecha de registro
+        <small style="color:var(--muted);font-weight:400">(opcional)</small>
+      </label>
+      <input
+        name="created_at"
+        type="datetime-local">
+    </div>
+
     <section class="card panel stack">
       <div>
         <h2 style="margin:0">
@@ -282,14 +292,14 @@ use Illuminate\Database\Eloquent\Collection;
             <small><?= $repair->description ?></small>
           </td>
           <td class="repair-due">
-            <?= $repair->due_date->format('d/m/Y') ?>
-
             <?php if ($repair->isOverdue()): ?>
-              <br>
               <?php Flight::render('components/status', [
                 'variant' => 'danger',
                 'text' => 'Vencida',
+                'title' => "Venció el {$repair->due_date->format('d/m/Y')}",
               ]) ?>
+            <?php else: ?>
+              <?= $repair->due_date->format('d/m/Y') ?>
             <?php endif ?>
           </td>
 

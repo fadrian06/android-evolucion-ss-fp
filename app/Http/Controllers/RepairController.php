@@ -120,19 +120,38 @@ final readonly class RepairController implements ResourceController
       $price,
       $customRate,
       $payments,
+      $data,
     ): Repair {
+      $createdAt = trim((string) ($data['created_at'] ?? ''));
+
+      $referenceDate = $createdAt !== ''
+        ? new DateTimeImmutable($createdAt, new DateTimeZone('America/Caracas'))
+        : new DateTimeImmutable('today', new DateTimeZone('America/Caracas'));
+
+      $attributes = [
+        'client_id' => $validated['client_id'],
+        'description' => $validated['description'],
+        'price' => $price,
+        'price_ves' => round($price * (float) $customRate->rate, 2),
+        'due_date' => $referenceDate
+          ->add(new DateInterval('P15D'))
+          ->format('Y-m-d'),
+      ];
+
+      if ($createdAt !== '') {
+        $attributes['created_at'] = $createdAt;
+      }
+
       $repair = $this->business
         ->repairs()
-        ->create([
-          'client_id' => $validated['client_id'],
-          'description' => $validated['description'],
-          'price' => $price,
-          'price_ves' => round($price * (float) $customRate->rate, 2),
-          'due_date' => new DateTimeImmutable(
-            'today',
-            new DateTimeZone('America/Caracas'),
-          )->add(new DateInterval('P15D'))->format('Y-m-d'),
-        ]);
+        ->make($attributes);
+
+      if ($createdAt !== '') {
+        $repair->created_at = $createdAt;
+        $repair->updated_at = $createdAt;
+      }
+
+      $repair->save();
 
       $repair
         ->payments()

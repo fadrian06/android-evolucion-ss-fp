@@ -32,6 +32,7 @@ final class Repair extends Model
     'price',
     'price_ves',
     'due_date',
+    'created_at',
   ];
 
   /** @return BelongsTo<Business, $this> */

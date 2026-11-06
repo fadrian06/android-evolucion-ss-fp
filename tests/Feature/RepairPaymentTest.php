@@ -97,6 +97,34 @@ final class RepairPaymentTest extends FeatureTestCase
   }
 
   #[Test]
+  public function a_repair_can_be_registered_with_a_custom_created_at_date(): void
+  {
+    $created = $this->post('/reparaciones', [
+      'client_id' => $this->clientId(),
+      'description' => 'Reparación con fecha personalizada',
+      'price' => '10',
+      'created_at' => '2026-05-10T14:30',
+    ]);
+
+    $repairId = $this->repairId('Reparación con fecha personalizada');
+
+    self::assertSame(303, $created->getStatusCode());
+    self::assertSame('/reparaciones', $created->getHeaderLine('Location'));
+    self::assertStringStartsWith(
+      '2026-05-10 14:30',
+      (string) $this->database
+        ->query("SELECT created_at FROM repairs WHERE id = $repairId")
+        ->fetchColumn(),
+    );
+    self::assertStringStartsWith(
+      '2026-05-25',
+      (string) $this->database
+        ->query("SELECT due_date FROM repairs WHERE id = $repairId")
+        ->fetchColumn(),
+    );
+  }
+
+  #[Test]
   public function authenticated_users_can_list_their_repairs(): void
   {
     $this->createRepair('Reemplazo de pantalla');
