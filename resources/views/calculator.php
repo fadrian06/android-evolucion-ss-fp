@@ -42,9 +42,7 @@ use App\Models\ExchangeRate;
   }">
   <?php if ($rate): ?>
     <section class="card panel">
-      <?php Flight::render('components/eyebrow', [
-        'text' => "TASA $source",
-      ]) ?>
+      <?php Flight::render('components/eyebrow', ['text' => "TASA $source"]) ?>
 
       <h2 x-text="getLocaledRate(rate)"></h2>
 
@@ -102,6 +100,7 @@ use App\Models\ExchangeRate;
           required
           placeholder="Cotización">
       </div>
+
       <?php Flight::render('components/btn', [
         'text' => 'Guardar cotización',
         'type' => 'submit',
