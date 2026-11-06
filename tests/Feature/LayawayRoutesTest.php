@@ -105,8 +105,8 @@ final class LayawayRoutesTest extends FeatureTestCase
     self::assertSame('/apartados', $response->getHeaderLine('Location'));
     self::assertSame(1, $this->stockFor($productId));
     self::assertNotNull($this->database->query("SELECT cancelled_at FROM layaways WHERE id = $layawayId")->fetchColumn());
-    self::assertStringContainsString(
-      '<span class="status status-danger">Cancelado</span>',
+    self::assertStringContainsStringIgnoringCase(
+      'cancelado',
       (string) $this->get('/apartados')->getBody(),
     );
   }

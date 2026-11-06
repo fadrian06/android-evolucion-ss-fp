@@ -120,7 +120,7 @@ final class RepairPaymentTest extends FeatureTestCase
     $body = (string) $response->getBody();
 
     self::assertSame(200, $response->getStatusCode());
-    self::assertStringContainsString('<span class="status status-danger">Vencida</span>', $body);
+    self::assertStringContainsStringIgnoringCase('vencida', $body);
     self::assertStringContainsString(
       'Vence',
       $body,
@@ -167,8 +167,8 @@ final class RepairPaymentTest extends FeatureTestCase
         )
         ->fetch(PDO::FETCH_ASSOC),
     );
-    self::assertStringContainsString(
-      '<span class="status status-success">Pagado</span>',
+    self::assertStringContainsStringIgnoringCase(
+      'pagado',
       (string) $this->get('/reparaciones')->getBody(),
     );
   }

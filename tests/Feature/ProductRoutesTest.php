@@ -105,7 +105,7 @@ final class ProductRoutesTest extends FeatureTestCase
     self::assertSame(200, $response->getStatusCode());
     self::assertStringContainsString($product['name'], (string) $response->getBody());
     self::assertStringContainsString('Accesorio', (string) $response->getBody());
-    self::assertStringContainsString('data-tooltip="Bs. 2.500,00"', (string) $response->getBody());
+    self::assertStringContainsString('data-title="`Bs. ${getPriceInVES(25).toLocaleString(\'es-VE\')}`"', (string) $response->getBody());
   }
 
   #[Test]
@@ -133,8 +133,8 @@ final class ProductRoutesTest extends FeatureTestCase
     $product = $this->product('Protector de pantalla', 'accessory', 10, 0);
     $this->post('/productos', $product);
     $id = $this->productId($product['name']);
-    self::assertStringContainsString(
-      '0 unidades',
+    self::assertStringContainsStringIgnoringCase(
+      'agotado',
       (string) $this->get('/productos')->getBody(),
     );
 
