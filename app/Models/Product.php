@@ -81,4 +81,18 @@ final class Product extends Model
   {
     return $this->category === 'phone';
   }
+
+  #[NoDiscard]
+  public function getStockInBusiness(Business $business): int
+  {
+    $batch = $this->batches->first(
+      static fn(Batch $batch) => $batch->business->id === $business->id,
+    );
+
+    if ($batch) {
+      return $batch->stock;
+    }
+
+    return 0;
+  }
 }
