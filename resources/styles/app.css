@@ -285,7 +285,7 @@ abbr {
     filter: grayscale(1);
 
     &:hover::after {
-      content: attr(title);
+      content: attr(data-title);
       position: absolute;
       z-index: 10;
       bottom: calc(100% + 8px);
