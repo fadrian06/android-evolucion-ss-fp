@@ -60,7 +60,7 @@ $class = implode(' ', $classes);
     <?= $id ? "id='$id'" : '' ?>
     <?= $onclick ? "@click='$onclick'" : '' ?>
     style="<?= $style ?>"
-    title="<?= $title ?>">
+    title="<?= $disabled ? $title : '' ?>">
     <?= $text ?>
   </a>
 <?php else: ?>
@@ -71,7 +71,7 @@ $class = implode(' ', $classes);
     <?= $id ? "id='$id'" : '' ?>
     <?= $onclick ? "@click='$onclick'" : '' ?>
     style="<?= $style ?>"
-    title="<?= $title ?>">
+    title="<?= $disabled ? $title : '' ?>">
     <?= $text ?>
   </button>
 <?php endif ?>

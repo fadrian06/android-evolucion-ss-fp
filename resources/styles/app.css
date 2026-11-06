@@ -237,6 +237,41 @@ button {
   gap: 28px;
 }
 
+abbr {
+  position: relative;
+  display: inline-flex;
+  cursor: help;
+  border-bottom: 1px dashed #98a2b3;
+
+  &:focus {
+    outline: 2px solid #635bff;
+    border-radius: 3px;
+    outline-offset: 3px;
+  }
+
+  &:hover::after,
+  &:focus::after {
+    content: attr(data-title);
+    position: absolute;
+    z-index: 10;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    width: max-content;
+    max-width: 220px;
+    padding: 8px 10px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    background: #182230;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.35;
+    text-align: center;
+    box-shadow: var(--shadow);
+    transform: translateX(-50%);
+  }
+}
+
 .btn {
   border: 0;
   border-radius: 9px;
@@ -466,6 +501,10 @@ dialog {
   padding: 3px 9px;
   font-size: 11px;
   font-weight: 800;
+
+  &[data-title] {
+    border-bottom: none;
+  }
 }
 
 .status-success {
