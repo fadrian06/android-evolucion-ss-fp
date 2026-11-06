@@ -21,8 +21,23 @@ no-else-clause.enabled = false
 strict-behavior.enabled = false
 
 [formatter]
-tab-width = 2
-print-width = 80
-preserve-breaking-argument-list = true
-parentheses-in-new-expression = false
+attributes-order = "alphanumeric-ascending"
+break-promoted-properties-list = false
+end-of-line = "lf"
+expand-use-groups = false
+first-method-chain-on-new-line = true
+indent-binary-expression-continuation = true
+inline-empty-control-braces = true
+inline-single-breaking-value-argument = true
+method-chain-breaking-style = "next_line"
+null-type-hint = "question"
+omit-redundant-arithmetic-binary-expression-parentheses = true
+omit-redundant-bitwise-binary-expression-parentheses = true
 parentheses-in-exit-and-die = false
+parentheses-in-new-expression = false
+preserve-breaking-array-like = false
+preserve-breaking-binary-expression = true
+print-width = 80
+sort-class-methods = false
+sort-uses = true
+tab-width = 2
