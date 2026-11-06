@@ -445,6 +445,7 @@ use Illuminate\Database\Eloquent\Collection;
         <div class="actions">
           <?php Flight::render('components/btn', [
             'text' => 'Guardar pago',
+            'type' => 'submit',
           ]) ?>
         </div>
       </form>
