@@ -43,8 +43,8 @@ final readonly class CancelSale implements InvokableController
 
     foreach ($sale->items as $item) {
       $batch = Batch::query()
-        ->where('product_id', $item->product_id)
-        ->where('business_id', $item->business_id)
+        ->where('product_id', $item->product->id)
+        ->where('business_id', $item->business->id)
         ->first();
 
       if (!$batch instanceof Batch) {
