@@ -4,7 +4,7 @@
     "flightphp/core": "^3.19",
     "ext-pdo_sqlite": "*",
     "leafs/auth": "^5.1",
-    "illuminate/database": "^13.38",
+    "illuminate/database": "^13.40",
     "leafs/lingo": "^5.0",
     "symfony/dotenv": "^8.1",
     "guzzlehttp/guzzle": "^8.3"
