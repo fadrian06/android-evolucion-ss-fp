@@ -41,10 +41,8 @@ final class Client extends Model
   #[NoDiscard]
   public function canBeDeleted(): bool
   {
-    $salesCount = $this->sales()->count();
-    $repairsCount = $this->repairs()->count();
-    $layawaysCount = $this->layaways()->count();
-
-    return !$salesCount && !$repairsCount && !$layawaysCount;
+    return !$this->sales()->count()
+      && !$this->repairs()->count()
+      && !$this->layaways()->count();
   }
 }
