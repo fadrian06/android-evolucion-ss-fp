@@ -23,11 +23,7 @@ return static function (Container $container): Manager {
   $manager->setAsGlobal();
   $manager->bootEloquent();
 
-  $isLocal = $_ENV['APP_ENV'] !== 'production';
-
-  // Model::preventLazyLoading($isLocal);
-  Model::preventAccessingMissingAttributes($isLocal);
-  Model::preventSilentlyDiscardingAttributes($isLocal);
+  Model::shouldBeStrict($_ENV['APP_ENV'] !== 'production');
 
   return $manager;
 };
