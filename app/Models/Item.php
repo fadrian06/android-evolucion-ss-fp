@@ -6,17 +6,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Override;
+use NoDiscard;
 
 /**
- * @property-read int $id
- * @property-read int $business_id
- * @property-read float $price
- * @property-read string $price_ves
  * @property-read int $quantity
- * @property-read null|string $imei1
- * @property-read null|string $imei2
- * @property-read null|string $code
+ * @property-read ?string $imei1
+ * @property-read ?string $imei2
+ * @property-read ?string $code
  * @property-read Product $product
  * @property-read Business $business
  */
@@ -35,11 +31,7 @@ final class Item extends Model
     'code',
   ];
 
-  #[Override]
-  protected function casts(): array
-  {
-    return ['price' => 'float'];
-  }
+  protected $casts = ['price' => 'float', 'price_ves' => 'float'];
 
   /** @return BelongsTo<Business, $this> */
   public function business(): BelongsTo
@@ -53,13 +45,21 @@ final class Item extends Model
     return $this->belongsTo(Product::class);
   }
 
+  #[NoDiscard]
   public function getTotal(): float
   {
-    return $this->price * $this->quantity;
+    /** @var float */
+    $price = $this->__get('price');
+
+    return $price * $this->quantity;
   }
 
+  #[NoDiscard]
   public function getTotalVes(): float
   {
-    return (float) $this->price_ves * $this->quantity;
+    /** @var float */
+    $priceVES = $this->__get('price_ves');
+
+    return $priceVES * $this->quantity;
   }
 }
