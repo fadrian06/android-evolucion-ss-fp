@@ -26,6 +26,7 @@ return static function (Container $container): Manager {
   $isLocal = $_ENV['APP_ENV'] !== 'production';
 
   // Model::preventLazyLoading($isLocal);
+  Model::preventAccessingMissingAttributes($isLocal);
   Model::preventSilentlyDiscardingAttributes($isLocal);
 
   return $manager;
