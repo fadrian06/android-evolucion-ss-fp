@@ -823,7 +823,7 @@ dialog {
 }
 
 .table-wrap {
-  overflow: auto;
+  overflow-x: scroll;
 }
 
 .muted {
