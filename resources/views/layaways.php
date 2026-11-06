@@ -113,11 +113,13 @@ use Illuminate\Database\Eloquent\Collection;
       <p class="muted-text" x-show="product" x-transition>
         Pago pendiente:
         <strong
-          x-text="(product?.price - getTotalPaid(payments)).toLocaleString('es-VE', {
-            style: 'currency',
-            currency: 'USD',
-            currencyDisplay: 'narrowSymbol',
-          })">
+          x-text="
+            (product?.price - getTotalPaid(payments)).toLocaleString('es-VE', {
+              style: 'currency',
+              currency: 'USD',
+              currencyDisplay: 'narrowSymbol',
+            })
+          ">
         </strong>
       </p>
 
@@ -158,7 +160,6 @@ use Illuminate\Database\Eloquent\Collection;
                 'text' => 'Quitar pago',
                 'onclick' => '
                   visible = false;
-
                   setTimeout(() => payments.splice(index, 1), 200);
                 ',
               ]) ?>
@@ -197,7 +198,7 @@ use Illuminate\Database\Eloquent\Collection;
 
   matchStatus(status) {
     return this.status === '' || status === this.status;
-  }
+  },
 }">
   <section class="card panel stack">
     <div class="grid grid-2">
@@ -316,7 +317,11 @@ use Illuminate\Database\Eloquent\Collection;
         method="post"
         action="./apartados/<?= $item->id ?>/pagar"
         x-data="{
-          payments: [{ id: crypto.randomUUID(), amount: '', method: 'Efectivo USD' }],
+          payments: [{
+            id: crypto.randomUUID(),
+            amount: '',
+            method: '',
+          }],
         }">
         <?php Flight::render('components/toolbar', [
           'title' => 'Registrar pago',
@@ -325,12 +330,16 @@ use Illuminate\Database\Eloquent\Collection;
 
         <p class="muted-text">
           Pago pendiente:
+
           <strong
-            x-text="(<?= $item->getRemainingAmount() ?> - getTotalPaid(payments)).toLocaleString('es-VE', {
-              style: 'currency',
-              currency: 'USD',
-              currencyDisplay: 'narrowSymbol',
-            })">
+            x-text="
+              (<?= $item->getRemainingAmount() ?> - getTotalPaid(payments))
+                .toLocaleString('es-VE', {
+                  style: 'currency',
+                  currency: 'USD',
+                  currencyDisplay: 'narrowSymbol',
+              })
+            ">
           </strong>
         </p>
 
@@ -371,7 +380,6 @@ use Illuminate\Database\Eloquent\Collection;
                   'text' => 'Quitar pago',
                   'onclick' => '
                     visible = false;
-
                     setTimeout(() => payments.splice(index, 1), 200);
                   ',
                 ]) ?>
