@@ -9,27 +9,19 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Override;
 
 /**
  * @property-read int $id
  * @property-read DateTimeInterface $created_at
- * @property-read DateTimeInterface $updated_at
- * @property-read null|DateTimeInterface $cancelled_at
+ * @property-read ?DateTimeInterface $cancelled_at
  * @property-read Business $business
  * @property-read Client $client
  * @property-read Collection<int, Item> $items
- * @property-read Collection<int, Payment> $payments
  */
 final class Sale extends Model
 {
   protected $fillable = ['client_id'];
-
-  #[Override]
-  protected function casts(): array
-  {
-    return ['cancelled_at' => 'datetime'];
-  }
+  protected $casts = ['cancelled_at' => 'datetime'];
 
   /** @return BelongsTo<Business, $this> */
   public function business(): BelongsTo
@@ -86,7 +78,7 @@ final class Sale extends Model
   {
     $total = 0;
 
-    foreach ($this->payments as $payment) {
+    foreach ($this->payments()->lazyById(1000, 'id') as $payment) {
       $total += $payment->getAmountUsd();
     }
 
