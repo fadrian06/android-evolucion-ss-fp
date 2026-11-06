@@ -71,11 +71,9 @@ final class Repair extends Model
 
   public function isOverdue(): bool
   {
-    $today = new DateTimeImmutable(
-      'today',
-      new DateTimeZone('America/Caracas'),
-    );
+    $today = time();
+    $dueDate = $this->due_date->getTimestamp();
 
-    return $this->getRemainingAmount() > 0 && $this->due_date < $today;
+    return $this->getRemainingAmount() > 0 && $dueDate < $today;
   }
 }
