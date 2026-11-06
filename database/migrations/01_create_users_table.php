@@ -7,8 +7,7 @@ use App\Models\User;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Builder;
 
-return new readonly class implements Migration
-{
+return new readonly class implements Migration {
   #[Override]
   public function up(Builder $builder): void
   {

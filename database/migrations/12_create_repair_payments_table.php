@@ -8,8 +8,7 @@ use App\Models\RepairPayment;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Builder;
 
-return new readonly class implements Migration
-{
+return new readonly class implements Migration {
   #[Override]
   public function up(Builder $builder): void
   {
@@ -24,7 +23,7 @@ return new readonly class implements Migration
           $blueprint->decimal('amount');
           $blueprint->string('method');
           $blueprint->decimal('exchange_rate')->nullable();
-        }
+        },
       );
     }
   }

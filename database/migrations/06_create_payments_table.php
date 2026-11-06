@@ -23,7 +23,7 @@ return new readonly class implements Migration {
           $blueprint->decimal('amount');
           $blueprint->string('method');
           $blueprint->decimal('exchange_rate')->nullable();
-        }
+        },
       );
     }
   }
