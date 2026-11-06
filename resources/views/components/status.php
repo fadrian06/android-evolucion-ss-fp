@@ -11,10 +11,12 @@ $text ??= '';
 /** @var string */
 $title ??= '';
 
+$tag = $title ? 'abbr' : 'span';
+
 ?>
 
-<abbr
+<<?= $tag ?>
   class="status status-<?= $variant ?>"
   :data-title="'<?= $title ?>'">
   <?= $text ?>
-</abbr>
+</<?= $tag ?>>
