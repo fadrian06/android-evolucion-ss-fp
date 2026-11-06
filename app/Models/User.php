@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read Collection<int, Business> $businesses
  * @property-read Collection<int, Client> $clients
  * @property-read Collection<int, Product> $products
+ * @property-read Collection<int, ExchangeRate> $exchangeRates
  */
 final class User extends Model
 {
