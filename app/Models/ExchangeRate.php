@@ -14,4 +14,5 @@ final class ExchangeRate extends Model
 {
   public $timestamps = false;
   protected $fillable = ['date', 'rate'];
+  protected $casts = ['date' => 'date', 'rate' => 'float'];
 }
