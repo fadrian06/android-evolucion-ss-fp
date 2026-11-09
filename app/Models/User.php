@@ -7,6 +7,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use NoDiscard;
 
 /**
  * @property-read Collection<int, Business> $businesses
@@ -40,5 +41,11 @@ final class User extends Model
   public function products(): HasMany
   {
     return $this->hasMany(Product::class);
+  }
+
+  #[NoDiscard]
+  public function latestExchangeRate(): ?ExchangeRate
+  {
+    return $this->exchangeRates()->latest('date')->first();
   }
 }

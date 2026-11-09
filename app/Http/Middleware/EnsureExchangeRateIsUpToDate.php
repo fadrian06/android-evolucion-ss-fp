@@ -19,13 +19,10 @@ final readonly class EnsureExchangeRateIsUpToDate implements BeforeMiddleware
   #[Override]
   public function before(): void
   {
-    $latestExchangeRate = $this
-      ->user
-      ->exchangeRates()
-      ->latest('date')
-      ->first();
-
-    $hasRateForToday = $latestExchangeRate?->date === $this->dailyExchangeRate->today();
+    $latestExchangeRate = $this->user->latestExchangeRate();
+    $formattedLatestExchangeRate = $latestExchangeRate?->date->format('Y-m-d');
+    $today = $this->dailyExchangeRate->today();
+    $hasRateForToday = $formattedLatestExchangeRate === $today;
 
     Flight::view()->set(
       'exchangeRate',
