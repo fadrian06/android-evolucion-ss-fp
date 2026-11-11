@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Support\PaymentMethod;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use NoDiscard;
 
@@ -12,6 +13,7 @@ use NoDiscard;
  * @property-read float $amount
  * @property-read string $method
  * @property-read ?float $exchange_rate
+ * @mixin Builder<static>
  */
 final class RepairPayment extends Model
 {

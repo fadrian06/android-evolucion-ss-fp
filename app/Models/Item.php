@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use NoDiscard;
@@ -15,6 +16,7 @@ use NoDiscard;
  * @property-read ?string $code
  * @property-read Product $product
  * @property-read Business $business
+ * @mixin Builder<static>
  */
 final class Item extends Model
 {

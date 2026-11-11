@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -16,6 +17,7 @@ use Override;
  * @property-read 'phone'|'accessory'|'spare_part' $category
  * @property-read float $price
  * @property-read Collection<int, Batch> $batches
+ * @mixin Builder<static>
  */
 final class Product extends Model
 {

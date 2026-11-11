@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Support\PaymentMethod;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use NoDiscard;
 
+/** @mixin Builder<static> */
 final class Payment extends Model
 {
   public $timestamps = false;
