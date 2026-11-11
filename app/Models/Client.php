@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use NoDiscard;
@@ -15,7 +14,6 @@ use NoDiscard;
  * @property-read string $id_card
  * @property-read string $phone
  * @property-read string $address
- * @mixin Builder<static>
  */
 final class Client extends Model
 {

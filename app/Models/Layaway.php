@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use DateTimeInterface;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -21,7 +20,6 @@ use Override;
  * @property-read ?DateTimeInterface $cancelled_at
  * @property-read Client $client
  * @property-read Product $product
- * @mixin Builder<static>
  */
 final class Layaway extends Model
 {

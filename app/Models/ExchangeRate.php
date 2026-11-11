@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace App\Models;
 
 use DateTimeInterface;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property-read DateTimeInterface $date
  * @property-read float $rate
- * @mixin Builder<static>
  */
 final class ExchangeRate extends Model
 {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -14,7 +13,6 @@ use NoDiscard;
  * @property-read Collection<int, Business> $businesses
  * @property-read Collection<int, Client> $clients
  * @property-read Collection<int, Product> $products
- * @mixin Builder<static>
  */
 final class User extends Model
 {
