@@ -17,7 +17,7 @@ final readonly class DailyExchangeRate
 
   public function customRateFor(User $user): ?ExchangeRate
   {
-    return $user->exchangeRates()->where('date', $this->today())->first();
+    return $user->exchangeRates()->whereDate('date', $this->today())->first();
   }
 
   public function rateFor(User $user): float

@@ -2,7 +2,16 @@
 <phpunit
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-  testdox="true">
+  failOnAllIssues="true"
+  stopOnDefect="true"
+  stopOnDeprecation="true"
+  stopOnError="true"
+  stopOnFailure="true"
+  stopOnIncomplete="true"
+  stopOnNotice="true"
+  stopOnRisky="true"
+  stopOnSkipped="true"
+  stopOnWarning="true">
   <testsuites>
     <testsuite name="default">
       <directory>tests</directory>
