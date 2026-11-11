@@ -11,11 +11,7 @@ use Symfony\Component\Dotenv\Dotenv;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-if (!file_exists($envFilePath = __DIR__ . '/.env')) {
-  copy("{$envFilePath}.example", $envFilePath);
-}
-
-new Dotenv()->load("{$envFilePath}.example", $envFilePath);
+new Dotenv()->load(__DIR__ . '/.env');
 
 if ($_ENV['DB_CONNECTION'] === 'sqlite' && !file_exists($_ENV['DB_DATABASE'])) {
   touch($_ENV['DB_DATABASE']);

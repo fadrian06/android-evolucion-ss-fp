@@ -16,7 +16,7 @@ jobs:
             **/.git*/**
             **/tests/**
             .editorconfig
-            .env
+            .env.example
             *.json
             composer.lock
             *.md
