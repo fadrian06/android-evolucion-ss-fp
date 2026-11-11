@@ -46,18 +46,18 @@ return static function (): ContainerInterface {
 
   $container->singleton(User::class, static function () use ($container): User {
     $auth = $container->get(Auth::class);
-    $id = $auth->id();
+    $userId = $auth->id();
 
-    return User::query()->findOrFail($id);
+    return User::query()->findOrFail($userId);
   });
 
   $container->singleton(
     Business::class,
-    static function () use ($container): ?Business {
-      $id = (int) Session::get('business_id');
-
-      return $container->get(User::class)->businesses->find($id);
-    },
+    static fn(): ?Business => $container
+      ->get(User::class)
+      ->businesses()
+      ->getQuery()
+      ->find((string) Session::get('business_id')),
   );
 
   return $container;
