@@ -13,8 +13,6 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 new Dotenv()->load(__DIR__ . '/.env');
 
-date_default_timezone_set('America/Caracas');
-
 /** @var Closure(): ContainerInterface */
 $containerFactory = require __DIR__ . '/config/container.php';
 
