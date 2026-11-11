@@ -9,6 +9,8 @@ use Leaf\Lingo;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Dotenv\Dotenv;
 
+use function App\foreach_file;
+
 require_once __DIR__ . '/vendor/autoload.php';
 
 new Dotenv()->load(__DIR__ . '/.env');
@@ -18,24 +20,23 @@ $containerFactory = require __DIR__ . '/config/container.php';
 
 $container = $containerFactory();
 
-$migrationsFiles = (array) glob(__DIR__ . '/database/migrations/*.php');
+/** @var Builder */
+$builder = $container->get(Builder::class);
 
-foreach (array_filter($migrationsFiles) as $migrationFile) {
-  $migration = (object) require_once $migrationFile;
+foreach_file(
+  __DIR__ . '/database/migrations/*.php',
+  static function (string $file) use ($builder): void {
+    $migration = (object) require_once $file;
 
-  if ($migration instanceof Migration) {
-    /** @var Builder */
-    $builder = $container->get(Builder::class);
+    if ($migration instanceof Migration) {
+      $migration->up($builder);
+    }
+  },
+);
 
-    $migration->up($builder);
-  }
-}
-
-$routesFiles = (array) glob(__DIR__ . '/routes/*.php');
-
-foreach (array_filter($routesFiles) as $routesFile) {
-  require_once $routesFile;
-}
+foreach_file(__DIR__ . '/routes/*.php', static function (string $file): void {
+  require_once $file;
+});
 
 Flight::set('flight.handle_errors', false);
 Flight::set('flight.views.path', __DIR__ . '/resources/views');
@@ -43,9 +44,6 @@ Flight::view()->preserveVars = false;
 Flight::view()->set('auth', $container->get(Auth::class));
 Flight::view()->set('lingo', $container->get(Lingo::class));
 Flight::view()->set('business', null);
-
-Flight::registerContainerHandler(
-  static fn(string $id): object => (object) $container->get($id),
-);
+Flight::registerContainerHandler(static fn(string $id): object => (object) $container->get($id));
 
 Flight::start();
