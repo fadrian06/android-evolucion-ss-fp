@@ -13,10 +13,6 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 new Dotenv()->load(__DIR__ . '/.env');
 
-if ($_ENV['DB_CONNECTION'] === 'sqlite' && !file_exists($_ENV['DB_DATABASE'])) {
-  touch($_ENV['DB_DATABASE']);
-}
-
 date_default_timezone_set('America/Caracas');
 
 /** @var Closure(): ContainerInterface */
