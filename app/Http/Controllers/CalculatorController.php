@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Flash;
+use App\FlashKey;
 use App\Models\User;
 use App\Services\DailyExchangeRate;
 use Flight;
-use Leaf\Flash;
 use Leaf\Form;
 use RuntimeException;
 
@@ -28,13 +29,13 @@ final readonly class CalculatorController
 
     try {
       $bcvRate = $this->dailyExchangeRate->bcvRate();
-      $rate = $customRate ? (float) $customRate->rate : $bcvRate;
+      $rate = $customRate ? $customRate->rate : $bcvRate;
       $source = $customRate ? 'personalizada' : 'BCV';
     } catch (RuntimeException $exception) {
-      Flash::set([$exception->getMessage()], 'errors');
+      Flash::set([$exception->getMessage()], FlashKey::Errors);
 
       if ($customRate) {
-        $rate = (float) $customRate->rate;
+        $rate = $customRate->rate;
         $source = 'personalizada';
       }
     }
@@ -64,7 +65,7 @@ final readonly class CalculatorController
         $validated
           ? ['La cotización debe ser mayor que cero']
           : $this->form->errors(),
-        'errors',
+        FlashKey::Errors,
       );
       Flight::redirect('/calculadora');
 
@@ -76,7 +77,7 @@ final readonly class CalculatorController
       ['rate' => $validated['rate']],
     );
 
-    Flash::set(['Cotización personalizada guardada'], 'successes');
+    Flash::set(['Cotización personalizada guardada'], FlashKey::Successes);
 
     Flight::redirect('/calculadora');
   }

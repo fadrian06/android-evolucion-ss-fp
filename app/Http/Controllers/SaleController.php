@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Flash;
+use App\FlashKey;
 use App\Models\Batch;
 use App\Models\Business;
 use App\Models\Product;
@@ -14,7 +16,6 @@ use App\Support\PaymentDetails;
 use Flight;
 use Illuminate\Database\Capsule\Manager;
 use InvalidArgumentException;
-use Leaf\Flash;
 use Leaf\Form;
 use Override;
 
@@ -30,9 +31,6 @@ final readonly class SaleController implements ResourceController
   #[Override]
   public function index(): void
   {
-    $salesIds = Flash::displaySaved();
-    Flash::clearSaved();
-
     Flight::render(
       'sales',
       [
@@ -45,7 +43,7 @@ final readonly class SaleController implements ResourceController
           )
           ->load('batches'),
         'businesses' => $this->user->businesses,
-        'salesIds' => $salesIds,
+        'salesIds' => Flash::retrieve(FlashKey::SaleIds)[0],
       ],
       'slot',
     );
@@ -72,7 +70,7 @@ final readonly class SaleController implements ResourceController
     ]);
 
     if (!$validated) {
-      Flash::set($this->form->errors(), 'errors');
+      Flash::set($this->form->errors(), FlashKey::Errors);
       Flight::redirect('/ventas');
 
       return;
@@ -83,7 +81,7 @@ final readonly class SaleController implements ResourceController
     if (!$customRate) {
       Flash::set(
         ['Debes establecer una cotización personalizada antes de generar un comprobante'],
-        'errors',
+        FlashKey::Errors,
       );
 
       Flight::redirect('/ventas');
@@ -91,7 +89,7 @@ final readonly class SaleController implements ResourceController
       return;
     }
 
-    $exchangeRate = (float) $customRate->rate;
+    $exchangeRate = $customRate->rate;
     $phoneItems = [];
     $nonPhoneItems = [];
     $stockChanges = [];
@@ -102,7 +100,11 @@ final readonly class SaleController implements ResourceController
       $quantity = $validated['quantity'][$index] ?? null;
 
       if ($businessId === null || $quantity === null) {
-        Flash::set(['Los datos de los productos no coinciden'], 'errors');
+        Flash::set(
+          ['Los datos de los productos no coinciden'],
+          FlashKey::Errors,
+        );
+
         Flight::redirect('/ventas');
 
         return;
@@ -112,14 +114,14 @@ final readonly class SaleController implements ResourceController
       $business = $this->user->businesses->find($businessId);
 
       if (!$product) {
-        Flash::set(['Producto no encontrado'], 'errors');
+        Flash::set(['Producto no encontrado'], FlashKey::Errors);
         Flight::redirect('/ventas');
 
         return;
       }
 
       if (!$business) {
-        Flash::set(['Negocio no encontrado'], 'errors');
+        Flash::set(['Negocio no encontrado'], FlashKey::Errors);
         Flight::redirect('/ventas');
 
         return;
@@ -132,7 +134,7 @@ final readonly class SaleController implements ResourceController
         );
 
       if (!$batch) {
-        Flash::set(['Lote no encontrado'], 'errors');
+        Flash::set(['Lote no encontrado'], FlashKey::Errors);
         Flight::redirect('/ventas');
 
         return;
@@ -146,7 +148,7 @@ final readonly class SaleController implements ResourceController
           ? "Solo $verb $batch->stock $unit $product->name en $business->name"
           : "No quedan unidades de $product->name en $business->name";
 
-        Flash::set([$message], 'errors');
+        Flash::set([$message], FlashKey::Errors);
         Flight::redirect('/ventas');
 
         return;
@@ -173,7 +175,7 @@ final readonly class SaleController implements ResourceController
         ) {
           Flash::set(
             ['Cada teléfono debe tener cantidad 1, IMEI 1 e IMEI 2'],
-            'errors',
+            FlashKey::Errors,
           );
 
           Flight::redirect('/ventas');
@@ -211,7 +213,7 @@ final readonly class SaleController implements ResourceController
           $exchangeRate,
         );
       } catch (InvalidArgumentException $exception) {
-        Flash::set([$exception->getMessage()], 'errors');
+        Flash::set([$exception->getMessage()], FlashKey::Errors);
         Flight::redirect('/ventas');
 
         return;
@@ -258,8 +260,8 @@ final readonly class SaleController implements ResourceController
       return $salesIds;
     });
 
-    Flash::save(implode(',', $salesIds));
-    Flash::set(['Venta registrada'], 'successes');
+    Flash::set(implode(',', $salesIds), FlashKey::SaleIds);
+    Flash::set(['Venta registrada'], FlashKey::Successes);
     Flight::redirect('/ventas');
   }
 
@@ -277,7 +279,7 @@ final readonly class SaleController implements ResourceController
     }
 
     if (!$sale instanceof Sale) {
-      Flash::set(['Comprobante no encontrado'], 'errors');
+      Flash::set(['Comprobante no encontrado'], FlashKey::Errors);
       Flight::redirect('/ventas');
 
       return;

@@ -11,7 +11,7 @@ use Leaf\Lingo;
 ?>
 
 <div class="toasts d-print-none">
-  <?php foreach (FlashKey::cases() as $key): ?>
+  <?php foreach (FlashKey::messages() as $key): ?>
     <?php foreach (Flash::retrieve($key) as $message): ?>
       <div
         x-data="{ visible: false }"
@@ -37,7 +37,7 @@ use Leaf\Lingo;
       x-show="visible"
       x-transition
       :class="{
-        <?php foreach (FlashKey::cases() as $key): ?>
+        <?php foreach (FlashKey::messages() as $key): ?>
           '<?= $key->class() ?>': message.key === '<?= $key->key() ?>',
         <?php endforeach ?>
       }"

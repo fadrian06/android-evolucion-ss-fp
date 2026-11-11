@@ -4,20 +4,19 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Flash;
+use App\FlashKey;
 use App\Models\Batch;
 use App\Models\Business;
 use App\Models\Sale;
 use DateTimeImmutable;
 use Flight;
 use Illuminate\Database\Capsule\Manager;
-use Leaf\Flash;
 use Override;
 
 final readonly class CancelSale implements InvokableController
 {
-  public function __construct(
-    private Business $business,
-  ) {}
+  public function __construct(private Business $business) {}
 
   #[Override]
   public function __invoke(string ...$attributes): void
@@ -26,14 +25,14 @@ final readonly class CancelSale implements InvokableController
     $sale = $this->business->sales()->find($id);
 
     if (!$sale instanceof Sale) {
-      Flash::set(['Comprobante no encontrado'], 'errors');
+      Flash::set(['Comprobante no encontrado'], FlashKey::Errors);
       Flight::redirect('/ventas');
 
       return;
     }
 
     if ($sale->cancelled_at) {
-      Flash::set(['El comprobante ya fue anulado'], 'errors');
+      Flash::set(['El comprobante ya fue anulado'], FlashKey::Errors);
       Flight::redirect('/ventas');
 
       return;
@@ -50,7 +49,7 @@ final readonly class CancelSale implements InvokableController
       if (!$batch instanceof Batch) {
         Flash::set(
           ['No se encontró el lote original de un ítem vendido'],
-          'errors',
+          FlashKey::Errors,
         );
 
         Flight::redirect('/ventas');
@@ -74,7 +73,7 @@ final readonly class CancelSale implements InvokableController
       $sale->save();
     });
 
-    Flash::set(['Comprobante anulado y stock restaurado'], 'notes');
+    Flash::set(['Comprobante anulado y stock restaurado'], FlashKey::Notes);
     Flight::redirect('/ventas');
   }
 }

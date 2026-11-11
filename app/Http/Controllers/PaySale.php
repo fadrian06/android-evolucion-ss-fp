@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Flash;
+use App\FlashKey;
 use App\Models\Sale;
 use App\Models\User;
 use App\Services\DailyExchangeRate;
 use App\Support\PaymentDetails;
 use Flight;
 use InvalidArgumentException;
-use Leaf\Flash;
 use Override;
 
 final readonly class PaySale implements InvokableController
@@ -35,21 +36,21 @@ final readonly class PaySale implements InvokableController
     }
 
     if (!$sale instanceof Sale) {
-      Flash::set(['Venta no encontrada'], 'errors');
+      Flash::set(['Venta no encontrada'], FlashKey::Errors);
       Flight::redirect('/ventas');
 
       return;
     }
 
     if ($sale->cancelled_at) {
-      Flash::set(['No se puede pagar un comprobante anulado'], 'errors');
+      Flash::set(['No se puede pagar un comprobante anulado'], FlashKey::Errors);
       Flight::redirect('/ventas');
 
       return;
     }
 
     if ($sale->getRemainingAmount() <= 0) {
-      Flash::set(['La venta ya está pagada'], 'errors');
+      Flash::set(['La venta ya está pagada'], FlashKey::Errors);
       Flight::redirect('/ventas');
 
       return;
@@ -64,14 +65,14 @@ final readonly class PaySale implements InvokableController
         $customRate ? (float) $customRate->rate : null,
       );
     } catch (InvalidArgumentException $exception) {
-      Flash::set([$exception->getMessage()], 'errors');
+      Flash::set([$exception->getMessage()], FlashKey::Errors);
       Flight::redirect('/ventas');
 
       return;
     }
 
     if ($payment['amount_usd'] > $sale->getRemainingAmount()) {
-      Flash::set(['El pago excede el saldo pendiente'], 'errors');
+      Flash::set(['El pago excede el saldo pendiente'], FlashKey::Errors);
       Flight::redirect('/ventas');
 
       return;
@@ -79,7 +80,7 @@ final readonly class PaySale implements InvokableController
 
     unset($payment['amount_usd']);
     $sale->payments()->create($payment);
-    Flash::set(['Pago registrado'], 'successes');
+    Flash::set(['Pago registrado'], FlashKey::Successes);
     Flight::redirect('/ventas');
   }
 }

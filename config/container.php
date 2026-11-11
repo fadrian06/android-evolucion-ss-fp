@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 use App\Models\Business;
 use App\Models\User;
+use App\Session;
+use App\SessionKey;
 use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager;
 use Illuminate\Database\Schema\Builder;
 use Leaf\Auth;
 use Leaf\Form;
-use Leaf\Http\Session;
 use Leaf\Lingo;
 use Psr\Container\ContainerInterface;
 
@@ -57,7 +58,7 @@ return static function (): ContainerInterface {
       ->get(User::class)
       ->businesses()
       ->getQuery()
-      ->find((string) Session::get('business_id')),
+      ->find((string) Session::get(SessionKey::Business)),
   );
 
   return $container;

@@ -4,20 +4,19 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Flash;
+use App\FlashKey;
 use App\Models\Batch;
 use App\Models\Business;
 use App\Models\Layaway;
 use DateTimeImmutable;
 use Flight;
 use Illuminate\Database\Capsule\Manager;
-use Leaf\Flash;
 use Override;
 
 final readonly class CancelLayaway implements InvokableController
 {
-  public function __construct(
-    private Business $business,
-  ) {}
+  public function __construct(private Business $business) {}
 
   #[Override]
   public function __invoke(string ...$attributes): void
@@ -26,35 +25,35 @@ final readonly class CancelLayaway implements InvokableController
     $layaway = $this->business->layaways()->find($id);
 
     if (!$layaway instanceof Layaway) {
-      Flash::set(['Apartado no encontrado'], 'errors');
+      Flash::set(['Apartado no encontrado'], FlashKey::Errors);
       Flight::redirect('/apartados');
 
       return;
     }
 
     if ($layaway->cancelled_at) {
-      Flash::set(['El apartado ya fue cancelado'], 'errors');
+      Flash::set(['El apartado ya fue cancelado'], FlashKey::Errors);
       Flight::redirect('/apartados');
 
       return;
     }
 
     if ($layaway->getRemainingAmount() <= 0) {
-      Flash::set(['No se puede cancelar un apartado pagado'], 'errors');
+      Flash::set(['No se puede cancelar un apartado pagado'], FlashKey::Errors);
       Flight::redirect('/apartados');
 
       return;
     }
 
     $batch = Batch::query()
-      ->where('product_id', $layaway->product_id)
+      ->where('product_id', $layaway->product->id)
       ->where('business_id', $this->business->id)
       ->first();
 
     if (!$batch instanceof Batch) {
       Flash::set(
         ['No se encontró el lote original del producto apartado'],
-        'errors',
+        FlashKey::Errors,
       );
 
       Flight::redirect('/apartados');
@@ -72,7 +71,7 @@ final readonly class CancelLayaway implements InvokableController
       $layaway->save();
     });
 
-    Flash::set(['Apartado cancelado y stock restaurado'], 'notes');
+    Flash::set(['Apartado cancelado y stock restaurado'], FlashKey::Notes);
     Flight::redirect('/apartados');
   }
 }

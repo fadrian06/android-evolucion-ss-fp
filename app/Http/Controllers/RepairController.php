@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Flash;
+use App\FlashKey;
 use App\Models\Business;
 use App\Models\Repair;
 use App\Models\User;
@@ -15,7 +17,6 @@ use DateTimeZone;
 use Flight;
 use Illuminate\Database\Capsule\Manager;
 use InvalidArgumentException;
-use Leaf\Flash;
 use Leaf\Form;
 use Override;
 
@@ -36,7 +37,7 @@ final readonly class RepairController implements ResourceController
       [
         'repairs' => $this->business->repairs,
         'clients' => $this->user->clients,
-        'receiptId' => Flash::display('repairReceipt'),
+        'receiptId' => Flash::retrieve(FlashKey::RepairReceipt),
       ],
       'slot',
     );
@@ -60,7 +61,7 @@ final readonly class RepairController implements ResourceController
     ]);
 
     if (!$validated) {
-      Flash::set($this->form->errors(), 'errors');
+      Flash::set($this->form->errors(), FlashKey::Errors);
       Flight::redirect('/reparaciones');
 
       return;
@@ -71,7 +72,7 @@ final readonly class RepairController implements ResourceController
     if ($rawPrice !== '' && (!is_numeric($rawPrice) || (float) $rawPrice < 0)) {
       Flash::set(
         ['El costo de mano de obra debe ser mayor o igual a cero'],
-        'errors',
+        FlashKey::Errors,
       );
 
       Flight::redirect('/reparaciones');
@@ -82,7 +83,7 @@ final readonly class RepairController implements ResourceController
     $price = $rawPrice !== '' ? (float) $rawPrice : 0;
 
     if (!$this->user->clients->find($validated['client_id'])) {
-      Flash::set(['Cliente no encontrado'], 'errors');
+      Flash::set(['Cliente no encontrado'], FlashKey::Errors);
       Flight::redirect('/reparaciones');
 
       return;
@@ -93,7 +94,7 @@ final readonly class RepairController implements ResourceController
     if (!$customRate) {
       Flash::set(
         ['Debes establecer una cotización personalizada antes de registrar una reparación'],
-        'errors',
+        FlashKey::Errors,
       );
 
       Flight::redirect('/reparaciones');
@@ -105,10 +106,10 @@ final readonly class RepairController implements ResourceController
       $payments = PaymentDetails::fromInputs(
         $data['amount'] ?? null,
         $data['method'] ?? null,
-        (float) $customRate->rate,
+        $customRate->rate,
       );
     } catch (InvalidArgumentException $exception) {
-      Flash::set([$exception->getMessage()], 'errors');
+      Flash::set([$exception->getMessage()], FlashKey::Errors);
       Flight::redirect('/reparaciones');
 
       return;
@@ -142,9 +143,7 @@ final readonly class RepairController implements ResourceController
         $attributes['created_at'] = $createdAt;
       }
 
-      $repair = $this->business
-        ->repairs()
-        ->make($attributes);
+      $repair = $this->business->repairs()->make($attributes);
 
       if ($createdAt !== '') {
         $repair->created_at = $createdAt;
@@ -160,8 +159,8 @@ final readonly class RepairController implements ResourceController
       return $repair;
     });
 
-    Flash::set((string) $repair->id, 'repairReceipt');
-    Flash::set(['Reparación registrada'], 'successes');
+    Flash::set($repair->id, FlashKey::RepairReceipt);
+    Flash::set(['Reparación registrada'], FlashKey::Successes);
     Flight::redirect('/reparaciones');
   }
 
@@ -171,7 +170,7 @@ final readonly class RepairController implements ResourceController
     $repair = $this->business->repairs->find($id);
 
     if (!$repair instanceof Repair) {
-      Flash::set(['Reparación no encontrada'], 'errors');
+      Flash::set(['Reparación no encontrada'], FlashKey::Errors);
       Flight::redirect('/reparaciones');
 
       return;

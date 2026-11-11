@@ -4,24 +4,24 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Flash;
+use App\FlashKey;
+use App\Session;
+use App\SessionKey;
 use Flight;
 use Leaf\Auth;
-use Leaf\Flash;
-use Leaf\Http\Session;
 use Override;
 
 final readonly class Logout implements InvokableController
 {
-  public function __construct(
-    private Auth $auth,
-  ) {}
+  public function __construct(private Auth $auth) {}
 
   #[Override]
   public function __invoke(string ...$attributes): void
   {
     $this->auth->logout();
-    Session::unset('business_id');
-    Flash::set(['Sesión cerrada'], 'successes');
+    Session::unset(SessionKey::Business);
+    Flash::set(['Sesión cerrada'], FlashKey::Successes);
 
     Flight::redirect('/ingresar');
   }

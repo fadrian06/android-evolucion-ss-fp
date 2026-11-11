@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Flash;
+use App\FlashKey;
 use App\Models\Batch;
 use App\Models\Business;
 use App\Models\Product;
@@ -13,7 +15,6 @@ use App\Support\PaymentDetails;
 use Flight;
 use Illuminate\Database\Capsule\Manager;
 use InvalidArgumentException;
-use Leaf\Flash;
 use Leaf\Form;
 use Override;
 
@@ -34,7 +35,10 @@ final readonly class LayawayController implements ResourceController
       ->load('batches')
       ->filter(
         fn(Product $product): bool => $product->batches->contains(
-          fn(Batch $batch): bool => $batch->business_id === $this->business->id && $batch->stock > 0,
+          fn(Batch $batch): bool => (
+            $batch->business->id === $this->business->id
+            && $batch->stock > 0
+          ),
         ),
       );
 
@@ -66,7 +70,7 @@ final readonly class LayawayController implements ResourceController
     ]);
 
     if (!$validated) {
-      Flash::set($this->form->errors(), 'errors');
+      Flash::set($this->form->errors(), FlashKey::Errors);
       Flight::redirect('/apartados');
 
       return;
@@ -76,14 +80,14 @@ final readonly class LayawayController implements ResourceController
     $product = $this->user->products->find($validated['product_id']);
 
     if (!$client) {
-      Flash::set(['Cliente no encontrado'], 'errors');
+      Flash::set(['Cliente no encontrado'], FlashKey::Errors);
       Flight::redirect('/apartados');
 
       return;
     }
 
     if (!$product) {
-      Flash::set(['Producto no encontrado'], 'errors');
+      Flash::set(['Producto no encontrado'], FlashKey::Errors);
       Flight::redirect('/apartados');
 
       return;
@@ -95,7 +99,7 @@ final readonly class LayawayController implements ResourceController
     $code = trim((string) ($data['code'] ?? ''));
 
     if ($product->category === 'phone' && ($imei1 === '' || $imei2 === '')) {
-      Flash::set(['Debes indicar IMEI 1 e IMEI 2'], 'errors');
+      Flash::set(['Debes indicar IMEI 1 e IMEI 2'], FlashKey::Errors);
       Flight::redirect('/apartados');
 
       return;
@@ -106,7 +110,7 @@ final readonly class LayawayController implements ResourceController
     if (!$customRate) {
       Flash::set(
         ['Debes establecer una cotización personalizada antes de crear un apartado'],
-        'errors',
+        FlashKey::Errors,
       );
 
       Flight::redirect('/apartados');
@@ -122,7 +126,7 @@ final readonly class LayawayController implements ResourceController
     if (!$batch instanceof Batch || $batch->stock < 1) {
       Flash::set(
         ['No hay existencias de este producto en el local seleccionado'],
-        'errors',
+        FlashKey::Errors,
       );
 
       Flight::redirect('/apartados');
@@ -134,10 +138,10 @@ final readonly class LayawayController implements ResourceController
       $payments = PaymentDetails::fromInputs(
         $data['amount'] ?? null,
         $data['method'] ?? null,
-        (float) $customRate->rate,
+        $customRate->rate,
       );
     } catch (InvalidArgumentException $exception) {
-      Flash::set([$exception->getMessage()], 'errors');
+      Flash::set([$exception->getMessage()], FlashKey::Errors);
       Flight::redirect('/apartados');
 
       return;
@@ -174,7 +178,7 @@ final readonly class LayawayController implements ResourceController
       );
     });
 
-    Flash::set(['Producto apartado'], 'successes');
+    Flash::set(['Producto apartado'], FlashKey::Successes);
     Flight::redirect('/apartados');
   }
 

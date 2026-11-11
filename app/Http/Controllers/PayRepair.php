@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Flash;
+use App\FlashKey;
 use App\Models\Business;
 use App\Models\Repair;
 use App\Models\User;
@@ -11,7 +13,6 @@ use App\Services\DailyExchangeRate;
 use App\Support\PaymentDetails;
 use Flight;
 use InvalidArgumentException;
-use Leaf\Flash;
 use Override;
 
 final readonly class PayRepair implements InvokableController
@@ -29,14 +30,14 @@ final readonly class PayRepair implements InvokableController
     $repair = $this->business->repairs->find($id);
 
     if (!$repair instanceof Repair) {
-      Flash::set(['Reparación no encontrada'], 'errors');
+      Flash::set(['Reparación no encontrada'], FlashKey::Errors);
       Flight::redirect('/reparaciones');
 
       return;
     }
 
     if ($repair->getRemainingAmount() <= 0) {
-      Flash::set(['La reparación ya está pagada'], 'errors');
+      Flash::set(['La reparación ya está pagada'], FlashKey::Errors);
       Flight::redirect('/reparaciones');
 
       return;
@@ -49,17 +50,17 @@ final readonly class PayRepair implements InvokableController
       $payment = PaymentDetails::fromInput(
         $data['amount'] ?? null,
         $data['method'] ?? null,
-        $customRate ? (float) $customRate->rate : null,
+        $customRate ? $customRate->rate : null,
       );
     } catch (InvalidArgumentException $exception) {
-      Flash::set([$exception->getMessage()], 'errors');
+      Flash::set([$exception->getMessage()], FlashKey::Errors);
       Flight::redirect('/reparaciones');
 
       return;
     }
 
     if ($payment['amount_usd'] > $repair->getRemainingAmount()) {
-      Flash::set(['El pago excede el saldo pendiente'], 'errors');
+      Flash::set(['El pago excede el saldo pendiente'], FlashKey::Errors);
       Flight::redirect('/reparaciones');
 
       return;
@@ -67,7 +68,7 @@ final readonly class PayRepair implements InvokableController
 
     unset($payment['amount_usd']);
     $repair->payments()->create($payment);
-    Flash::set(['Pago registrado'], 'successes');
+    Flash::set(['Pago registrado'], FlashKey::Successes);
     Flight::redirect('/reparaciones');
   }
 }
