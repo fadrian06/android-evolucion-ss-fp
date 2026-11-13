@@ -3,9 +3,10 @@
 ![Orion Banner](resources/images/banner.jpg)
 
 [![Website](https://img.shields.io/badge/Website-android--evolucion.42web.io-blue?style=flat-square&logo=googlechrome)](https://android-evolucion.42web.io)
-[![PHP Version](https://img.shields.io/badge/PHP-%3E%3D8.4-777BB4?style=flat-square&logo=php)](https://www.php.net/)
+[![PHP Version](https://img.shields.io/badge/PHP-%3E%3D8.4.27-777BB4?style=flat-square&logo=php)](https://www.php.net/)
 [![Flight PHP](https://img.shields.io/badge/Flight_PHP-3.19-f38b00?style=flat-square)](https://flightphp.com/)
 [![Eloquent ORM](https://img.shields.io/badge/Eloquent-13.x-FF2D20?style=flat-square&logo=laravel)](https://laravel.com/)
+[![Leaf Form](https://img.shields.io/badge/Leaf_Form-5.x-5b8aey?style=flat-square)](https://leafphp.dev/)
 [![Versión en Español](https://img.shields.io/badge/Idioma-Espa%C3%B1ol-informational?style=flat-square)](LEAME.md)
 
 > 🌐 **Website / Live Demo:** [https://android-evolucion.42web.io](https://android-evolucion.42web.io)  
@@ -70,8 +71,9 @@ A lightweight and modern web system designed for retail management, inventory co
 | :--- | :--- | :--- |
 | **Language** | PHP 8.4+ | Strict typing (`declare(strict_types=1);`), native attributes, constructor property promotion |
 | **Router / Framework** | [Flight PHP](https://flightphp.com/) (^3.19) | Fast, lightweight, and extensible micro-framework for web routes and REST APIs |
-| **ORM / Database Layer** | [Illuminate Database](https://laravel.com/) (^13.38) | Laravel Eloquent ORM for models, relationships, and automated database schema builders |
+| **ORM / Database Layer** | [Illuminate Database](https://laravel.com/) (^13.40) | Laravel Eloquent ORM for models, relationships, and automated database schema builders |
 | **Authentication** | [Leaf Auth](https://leafphp.dev/) (^5.1) | Session-based authentication and secure password hashing with Bcrypt |
+| **Form Validation** | [Leaf Form](https://leafphp.dev/) (^5.0) | Input data validation with custom rules |
 | **Localization** | [Leaf Lingo](https://leafphp.dev/) (^5.0) | Multi-language translation support |
 | **HTTP Client** | [Guzzle](https://docs.guzzlephp.org/) (^8.3) | HTTP client for external BCV exchange rate API consumption and integration testing |
 | **Environment Configuration** | [Symfony Dotenv](https://symfony.com/doc/current/components/dotenv.html) (^8.1) | Secure parsing and loading of `.env` configuration files |
@@ -86,14 +88,17 @@ A lightweight and modern web system designed for retail management, inventory co
 android-evolucion-ss-fp/
 ├── app/
 │   ├── Http/
-│   │   ├── Controllers/          # Resource controllers and single-action controllers (__invoke)
-│   │   └── Middleware/           # Middlewares (Auth, BusinessSelected, ExchangeRate, etc.)
-│   ├── Models/                   # Eloquent models (User, Business, Product, Sale, Repair...)
+│   │   ├── Controllers/          # Resource controllers, invokable controllers, and interfaces (ResourceController, InvokableController)
+│   │   └── Middleware/           # Middlewares (Auth, BusinessSelected, ExchangeRate, BeforeMiddleware)
+│   ├── Models/                   # Eloquent models (User, Business, Product, Sale, Repair, Batch, Client...)
 │   ├── Services/                 # External service layers (BcvExchangeRate, DailyExchangeRate)
 │   ├── Support/                  # Value objects and helpers (PaymentMethod, PaymentDetails)
 │   ├── Flash.php                 # Flash message helpers
 │   ├── FlashKey.php              # Session flash keys
-│   └── Migration.php             # Contract interface for database migrations
+│   ├── Migration.php             # Contract interface for database migrations
+│   ├── Session.php               # Type-safe wrapper for Leaf HTTP sessions
+│   ├── SessionKey.php            # Session keys enumerator
+│   └── functions.php             # Global helper functions (foreach_file)
 ├── database/
 │   ├── migrations/               # Database migrations executed on application boot
 │   └── database.sqlite           # Local SQLite database file (auto-created on first run)
@@ -104,7 +109,7 @@ android-evolucion-ss-fp/
 │   ├── styles/
 │   │   └── app.css               # Modern CSS with custom properties and theme tokens
 │   └── views/                    # PHP templates and reusable components
-│       ├── components/           # UI components (layout, nav, sidebar, toast, etc.)
+│       ├── components/           # UI components (layout, nav, sidebar, toast, brand, btn, etc.)
 │       ├── dashboard.php         # Main dashboard view
 │       ├── sales.php             # Sales registration and history
 │       ├── sale.php              # Printable sales voucher
@@ -114,13 +119,21 @@ android-evolucion-ss-fp/
 │       ├── layaways.php          # Layaway management
 │       ├── clients.php           # Customer directory
 │       ├── businesses.php        # Store locations and business management
-│       └── calculator.php        # Exchange rate configuration and converter
+│       ├── calculator.php        # Exchange rate configuration and converter
+│       ├── login.php             # Login page view
+│       └── register.php          # User registration view
 ├── routes/
 │   ├── web.php                   # Web application endpoints and view controllers
 │   └── api.php                   # REST API routes (e.g. BCV rate fetching)
 ├── tests/
 │   ├── Feature/                  # HTTP feature integration tests using Guzzle
 │   └── Unit/                     # Unit tests
+├── config/
+│   ├── auth.php                  # Leaf Auth authentication configuration
+│   ├── container.php             # Dependency injection container (Illuminate Container)
+│   ├── database.php              # Database connection configuration
+│   ├── form.php                  # Custom Leaf Form validation rules
+│   └── lingo.php                 # Localization configuration
 ├── .env.example                  # Environment configuration template
 ├── .htaccess                     # URL rewrite rules for Apache web servers
 ├── composer.json                 # Project dependencies and PSR-4 autoloading definitions
@@ -133,7 +146,7 @@ android-evolucion-ss-fp/
 
 ## ⚙️ System Requirements
 
-1. **PHP**: Version **8.4 or higher**.
+1. **PHP**: Version **8.4.27 or higher**.
 2. **PHP Extensions**:
    - `pdo`
    - `pdo_sqlite` (or `pdo_mysql` when running MySQL/MariaDB)

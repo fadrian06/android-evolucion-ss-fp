@@ -3,9 +3,10 @@
 ![Orion Banner](resources/images/banner.jpg)
 
 [![Sitio Web](https://img.shields.io/badge/Sitio_Web-android--evolucion.42web.io-blue?style=flat-square&logo=googlechrome)](https://android-evolucion.42web.io)
-[![PHP Version](https://img.shields.io/badge/PHP-%3E%3D8.4-777BB4?style=flat-square&logo=php)](https://www.php.net/)
+[![PHP Version](https://img.shields.io/badge/PHP-%3E%3D8.4.27-777BB4?style=flat-square&logo=php)](https://www.php.net/)
 [![Flight PHP](https://img.shields.io/badge/Flight_PHP-3.19-f38b00?style=flat-square)](https://flightphp.com/)
 [![Eloquent ORM](https://img.shields.io/badge/Eloquent-13.x-FF2D20?style=flat-square&logo=laravel)](https://laravel.com/)
+[![Leaf Form](https://img.shields.io/badge/Leaf_Form-5.x-5b8aey?style=flat-square)](https://leafphp.dev/)
 [![English Version](https://img.shields.io/badge/Language-English-informational?style=flat-square)](README.md)
 
 > 🌐 **Sitio Web / Demo:** [https://android-evolucion.42web.io](https://android-evolucion.42web.io)  
@@ -70,8 +71,9 @@ Sistema web ligero y moderno para la administración comercial, control de inven
 | :--- | :--- | :--- |
 | **Lenguaje** | PHP 8.4+ | Tipado estricto (`declare(strict_types=1);`), atributos nativos, promotores de propiedades |
 | **Enrutador / Framework** | [Flight PHP](https://flightphp.com/) (^3.19) | Micro-framework ligero, rápido y flexible para rutas web y API |
-| **ORM / Base de Datos** | [Illuminate Database](https://laravel.com/) (^13.38) | Eloquent ORM de Laravel para modelos, relaciones y migraciones de base de datos |
+| **ORM / Base de Datos** | [Illuminate Database](https://laravel.com/) (^13.40) | Eloquent ORM de Laravel para modelos, relaciones y migraciones de base de datos |
 | **Autenticación** | [Leaf Auth](https://leafphp.dev/) (^5.1) | Manejo de sesiones y autenticación segura con Bcrypt |
+| **Validación de Formularios** | [Leaf Form](https://leafphp.dev/) (^5.0) | Validación de datos de entrada con reglas personalizadas |
 | **Internacionalización** | [Leaf Lingo](https://leafphp.dev/) (^5.0) | Traducciones y localización en español |
 | **Peticiones HTTP** | [Guzzle](https://docs.guzzlephp.org/) (^8.3) | Cliente HTTP para consumir la API de cotizaciones y pruebas de integración |
 | **Variables de Entorno** | [Symfony Dotenv](https://symfony.com/doc/current/components/dotenv.html) (^8.1) | Carga y parseo seguro de configuración `.env` |
@@ -86,14 +88,17 @@ Sistema web ligero y moderno para la administración comercial, control de inven
 android-evolucion-ss-fp/
 ├── app/
 │   ├── Http/
-│   │   ├── Controllers/          # Controladores de recursos y de acción única (__invoke)
-│   │   └── Middleware/           # Middlewares (Auth, BusinessSelected, ExchangeRate, etc.)
-│   ├── Models/                   # Modelos de Eloquent (User, Business, Product, Sale, Repair...)
+│   │   ├── Controllers/          # Controladores de recursos, invocableros e interfaces (ResourceController, InvokableController)
+│   │   └── Middleware/           # Middlewares (Auth, BusinessSelected, ExchangeRate, BeforeMiddleware)
+│   ├── Models/                   # Modelos de Eloquent (User, Business, Product, Sale, Repair, Batch, Client...)
 │   ├── Services/                 # Lógica externa (BcvExchangeRate, DailyExchangeRate)
 │   ├── Support/                  # Clases auxiliares y enumeradores (PaymentMethod, PaymentDetails)
 │   ├── Flash.php                 # Utilidades de mensajes flash
 │   ├── FlashKey.php              # Claves de sesión flash
-│   └── Migration.php             # Contrato de interfaz para migraciones
+│   ├── Migration.php             # Contrato de interfaz para migraciones
+│   ├── Session.php               # Wrapper tipado para sesiones de Leaf HTTP
+│   ├── SessionKey.php            # Enumerador de claves de sesión
+│   └── functions.php             # Funciones auxiliares globales (foreach_file)
 ├── database/
 │   ├── migrations/               # Migraciones de esquema ejecutadas automáticamente
 │   └── database.sqlite           # Base de datos local SQLite (creada en el primer arranque)
@@ -104,7 +109,7 @@ android-evolucion-ss-fp/
 │   ├── styles/
 │   │   └── app.css               # Estilos CSS modernos con variables y temas
 │   └── views/                    # Vistas PHP y componentes reutilizables
-│       ├── components/           # Componentes modulares (layout, nav, sidebar, toast, etc.)
+│       ├── components/           # Componentes modulares (layout, nav, sidebar, toast, brand, btn, etc.)
 │       ├── dashboard.php         # Panel principal
 │       ├── sales.php             # Módulo de ventas
 │       ├── sale.php              # Comprobante de venta
@@ -114,13 +119,21 @@ android-evolucion-ss-fp/
 │       ├── layaways.php          # Módulo de apartados
 │       ├── clients.php           # Directorio de clientes
 │       ├── businesses.php        # Gestión de negocios/sucursales
-│       └── calculator.php        # Calculadora y ajuste de cotización
+│       ├── calculator.php        # Calculadora y ajuste de cotización
+│       ├── login.php             # Vista de inicio de sesión
+│       └── register.php          # Vista de registro de usuario
 ├── routes/
 │   ├── web.php                   # Rutas de la aplicación web y vistas
 │   └── api.php                   # Rutas API REST (e.g. consulta de tasa BCV)
 ├── tests/
 │   ├── Feature/                  # Pruebas funcionales e integración HTTP con Guzzle
 │   └── Unit/                     # Pruebas unitarias
+├── config/
+│   ├── auth.php                  # Configuración de autenticación Leaf Auth
+│   ├── container.php             # Contenedor de inyección de dependencias (Illuminate Container)
+│   ├── database.php              # Configuración de conexión a base de datos
+│   ├── form.php                  # Reglas de validación personalizadas de Leaf Form
+│   └── lingo.php                 # Configuración de internacionalización
 ├── .env.example                  # Plantilla de variables de entorno
 ├── .htaccess                     # Reglas de reescritura para servidor Apache
 ├── composer.json                 # Dependencias y autoloading PSR-4
@@ -132,7 +145,7 @@ android-evolucion-ss-fp/
 
 ## ⚙️ Requisitos del Entorno
 
-1. **PHP**: Versión **8.4 o superior**.
+1. **PHP**: Versión **8.4.27 o superior**.
 2. **Extensiones de PHP requeridas**:
    - `pdo`
    - `pdo_sqlite` (o `pdo_mysql` si se usa base de datos MySQL)
