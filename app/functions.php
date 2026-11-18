@@ -7,9 +7,13 @@ namespace App;
 /** @param callable(string $file): void $callable */
 function foreach_file(string $pattern, callable $callable): void
 {
-  $files = (array) glob($pattern);
+  $files = glob($pattern);
 
-  foreach (array_filter($files) as $file) {
+  if (!$files) {
+    return;
+  }
+
+  foreach ($files as $file) {
     $callable($file);
   }
 }
