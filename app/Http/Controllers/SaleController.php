@@ -43,7 +43,7 @@ final readonly class SaleController implements ResourceController
           )
           ->load('batches'),
         'businesses' => $this->user->businesses,
-        'salesIds' => Flash::retrieve(FlashKey::SaleIds)[0],
+        'salesIds' => Flash::retrieve(FlashKey::SaleIds)[0] ?? null,
       ],
       'slot',
     );

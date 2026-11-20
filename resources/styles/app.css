@@ -928,7 +928,7 @@ dialog {
   .sidebar,
   .toasts,
   .d-print-none {
-    display: none;
+    display: none !important;
   }
 
   .content {
@@ -943,3 +943,201 @@ dialog {
     max-width: none;
   }
 }
+
+.offcanvas-toggler {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 42px;
+  border-radius: 10px 0 0 10px;
+  border: 1px solid var(--line);
+  border-right: none;
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    background: var(--brand);
+    color: white;
+  }
+}
+
+.theme-toggler {
+  position: fixed;
+  top: calc(50% - 48px);
+  right: 0;
+  transform: translateY(-50%);
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 42px;
+  border-radius: 10px 0 0 10px;
+  border: 1px solid var(--line);
+  border-right: none;
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    background: var(--brand);
+    color: white;
+  }
+}
+
+.offcanvas-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 50%);
+  backdrop-filter: blur(4px);
+  transition: opacity 0.2s ease;
+
+  &[style*="display: none"] {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+.offcanvas {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 101;
+  width: min(360px, 92vw);
+  background: var(--surface);
+  border-left: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  display: grid;
+  grid-template-rows: auto 1fr;
+  box-sizing: border-box;
+  transition: transform 0.25s ease-in-out;
+}
+
+.transition-backdrop {
+  transition: opacity 0.2s ease;
+}
+
+.opacity-0 {
+  opacity: 0;
+}
+
+.opacity-100 {
+  opacity: 1;
+}
+
+.transition-transform {
+  transition: transform 0.25s ease-in-out;
+}
+
+.translate-x-full {
+  transform: translateX(100%);
+}
+
+.translate-x-0 {
+  transform: translateX(0);
+}
+
+.offcanvas-header {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+}
+
+.offcanvas-body {
+  padding: 20px;
+  overflow-y: auto;
+  display: grid;
+  align-content: start;
+  gap: 16px;
+}
+
+.offcanvas-close {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1;
+
+  &:hover {
+    color: var(--ink);
+    border-color: var(--line-dark);
+  }
+}
+
+.switch-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.15s ease;
+
+  &:hover {
+    border-color: var(--brand);
+  }
+
+  .switch-input {
+    appearance: none;
+    position: relative;
+    width: 44px;
+    height: 24px;
+    border-radius: 12px;
+    background: var(--line);
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.2s ease;
+    flex-shrink: 0;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: white;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 25%);
+      transition: transform 0.2s ease;
+    }
+
+    &:checked {
+      background: var(--brand);
+
+      &::after {
+        transform: translateX(20px);
+      }
+    }
+
+    &:focus-visible {
+      box-shadow: 0 0 0 3px var(--brand-opaque);
+    }
+  }
+}
+

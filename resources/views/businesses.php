@@ -63,7 +63,10 @@ use Illuminate\Database\Eloquent\Collection;
     return trim($card.textContent).includes(trim(this.search));
   },
 }">
-  <section class="card panel field">
+  <section
+    class="card panel field"
+    x-show="ui.show_businesses_filters.value"
+    x-transition>
     <label>Buscar negocios</label>
     <input
       x-model="search"
@@ -78,7 +81,7 @@ use Illuminate\Database\Eloquent\Collection;
           <div class="card-avatar"><?= $item->name[0] ?></div>
           <div>
             <?php Flight::render('components/eyebrow', [
-              'text' => "LOCAL #$item->id",
+              'text' => "LOCAL #{$item->id}",
             ]) ?>
 
             <h2 class="card-title"><?= $item->name ?></h2>

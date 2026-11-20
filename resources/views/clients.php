@@ -60,7 +60,10 @@ use Illuminate\Database\Eloquent\Collection;
     return trim($card.textContent).includes(trim(this.search));
   },
 }">
-  <section class="card panel field">
+  <section
+    class="card panel field"
+    x-show="ui.show_clients_filters.value"
+    x-transition>
     <label>Buscar clientes</label>
     <input
       x-model="search"

@@ -200,7 +200,10 @@ use Illuminate\Database\Eloquent\Collection;
     return this.status === '' || status === this.status;
   },
 }">
-  <section class="card panel stack">
+  <section
+    class="card panel stack"
+    x-show="ui.show_layaways_filters.value"
+    x-transition>
     <div class="grid grid-2">
       <div class="field">
         <label>Buscar</label>
